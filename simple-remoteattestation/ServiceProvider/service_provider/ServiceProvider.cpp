@@ -129,14 +129,13 @@ int ServiceProvider::sp_ra_proc_msg1_req(Messages::MessageMSG1 msg1, Messages::M
         /*
         sample_ec256_public_t pub_key = {
             {
-                0x3e,0xfb,0x11,0x60,0xdc,0xfa,0x36,0x2e,0x51,0x51,0x15,0xf2,
-                0x82,0xc5,0xe2,0xee,0x6b,0x4f,0x49,0x26,0xcb,0xd3,0xd8,0xf0,
-                0xeb,0x4e,0x38,0x2d,0x83,0xc7,0x43,0x77
+                0xfb,0x0a,0x19,0xe2,0x81,0x19,0x1d,0xdf,0x2c,0x6d,0xb6,0xf7,
+                0x32,0x2c,0x96,0x78,0xea,0xa3,0xe5,0x34,0xaa,0x18,0xec,0x66,
+                0x35,0x49,0xaf,0xb0,0x68,0x9c,0x4d,0xf2
             },
             {
-                0x5d,0xc5,0xb5,0x33,0x14,0xe7,0xfd,0x56,0xb7,0x6e,0x12,0x7f,
-                0x4c,0xe6,0xd2,0x4b,0x16,0x17,0x5c,0x92,0x91,0xe2,0x3f,0xa3,
-                0xf2,0xc4,0xd0,0xc9,0xe3,0x26,0xa7,0x58
+                0xce,0x20,0x32,0xad,0x51,0x37,0x15,0x30,0xa6,0xc4,0x26,0xd1,
+                0xf2,0x57,0x5d,0x7c,0xdb,0x1f,0xb0,0xdf,0x88,0xb6,0x7b,0xa7,0x78,0x88,0x3c,0x5c,0x9d,0xbe,0x5e,0x33
             }
         };
         sample_ec256_private_t priv_key = {
@@ -270,11 +269,22 @@ int ServiceProvider::sp_ra_proc_msg1_req(Messages::MessageMSG1 msg1, Messages::M
         p_msg2 = (sgx_ra_msg2_t *) p_msg2_full->body;
 
 
+        int spidsize = 16;
         uint8_t *spidBa;
         HexStringToByteArray(Settings::spid, &spidBa);
+        for(int i=0;i<16;i++) {
+            printf("%d,",spidBa[i]);
+        }
+        printf("\n");
+        unsigned char* buftmp = new unsigned char[spidsize];
+        memcpy(buftmp, (unsigned char*)spidBa, spidsize);
+        Log("=========== spidBa:%s",ByteArrayToString(buftmp,spidsize));
 
         for (int i=0; i<16; i++)
             p_msg2->spid.id[i] = spidBa[i];
+        unsigned char* buftmp1 = new unsigned char[spidsize];
+        memcpy(buftmp1, (unsigned char*)p_msg2->spid.id, spidsize);
+        Log("=========== spidBa:%s",ByteArrayToString(buftmp1,spidsize));
 
 
         // Assemble MSG2
@@ -449,8 +459,19 @@ int ServiceProvider::sp_ra_proc_msg1_req(Messages::MessageMSG1 msg1, Messages::M
         for (auto x : p_msg2->g_b.gy)
             msg2->add_public_key_gy(x);
 
+        int spidsize = 16;
+        uint8_t tmpbuf0[spidsize] = {0};
+        memcpy(tmpbuf0, (uint8_t*)p_msg2->spid.id,spidsize);
+        Log("==========sp spid:%s",ByteArrayToString(tmpbuf0,spidsize));
         for (auto x : p_msg2->spid.id)
             msg2->add_spid(x);
+        for(int i=0;i<16;i++) {
+            printf("%d,",msg2->spid(i));
+        }
+        printf("\n");
+        //uint8_t tmpbuf[spidsize] = {0};
+        //memcpy(tmpbuf, (uint8_t*)&msg2->spid(),spidsize);
+        //Log("==========sp spid:%s",ByteArrayToString(tmpbuf,spidsize));
 
         msg2->set_quote_type(SAMPLE_QUOTE_LINKABLE_SIGNATURE);
         msg2->set_cmac_kdf_id(AES_CMAC_KDF_ID);

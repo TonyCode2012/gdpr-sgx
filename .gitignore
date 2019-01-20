@@ -2,4 +2,10 @@
 */*.swp
 */target/*
 
+*/*.so
+*/*.o
+
+*/apache-tomcat-9.0.14/logs
+*/apache-tomcat-9.0.14/shared
+
 */node_modules/*

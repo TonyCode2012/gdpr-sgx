@@ -1,5 +1,6 @@
 #include "MessageHandler.h"
 #include "sgx_tseal.h"
+#include <inttypes.h>
 
 using namespace util;
 
@@ -186,6 +187,7 @@ string MessageHandler::generateMSG1() {
 
 
 void MessageHandler::assembleMSG2(Messages::MessageMSG2 msg, sgx_ra_msg2_t **pp_msg2) {
+    Log("=============== ASSEMBLE MSG2 ===============");
     uint32_t size = msg.size();
 
     sgx_ra_msg2_t *p_msg2 = NULL;
@@ -201,15 +203,26 @@ void MessageHandler::assembleMSG2(Messages::MessageMSG2 msg, sgx_ra_msg2_t **pp_
         pub_key_gx[i] = msg.public_key_gx(i);
         pub_key_gy[i] = msg.public_key_gy(i);
     }
+    Log("\tpub key gx:%s",ByteArrayToString(pub_key_gx,32));
+    Log("\tpub key gy:%s",ByteArrayToString(pub_key_gy,32));
 
     for (int i=0; i<16; i++) {
         spid.id[i] = msg.spid(i);
     }
+    Log("\tspid:%s",ByteArrayToString(spid.id,16));
 
     for (int i=0; i<8; i++) {
         sign_gb_ga.x[i] = msg.signature_x(i);
         sign_gb_ga.y[i] = msg.signature_y(i);
     }
+    for(int i=0;i<8;i++){
+        printf("%" PRIu32 ",",sign_gb_ga.x[i]);
+    }
+    printf("\n");
+    for(int i=0;i<8;i++){
+        printf("%" PRIu32 ",",sign_gb_ga.y[i]);
+    }
+    printf("\n");
 
     memcpy(&p_msg2->g_b.gx, &pub_key_gx, sizeof(pub_key_gx));
     memcpy(&p_msg2->g_b.gy, &pub_key_gy, sizeof(pub_key_gy));
@@ -218,18 +231,23 @@ void MessageHandler::assembleMSG2(Messages::MessageMSG2 msg, sgx_ra_msg2_t **pp_
 
     p_msg2->quote_type = (uint16_t)msg.quote_type();
     p_msg2->kdf_id = msg.cmac_kdf_id();
+    Log("\tquote type:%d",p_msg2->quote_type);
+    Log("\tkdf id    :%d",p_msg2->kdf_id);
 
     uint8_t smac[16];
     for (int i=0; i<16; i++)
         smac[i] = msg.smac(i);
+    Log("\tsmac:%s",ByteArrayToString(smac,16));
 
     memcpy(&p_msg2->mac, &smac, sizeof(smac));
 
     p_msg2->sig_rl_size = msg.size_sigrl();
     uint8_t *sigrl = (uint8_t*) malloc(sizeof(uint8_t) * msg.size_sigrl());
+    Log("\tsig rl size:%d",p_msg2->sig_rl_size);
 
     for (int i=0; i<msg.size_sigrl(); i++)
         sigrl[i] = msg.sigrl(i);
+    Log("\tsigrl:%s",ByteArrayToString(sigrl, p_msg2->sig_rl_size));
 
     memcpy(&p_msg2->sig_rl, &sigrl, msg.size_sigrl());
 
@@ -242,9 +260,10 @@ string MessageHandler::handleMSG2(Messages::MessageMSG2 msg) {
 
     uint32_t size = msg.size();
     
-    unsigned char* tmpbuf = new unsigned char[sizeof(msg.spid())];
-    memcpy(tmpbuf, (unsigned char*)&msg.spid(), sizeof(msg.spid()));
-    Log("\tspid:%s",ByteArrayToString(tmpbuf,sizeof(msg.spid())));
+    for(int i=0;i<16;i++) {
+        printf("%d,",msg.spid(i));
+    }
+    printf("\n");
 
     sgx_ra_msg2_t *p_msg2;
     this->assembleMSG2(msg, &p_msg2);
@@ -252,6 +271,17 @@ string MessageHandler::handleMSG2(Messages::MessageMSG2 msg) {
     sgx_ra_msg3_t *p_msg3 = NULL;
     uint32_t msg3_size;
     int ret = 0;
+
+    Log("========== sgx ra proc msg2 para ==========");
+    uint8_t cbuf1[sizeof(sgx_ra_context_t)];
+    sgx_ra_context_t tmp_context = this->enclave->getContext();
+    memcpy(cbuf1, (uint8_t*)&tmp_context,sizeof(sgx_ra_context_t));
+    Log("\tcontext:%s",ByteArrayToString(cbuf1,sizeof(sgx_ra_context_t)));
+    Log("\tsize:%d",size);
+    uint8_t cbuf2[sizeof(sgx_ra_msg2_t)];
+    memcpy(cbuf2, (uint8_t*)p_msg2, sizeof(sgx_ra_msg2_t));
+    Log("\tp_msg2:%s",ByteArrayToString(cbuf2,sizeof(sgx_ra_msg2_t)));
+    printf("%" PRIu64 "\n",this->enclave->getID());
 
     do {
         ret = sgx_ra_proc_msg2(this->enclave->getContext(),

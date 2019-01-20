@@ -43,8 +43,7 @@ const getMsg2 = ecPublicKey => {
    */
   const publicKeyGx = toHex(MY_PUBLIC_KEY.X);
   const publicKeyGy = toHex(MY_PUBLIC_KEY.Y);
-  //const sMyPublicKey = bigInt(MY_PUBLIC_KEY.X + MY_PUBLIC_KEY.Y).toString(16);
-  const sMyPublicKey = switchEndian(bigInt(MY_PUBLIC_KEY.X).toString(16),2) + switchEndian(bigInt(MY_PUBLIC_KEY.Y).toString(16),2);
+  const sMyPublicKey = switchEndian(bigInt(MY_PUBLIC_KEY.X).toString(16), 2) + switchEndian(bigInt(MY_PUBLIC_KEY.Y).toString(16), 2);
 
   const smac = aesCmac(SHORT_KEY, sMyPublicKey);
 
@@ -58,7 +57,6 @@ const getMsg2 = ecPublicKey => {
     cmacKdfId: AES_CMAC_KDF_ID,
     signatureX: hexStringToArray(publicKeyGx, 2),
     signatureY: hexStringToArray(publicKeyGy, 2),
-    //smac: hexStringToArray(switchEndian(smac), 2),
     smac: hexStringToArray(smac, 2),
 
     sizeSigrl: SIZE_SIGRL,

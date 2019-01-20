@@ -143,13 +143,17 @@ sgx_status_t sgx_ra_proc_msg2(
                           &report, &nonce);
         if(SGX_SUCCESS!=ret)
         {
+            return SGX_ERR_MAC_FIX_TEST1;
             goto CLEANUP;
         }
         if(SGX_SUCCESS!=status)
         {
+            return SGX_ERR_MAC_FIX_TEST2;
             ret = status;
             goto CLEANUP;
         }
+        /*
+        */
 
         uint32_t quote_size = 0;
         ret = sgx_calc_quote_size(p_msg2->sig_rl_size ?
@@ -158,12 +162,14 @@ sgx_status_t sgx_ra_proc_msg2(
                                  &quote_size);
         if(SGX_SUCCESS!=ret)
         {
+            return SGX_ERR_MAC_FIX_TEST3;
             goto CLEANUP;
         }
 
         //check integer overflow of quote_size
         if (UINT32_MAX - quote_size < sizeof(sgx_ra_msg3_t))
         {
+            return SGX_ERR_MAC_FIX_TEST4;
             ret = SGX_ERROR_UNEXPECTED;
             goto CLEANUP;
         }
@@ -171,6 +177,7 @@ sgx_status_t sgx_ra_proc_msg2(
         p_msg3 = (sgx_ra_msg3_t *)malloc(msg3_size);
         if(!p_msg3)
         {
+            return SGX_ERR_MAC_FIX_TEST5;
             ret = SGX_ERROR_OUT_OF_MEMORY;
             goto CLEANUP;
         }
@@ -189,6 +196,7 @@ sgx_status_t sgx_ra_proc_msg2(
                            quote_size);
         if(SGX_SUCCESS!=ret)
         {
+            return SGX_ERR_MAC_FIX_TEST6;
             //ret = SGX_ERR_MAC_FIX_SPB;
             goto CLEANUP;
         }
@@ -197,13 +205,17 @@ sgx_status_t sgx_ra_proc_msg2(
                          p_msg3, msg3_size);
         if(SGX_SUCCESS!=ret)
         {
+            return SGX_ERR_MAC_FIX_TEST7;
             goto CLEANUP;
         }
         if(SGX_SUCCESS!=status)
         {
+            return SGX_ERR_MAC_FIX_TEST8;
             ret = status;
             goto CLEANUP;
         }
+        /*
+        */
         *pp_msg3 = p_msg3;
         *p_msg3_size = msg3_size;
     }

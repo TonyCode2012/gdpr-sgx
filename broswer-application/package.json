@@ -10,7 +10,6 @@
     "crypto": "^1.0.1",
     "elliptic": "^6.4.1",
     "express-jwt": "^5.3.1",
-    "google-protobuf": "^3.6.1",
     "jquery": "^3.3.1",
     "node-aes-cmac": "^0.1.1",
     "node-sass": "^4.10.0",

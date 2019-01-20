@@ -1,6 +1,7 @@
 #include "Enclave.h"
 
 #include <iostream>
+#include <inttypes.h>
 
 using namespace util;
 using namespace std;
@@ -77,6 +78,7 @@ sgx_status_t Enclave::createEnclave() {
                                  &launch_token,
                                  &launch_token_update,
                                  &this->enclave_id, NULL);
+        printf("enclave_id:%" PRIu64 "\n",this->enclave_id);
 
         if (SGX_SUCCESS != ret) {
             Log("Error, call sgx_create_enclave fail! ErrorCode:%lx", log::error, ret);
