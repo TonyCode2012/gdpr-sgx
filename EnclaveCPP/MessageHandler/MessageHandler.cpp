@@ -470,7 +470,8 @@ string MessageHandler::handleAttestationResult(Messages::AttestationMessage msg)
                                  MAX_VERIFICATION_RESULT,
                                  p_phoneNum);
 
-        Log("=============== phone num:[%s]",p_phoneNum);
+        //Log("=============== phone num:[%s]",p_phoneNum);
+        Log("=============== shared key ===============");
         for(int i=0;i<sizeof(sgx_ec_key_128bit_t);i++){
             printf("%u,",p_phoneNum[i]);
         }
@@ -565,7 +566,6 @@ string MessageHandler::createInitMsg(int type, string msg) {
 */
 
 
-//string MessageHandler::handleMessages(string v) {
 string MessageHandler::handleMessages(unsigned char* bytes, int len) {
     string res;
     bool ret;
