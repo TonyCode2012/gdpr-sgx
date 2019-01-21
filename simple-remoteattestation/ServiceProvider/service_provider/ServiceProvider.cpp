@@ -1,7 +1,7 @@
 #include "ServiceProvider.h"
 #include "sample_libcrypto.h"
 #include "../GeneralSettings.h"
-
+#include "sgx_tcrypto.h"
 // This is the private EC key of SP, the corresponding public EC key is
 // hard coded in isv_enclave. It is based on NIST P-256 curve.
 static const sample_ec256_private_t g_sp_priv_key = {
@@ -769,7 +769,7 @@ int ServiceProvider::sp_ra_proc_msg3_req(Messages::MessageMSG3 msg, Messages::At
             Log("\tsp tag:%s",ByteArrayToString(tagbuf,16));
 
             uint8_t *decrypted = (uint8_t*) malloc(sizeof(uint8_t) * 2);
-            sample_rijndael128GCM_decrypt(&g_sp_db.sk_key,
+            sgx_rijndael128GCM_decrypt(&g_sp_db.sk_key,
                                          &p_att_result_msg->secret.payload[0],
                                          p_att_result_msg->secret.payload_size,
                                          decrypted,
