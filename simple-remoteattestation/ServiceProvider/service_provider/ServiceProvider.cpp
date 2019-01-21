@@ -769,7 +769,7 @@ int ServiceProvider::sp_ra_proc_msg3_req(Messages::MessageMSG3 msg, Messages::At
             Log("\tsp tag:%s",ByteArrayToString(tagbuf,16));
 
             uint8_t *decrypted = (uint8_t*) malloc(sizeof(uint8_t) * 2);
-            sgx_rijndael128GCM_decrypt(&g_sp_db.sk_key,
+            sample_rijndael128GCM_decrypt(&g_sp_db.sk_key,
                                          &p_att_result_msg->secret.payload[0],
                                          p_att_result_msg->secret.payload_size,
                                          decrypted,
