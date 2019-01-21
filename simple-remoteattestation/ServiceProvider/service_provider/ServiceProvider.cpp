@@ -762,11 +762,11 @@ int ServiceProvider::sp_ra_proc_msg3_req(Messages::MessageMSG3 msg, Messages::At
                                                 &p_att_result_msg->secret.payload_tag);
             unsigned char payloadbuf[2];
             memcpy(payloadbuf, (unsigned char*)&p_att_result_msg->secret.payload, 2);
-            Log("\tsp payload:%s",ByteArrayToString(payloadbuf,2);
+            Log("\tsp payload:%s",ByteArrayToString(payloadbuf,2));
 
             unsigned char tagbuf[16];
             memcpy(tagbuf, (unsigned char*)&p_att_result_msg->secret.payload_tag, 16);
-            Log("\tsp tag:%s",ByteArrayToString(tagbuf,16);
+            Log("\tsp tag:%s",ByteArrayToString(tagbuf,16));
 
             uint8_t *decrypted = (uint8_t*) malloc(sizeof(uint8_t) * 2);
             sgx_rijndael128GCM_decrypt(&g_sp_db.sk_key,
