@@ -22,12 +22,27 @@ const bigInt = require("big-integer");
 const findKeys = require("../keys/findKeys");
 
 
+function handleEcdhParam(decArray) {
+  const hexStrArray = decArray.map(num => {
+    const hex = num.toString(16);
+    return (hex.length < 2) ? '0' + hex : hex;
+  });
+  const hexString = hexStrArray.join("");
+  const switchedHexString = switchEndian(hexString);
+  const decimalString = bigInt(switchedHexString, 16).toString();
+  return decimalString;
+}
+
+
 const getMsg2 = ecPublicKey => {
+  const X = handleEcdhParam(ecPublicKey.X);
+  const Y = handleEcdhParam(ecPublicKey.Y);
+
   const {
     // MY_PRIVATE_KEY,
     MY_PUBLIC_KEY,
     SHORT_KEY
-  } = findKeys(ecPublicKey);
+  } = findKeys({ X, Y });
 
   /**
    * @desc get signature: sign publck keys with my private key
