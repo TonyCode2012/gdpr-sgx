@@ -119,8 +119,8 @@ class GDPRDemo extends React.Component {
         const { msg1 } = message;
         const { GaX, GaY } = msg1;
         const ecPublicKey = {
-          X: GaX.join("").toString(),
-          Y: GaY.join("").toString()
+          X: GaX,
+          Y: GaY
         }
         msgToSent = this.assemble(RA_MSG2, ecPublicKey);
         break;

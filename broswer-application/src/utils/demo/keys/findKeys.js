@@ -27,7 +27,19 @@ function findKeys(ecPublicKey = {}) {
   SHARED_KEY = SHARED_KEY || MY_SHARED_KEY.X + MY_SHARED_KEY.Y;
 
   // typeof SHORT_KEY: String
-  SHORT_KEY = SHORT_KEY || switchEndian(toHex(MY_SHARED_KEY.X)).slice(0, 32);
+  SHORT_KEY = SHORT_KEY || switchEndian(toHex(MY_SHARED_KEY.X)).slice(0, 16);
+
+  // console.log("my pri:", MY_PRIVATE_KEY);
+
+  // console.log("my pub X:", MY_PUBLIC_KEY.X);
+  // console.log("my pub Y:", MY_PUBLIC_KEY.Y);
+
+  // console.log("ec pub X:", ecPublicKey.X);
+  // console.log("ec pub Y:", ecPublicKey.Y);
+
+  // console.log("sha:", MY_SHARED_KEY.X);
+  // console.log("sha:", MY_SHARED_KEY.Y);
+
 
   return {
     MY_PRIVATE_KEY,
