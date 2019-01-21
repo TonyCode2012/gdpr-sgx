@@ -778,7 +778,11 @@ int ServiceProvider::sp_ra_proc_msg3_req(Messages::MessageMSG3 msg, Messages::At
                                          NULL,
                                          0,
                                          &p_att_result_msg->secret.payload_tag);
-            
+
+            unsigned char decriptbuf[2];
+            memcpy(decriptbuf, (unsigned char*)decrypted, 2);
+            Log("\tsp decripted:%s",ByteArrayToString(decriptbuf,2);
+
         }
 
     } while(0);
