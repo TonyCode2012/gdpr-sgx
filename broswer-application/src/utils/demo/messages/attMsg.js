@@ -49,8 +49,8 @@ const pseEvaluationStatus = (
 
 
 function encrypt(key) {
-  const text = new Buffer('67', 'hex');
-  const iv = new Buffer('000000000000', 'hex');
+  const text = new Buffer('0607', 'hex');
+  const iv = new Buffer('000000000000000000000000', 'hex');
   const bufferKey = new Buffer(key, 'hex');
 
   const cipher = crypto.createCipheriv('aes-128-gcm', bufferKey, iv);
