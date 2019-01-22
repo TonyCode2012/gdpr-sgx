@@ -10,16 +10,21 @@ cat << EOF
 EOF
 }
 
-verbose()
+function verbose()
 {
-    local type="$1"
-    local info="$2"
+    local type=$1
+    local info=$2
+    local tips=$3
+    local color=$GREEN
     local time=`date "+%Y/%m/%d %T.%3N"`
-    if [ x"$type" = x"ERROR" ]; then
-        echo -e "${RED}$time [$type] $info${NC}" >&2 
-        return
-    fi
-    echo -e "${GREEN}$time [$type] $info${NC}"
+    if [ x"$tips" !=  x"" ]; then tips=H; fi
+    case $type in
+        INFO)   eval color=\$${tips}GREEN;;
+        WARN)   eval color=\$${tips}YELLOW;;
+        ERROR)  eval color=\$${tips}RED;;
+        ?)      echo "[WARN] wrong color type"
+    esac
+    echo -e "${color}$time [$type] $info${NC}"
 }
 
 function makeServer()
@@ -28,6 +33,10 @@ function makeServer()
     cd $SerDir
     make clean
     make
+    if [ $? -ne 0 ]; then
+        verbose ERROR "Make serviceProvider failed!" h
+        exit 1
+    fi
 }
 
 function makeApp()
@@ -36,6 +45,10 @@ function makeApp()
     cd $AppDir
     make clean
     make SGX_MODE=$runtype SGX_PRERELEASE=1
+    if [ $? -ne 0 ]; then
+        verbose ERROR "Make application failed!" h
+        exit 1
+    fi
 }
 
 function makeClean() 
@@ -53,8 +66,12 @@ basedir=`cd $basedir;pwd`
 AppDir=$basedir/../Application
 SerDir=$basedir/../ServiceProvider
 
-RED='\033[0;31m'
 GREEN='\033[0;32m'
+HGREEN='\033[1;32m'
+YELLOW='\033[0;33m'
+HYELLOW='\033[1;33m'
+RED='\033[0;31m'
+HRED='\033[1;31m'
 NC='\033[0m'
 
 runtype="HW"

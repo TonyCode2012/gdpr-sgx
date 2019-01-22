@@ -301,8 +301,6 @@ sgx_status_t verify_secret_data (
                                          cmac,
                                          (const sgx_aes_gcm_128bit_tag_t *) (p_gcm_mac));
 
-        memcpy(p_sk,sk_key,16);
-        memcpy(p_ret,decrypted,2);
         if (SGX_SUCCESS == ret) {
             if (decrypted[0] == 6) {
                 if (decrypted[1] != 7) {
@@ -311,6 +309,8 @@ sgx_status_t verify_secret_data (
             } else {
                 ret = SGX_ERROR_UNEXPECTED;
             }
+            memcpy(p_sk,sk_key,16);
+            memcpy(p_ret,decrypted,2);
         }
 
     } while(0);

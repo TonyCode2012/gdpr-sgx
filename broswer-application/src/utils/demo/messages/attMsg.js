@@ -107,7 +107,8 @@ const getAttMsg = () => {
     resultSize: RESULT_SIZE,
     reserved: RESERVED,
     payloadTag: tag,
-    payload: hexStringToArray(content,1)
+    //payload: hexStringToArray(content,1)
+    payload: content
   };
 }
 
