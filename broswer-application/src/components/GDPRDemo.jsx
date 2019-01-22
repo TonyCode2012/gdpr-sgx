@@ -3,7 +3,15 @@ import protobuf from "protobufjs";
 import proto from "../utils/demo/Messages.proto";
 import registry from "../utils/demo/messageRegistry";
 import {
-  RA_VERIFICATION, RA_MSG0, RA_MSG1, RA_MSG3, RA_MSG2, RA_ATT_RESULT
+  RA_VERIFICATION, 
+  RA_MSG0, 
+  RA_MSG1,
+  RA_MSG3, 
+  RA_MSG2, 
+  RA_ATT_RESULT,
+  RA_APP_ATT_OK,
+  PHONE_REG,
+  PHONE_RES
 } from "../metadata/messageTypes";
 
 let PROTO, WEB_SOCKET;
@@ -127,6 +135,12 @@ class GDPRDemo extends React.Component {
 
       case RA_MSG3:
         msgToSent = this.assemble(RA_ATT_RESULT);
+        break;
+
+      case RA_APP_ATT_OK:
+        msgToSent = this.assemble(PHONE_REG);
+
+      case PHONE_RES:
         break;
 
       default:

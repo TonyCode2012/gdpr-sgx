@@ -7,6 +7,7 @@ import {
   RA_ATT_RESULT,
   RA_VERIFICATION,
   RA_APP_ATT_OK,
+  PHONE_REG
 } from "../../metadata/messageTypes";
 
 
@@ -57,6 +58,12 @@ const registry = {
     defName: "SecretMessage",
     fieldName: "secretMsg",
     getPayload: () => { }
+  },
+  [PHONE_REG]:
+  {
+    defName: "RegisterMessage",
+    fieldName: "regMsg",
+    getPayload: () => getMsg.regMsg()
   },
 }
 

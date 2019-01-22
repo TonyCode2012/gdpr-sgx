@@ -8,6 +8,8 @@ enum Type {
     RA_ATT_RESULT = 4;
     RA_VERIFICATION = 5;
     RA_APP_ATT_OK = 6;
+    PHONE_REG = 7;
+    PHONE_RES = 8;
 }
 
 message SecretMessage {
@@ -79,6 +81,19 @@ message AttestationMessage {
 	repeated uint32 payload = 16 [packed=true];
 }
 
+message RegisterMessage {
+    required Type type = 1;
+    repeated uint32 cipherPhone = 2 [packed=true];
+	repeated uint32 mac = 4 [packed=true];
+    optional uint32 size = 3;
+}
+
+message ResponseMessage {
+    required Type type = 1;
+    repeated uint32 userID = 2 [packed=true];
+    optional uint32 size = 3;
+}
+
 message AllInOneMessage {
     required Type type = 1;
     optional SecretMessage secretMsg = 2;
@@ -88,4 +103,6 @@ message AllInOneMessage {
     optional MessageMSG2 msg2 = 6;
     optional MessageMSG3 msg3 = 7;
     optional AttestationMessage attestMsg = 8;
+    optional RegisterMessage regMsg = 9;
+    optional ResponseMessage resMsg = 10;
 }

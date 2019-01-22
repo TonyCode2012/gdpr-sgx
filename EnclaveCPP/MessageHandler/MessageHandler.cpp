@@ -468,6 +468,71 @@ string MessageHandler::handleAttestationResult(Messages::AttestationMessage msg)
     return "";
 }
 
+string MessageHandler::handleRegisterMSG(Messages::RegisterMessage msg) {
+    uint8_t *p_sk = new uint8_t[16];
+    uint8_t *p_phoneNum = new uint8_t[32];
+    uint8_t *p_cipher = new uint8_t[11];
+    uint8_t *p_mac = new uint8_t[16];
+    
+    for(int i=0;i<11;i++) {
+        p_cipher[i] = msg.cipherphone(i);
+    }
+
+    for(int i=0;i<16;i++) {
+        p_mac[i] = msg.mac(i);
+    }
+
+    sgx_status_t status;
+    sgx_status_t ret = verify_secret_data(this->enclave->getID(),
+                                          &status,
+                                          this->enclave->getContext(),
+                                          p_cipher,
+                                          11,
+                                          p_mac,
+                                          MAX_VERIFICATION_RESULT,
+                                          p_sk,
+                                          p_phoneNum);
+
+    for(int i=0;i<16;i++) {
+        printf("%u,",p_sk[i]);
+    }
+    printf("\n");
+
+    for(int i=0;i<11;i++) {
+        printf("%u,",p_phoneNum[i]);
+    }
+    printf("\n");
+
+    if (SGX_SUCCESS != ret) {
+        Log("Error, attestation result message secret using SK based AESGCM failed1 %d", ret, log::error);
+        print_error_message(ret);
+    } 
+    else if (SGX_SUCCESS != status) {
+        Log("Error, attestation result message secret using SK based AESGCM failed2 %d", status, log::error);
+        print_error_message(status);
+    } 
+    else {
+        Log("Send attestation okay");
+        Messages::ResponseMessage *msg = new Messages::ResponseMessage();
+        msg->set_type(Messages::Type::PHONE_RES);
+        msg->set_size(16);
+        string s;
+        Messages::AllInOneMessage aio_ret_msg;
+        aio_ret_msg.set_type(Messages::Type::PHONE_RES);
+        aio_ret_msg.set_allocated_resmsg(msg);
+        if(aio_ret_msg.SerializeToString(&s)) {
+            Log("Serialization successful");
+        }
+        else {
+            Log("Serialization failed", log::error);
+            s = "";
+        }
+        return s;
+    }
+
+    return "";
+}
+
 
 string MessageHandler::handleMSG0(Messages::MessageMSG0 msg) {
     Log("MSG0 response received");
@@ -555,6 +620,13 @@ string MessageHandler::handleMessages(unsigned char* bytes, int len) {
         Messages::AttestationMessage att_msg = aio_msg.attestmsg();
         res = this->handleAttestationResult(att_msg);
         Log("========== Generate att msg ok ==========");
+    }
+    break;
+    case Messages::Type::PHONE_REG: {
+        Log("========== Generate user ID ==========");
+        Messages::RegisterMessage reg_msg = aio_msg.regmsg();
+        res = this->handleRegisterMSG(reg_msg);
+        Log("========== Generate user ID ok ==========");
     }
     break;
     default:

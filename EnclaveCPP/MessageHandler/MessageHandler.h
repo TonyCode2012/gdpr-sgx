@@ -40,6 +40,7 @@ public:
 
     void assembleAttestationMSG(Messages::AttestationMessage msg, ra_samp_response_header_t **pp_att_msg);
     string handleAttestationResult(Messages::AttestationMessage msg);
+    string handleRegisterMSG(Messages::RegisterMessage msg);
     string handleMessages(unsigned char *bytes, int len);
     void assembleMSG2(Messages::MessageMSG2 msg, sgx_ra_msg2_t **pp_msg2);
     string handleMSG2(Messages::MessageMSG2 msg);
