@@ -148,9 +148,11 @@ sgx_status_t sgx_unseal_data_helper(const sgx_sealed_data_t *p_sealed_data, uint
     //
     sgx_lfence();
 
+    // @@@@@ yaoz
     err = sgx_rijndael128GCM_decrypt(&seal_key, const_cast<uint8_t *>(p_sealed_data->aes_data.payload),
         decrypted_text_length, p_decrypted_text, &payload_iv[0], SGX_SEAL_IV_SIZE,
         const_cast<uint8_t *>(&(p_sealed_data->aes_data.payload[decrypted_text_length])), additional_MACtext_length,
+        NULL,
         const_cast<sgx_aes_gcm_128bit_tag_t *>(&p_sealed_data->aes_data.payload_tag));
 
     if (err != SGX_SUCCESS)

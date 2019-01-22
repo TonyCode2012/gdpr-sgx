@@ -62,6 +62,7 @@ bool encrypt_msg(pse_message_t* pse_msg, uint8_t* data, sgx_key_128bit_t* authen
 
 bool decrypt_msg(pse_message_t* pse_msg, uint8_t* data, sgx_key_128bit_t* authenticated_encryption_key)
 {
+    // @@@@@ yaoz
     return(SGX_SUCCESS == sgx_rijndael128GCM_decrypt(
         authenticated_encryption_key,
         pse_msg->payload,
@@ -71,6 +72,7 @@ bool decrypt_msg(pse_message_t* pse_msg, uint8_t* data, sgx_key_128bit_t* authen
         12,
         NULL,
         0,
+        NULL,
         &pse_msg->payload_tag
         ));
 }

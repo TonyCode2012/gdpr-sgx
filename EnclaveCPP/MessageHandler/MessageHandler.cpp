@@ -409,13 +409,18 @@ void MessageHandler::assembleAttestationMSG(Messages::AttestationMessage msg, ra
     Log("Att result reserved");
     */
 
+    /*
     for (int i=0; i<SAMPLE_SP_TAG_SIZE; i++)
         p_att_result_msg->secret.payload_tag[i] = msg.payloadtag(i);
     Log("Att result payload_tag");
+    */
 
-    for (int i=0; i<SAMPLE_SP_TAG_SIZE; i++)
+    for (int i=0; i<SAMPLE_SP_TAG_SIZE; i++) {
         p_att_result_msg->secret.payload_tag[i] = msg.payloadtag(i);
-    Log("Att result payload_tag");
+        printf("%u,",msg.payloadtag(i));
+    }
+    printf("\n");
+    Log("Att result payload_tag:%s",ByteArrayToString(p_att_result_msg->secret.payload_tag,SAMPLE_SP_TAG_SIZE));
 
     for (int i=0; i<msg.resultsize(); i++) {
         p_att_result_msg->secret.payload[i] = (uint8_t)msg.payload(i);
@@ -458,9 +463,12 @@ string MessageHandler::handleAttestationResult(Messages::AttestationMessage msg)
     if (0 != p_att_result_msg_full->status[0] || 0 != p_att_result_msg_full->status[1]) {
         Log("Error, attestation mac result message MK based cmac failed", log::error);
     } else {
-        //uint8_t *p_phoneNum = new uint8_t[16];
+        uint8_t *cmac = new uint8_t[16];
+        uint8_t *p_sk = new uint8_t[16];
         uint8_t *p_phoneNum = new uint8_t[32];
+        //char *p_phoneNum = new char[32];
         memset(p_phoneNum,'\0',32);
+        memset(cmac,'\0',16);
         ret = verify_secret_data(this->enclave->getID(),
                                  &status,
                                  this->enclave->getContext(),
@@ -468,14 +476,39 @@ string MessageHandler::handleAttestationResult(Messages::AttestationMessage msg)
                                  p_att_result_msg_body->secret.payload_size,
                                  p_att_result_msg_body->secret.payload_tag,
                                  MAX_VERIFICATION_RESULT,
+                                 cmac,
+                                 p_sk,
                                  p_phoneNum);
 
-        //Log("=============== phone num:[%s]",p_phoneNum);
-        Log("=============== shared key ===============");
-        for(int i=0;i<sizeof(sgx_ec_key_128bit_t);i++){
+        Log("=============== sk key =============");
+        for(int i=0;i<16;i++) {
+            printf("%u,",p_sk[i]);
+        }
+        printf("\n");
+        Log("=============== mac from sdk =============");
+        for(int i=0;i<16;i++) {
+            printf("%u,",cmac[i]);
+        }
+        printf("\n");
+        Log("=============== mac from mengzhu ===============");
+        for(int i=0;i<16;i++){
+            printf("%u,",p_att_result_msg_body->secret.payload_tag[i]);
+        }
+        printf("\n");
+        //memcpy(p_phoneNum,"my name is:qilei",sizeof("my name is:qilei"));
+        Log("=============== phone num:[%s]",ByteArrayToString(p_phoneNum,10));
+        for(int i=0;i<2;i++) {
             printf("%u,",p_phoneNum[i]);
         }
         printf("\n");
+        //Log("=============== phone num:[%s]",p_phoneNum);
+        Log("=============== payload ================");
+        for(int i=0;i<p_att_result_msg_body->secret.payload_size;i++) {
+            printf("%u,",p_att_result_msg_body->secret.payload[i]);
+        }
+        printf("\n");
+        Log("===============payload is:%s",ByteArrayToString(p_att_result_msg_body->secret.payload,p_att_result_msg_body->secret.payload_size));
+        //Log("===============return status code is:%lx",ret);
 
         SafeFree(p_att_result_msg_full);
 
@@ -485,13 +518,13 @@ string MessageHandler::handleAttestationResult(Messages::AttestationMessage msg)
 
             print_error_message(ret);
         } 
-        /*  @@@@@@@@@@ Todo
         else if (SGX_SUCCESS != status) {
             Log("Error, attestation result message secret using SK based AESGCM failed2", log::error);
-            Log("Error, attestation result message secret using SK based AESGCM failed2 %d", ret);
+            Log("Error, attestation result message secret using SK based AESGCM failed2 %d", status);
 
             print_error_message(status);
         } 
+        /*  @@@@@@@@@@ Todo
         */
         else {
             Log("Send attestation okay");

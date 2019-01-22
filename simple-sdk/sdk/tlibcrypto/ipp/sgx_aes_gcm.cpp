@@ -136,7 +136,7 @@ sgx_status_t sgx_rijndael128GCM_encrypt(const sgx_aes_gcm_128bit_key_t *p_key, c
 
 sgx_status_t sgx_rijndael128GCM_decrypt(const sgx_aes_gcm_128bit_key_t *p_key, const uint8_t *p_src,
                                         uint32_t src_len, uint8_t *p_dst, const uint8_t *p_iv, uint32_t iv_len,
-                                        const uint8_t *p_aad, uint32_t aad_len, const sgx_aes_gcm_128bit_tag_t *p_in_mac)
+                                        const uint8_t *p_aad, uint32_t aad_len, uint8_t *cmac, const sgx_aes_gcm_128bit_tag_t *p_in_mac)
 {
     IppStatus error_code = ippStsNoErr;
     uint8_t l_tag[SGX_AESGCM_MAC_SIZE];
@@ -217,10 +217,17 @@ sgx_status_t sgx_rijndael128GCM_decrypt(const sgx_aes_gcm_128bit_key_t *p_key, c
         default: return SGX_ERROR_UNEXPECTED;
         }
     }
+    /*
+     * @@@@@@@@@@@ yaoz
+     * */
+    if(cmac != NULL) {
+        memcpy(cmac, l_tag, SGX_AESGCM_MAC_SIZE);
+    }
     // Clear temp State before free.
     memset_s(pState, ippStateSize, 0, ippStateSize);
     free(pState);
 
+    /* @@@@@ yaoz
     // Verify current data tag = data tag generated when sealing the data blob
     if (consttime_memequal(p_in_mac, &l_tag, SGX_AESGCM_MAC_SIZE) == 0)
     {
@@ -228,6 +235,7 @@ sgx_status_t sgx_rijndael128GCM_decrypt(const sgx_aes_gcm_128bit_key_t *p_key, c
         memset_s(&l_tag, SGX_AESGCM_MAC_SIZE, 0, SGX_AESGCM_MAC_SIZE);
         return SGX_ERROR_MAC_MISMATCH;
     }
+    */
 
     memset_s(&l_tag, SGX_AESGCM_MAC_SIZE, 0, SGX_AESGCM_MAC_SIZE);
     return SGX_SUCCESS;

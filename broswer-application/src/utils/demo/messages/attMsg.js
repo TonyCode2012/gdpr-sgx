@@ -22,6 +22,7 @@ import {
 } from "../../../metadata/ecConstants";
 import {
   switchEndian,
+  hexStringToArray
 } from "../../hexHelpers";
 
 const crypto = require('crypto');
@@ -50,14 +51,14 @@ const pseEvaluationStatus = (
 
 function encrypt(key) {
   const text = new Buffer('67', 'hex');
-  const iv = new Buffer('000000000000', 'hex');
+  const iv = new Buffer('000000000000000000000000', 'hex');
   const bufferKey = new Buffer(key, 'hex');
 
   const cipher = crypto.createCipheriv('aes-128-gcm', bufferKey, iv);
 
   console.log("=====shared key is:",bufferKey);
 
-  var encrypted = cipher.update(text, 'utf8', 'hex')
+  var encrypted = cipher.update(text, 'utf9', 'hex')
   encrypted += cipher.final('hex');
   const tag = cipher.getAuthTag();
 
@@ -81,6 +82,10 @@ const getAttMsg = () => {
    */
   const { content, tag } = encrypt(SHORT_KEY);
 
+  console.log("=============== mac is:",tag);
+  console.log("=============== payload is:",hexStringToArray(content,1));
+  console.log("=============== payload is:",content);
+
   return {
     type: RA_ATT_RESULT,
     size: ATT_SIZE,
@@ -99,7 +104,7 @@ const getAttMsg = () => {
     resultSize: RESULT_SIZE,
     reserved: RESERVED,
     payloadTag: tag,
-    payload: content
+    payload: hexStringToArray(content,1)
   };
 }
 
