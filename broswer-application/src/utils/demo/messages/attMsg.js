@@ -60,6 +60,9 @@ function encrypt(key) {
   var encrypted = cipher.update(text, 'utf8', 'hex')
   encrypted += cipher.final('hex');
   const tag = cipher.getAuthTag();
+  console.log("=====tag is:",tag);
+  console.log("=====secrat is:",encrypted);
+
 
   return {
     content: encrypted,
