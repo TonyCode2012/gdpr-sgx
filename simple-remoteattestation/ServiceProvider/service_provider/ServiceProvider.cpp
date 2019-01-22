@@ -1,7 +1,7 @@
 #include "ServiceProvider.h"
 #include "sample_libcrypto.h"
 #include "../GeneralSettings.h"
-
+#include "sgx_tcrypto.h"
 // This is the private EC key of SP, the corresponding public EC key is
 // hard coded in isv_enclave. It is based on NIST P-256 curve.
 static const sample_ec256_private_t g_sp_priv_key = {
@@ -743,8 +743,8 @@ int ServiceProvider::sp_ra_proc_msg3_req(Messages::MessageMSG3 msg, Messages::At
                 (IAS_PSE_OK == attestation_report.pse_status) &&
                 (isv_policy_passed == true)) {
             memset(validation_result, '\0', MAX_VERIFICATION_RESULT);
-            validation_result[0] = 0;
-            validation_result[1] = 1;
+            validation_result[0] = 6;
+            validation_result[1] = 7;
 
             Log("========== sk key ==========");
             unsigned char skbuf[sizeof(sgx_ec_key_128bit_t)];
@@ -760,6 +760,29 @@ int ServiceProvider::sp_ra_proc_msg3_req(Messages::MessageMSG3 msg, Messages::At
                                                 NULL,
                                                 0,
                                                 &p_att_result_msg->secret.payload_tag);
+            unsigned char payloadbuf[2];
+            memcpy(payloadbuf, (unsigned char*)&p_att_result_msg->secret.payload, 2);
+            Log("\tsp payload:%s",ByteArrayToString(payloadbuf,2));
+
+            unsigned char tagbuf[16];
+            memcpy(tagbuf, (unsigned char*)&p_att_result_msg->secret.payload_tag, 16);
+            Log("\tsp tag:%s",ByteArrayToString(tagbuf,16));
+/*
+            uint8_t *decrypted = (uint8_t*) malloc(sizeof(uint8_t) * 2);
+            sgx_rijndael128GCM_decrypt(&g_sp_db.sk_key,
+                                         &p_att_result_msg->secret.payload[0],
+                                         p_att_result_msg->secret.payload_size,
+                                         decrypted,
+                                         &aes_gcm_iv[0],
+                                         12,
+                                         NULL,
+                                         0,
+                                         &p_att_result_msg->secret.payload_tag);
+
+            unsigned char decriptbuf[2];
+            memcpy(decriptbuf, (unsigned char*)decrypted, 2);
+            Log("\tsp decripted:%s",ByteArrayToString(decriptbuf,2));
+*/
         }
 
     } while(0);

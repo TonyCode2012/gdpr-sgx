@@ -50,7 +50,7 @@ const pseEvaluationStatus = (
 
 
 function encrypt(key) {
-  const text = new Buffer('67', 'hex');
+  const text = new Buffer('0607', 'hex');
   const iv = new Buffer('000000000000000000000000', 'hex');
   const bufferKey = new Buffer(key, 'hex');
 
@@ -61,6 +61,9 @@ function encrypt(key) {
   var encrypted = cipher.update(text, 'utf9', 'hex')
   encrypted += cipher.final('hex');
   const tag = cipher.getAuthTag();
+  console.log("=====tag is:",tag);
+  console.log("=====secrat is:",encrypted);
+
 
   return {
     content: encrypted,
