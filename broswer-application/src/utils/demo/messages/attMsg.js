@@ -50,7 +50,7 @@ const pseEvaluationStatus = (
 
 
 function encrypt(key) {
-  const text = new Buffer('0607', 'hex');
+  const text = new Buffer(Uint8Array.from('67'), 'hex');
   const iv = new Buffer('000000000000000000000000', 'hex');
   const bufferKey = new Buffer(key, 'hex');
 
