@@ -96,36 +96,9 @@ string MessageHandler::generateMSG1() {
     int count = 0;
     sgx_ra_msg1_t sgxMsg1Obj;
     Log("========== SEALED ENCLAVE PUB KEY ==========");
-    //Log("\tgot ec256 key is:%d", local_ec256_fix_data.g_key_flag);
     local_ec256_fix_data.g_key_flag = 0;
 
     while (1) {
-        /*
-        // read public and sealed private key from file
-        ifstream pri_stream(Settings::ec_pri_key_path);
-        //ifstream pri_stream_u(Settings::ec_pri_key_path_u);
-        ifstream pub_stream(Settings::ec_pub_key_path);
-        string pri_s_str,pub_str; 
-        //string pri_s_str_u;
-        getline(pri_stream,pri_s_str);
-        //getline(pri_stream_u,pri_s_str_u);
-        getline(pub_stream,pub_str);
-        uint8_t *ppub;
-        uint8_t *ppri_s;
-        //uint8_t *ppri_u;
-        HexStringToByteArray(pub_str,&ppub);
-        HexStringToByteArray(pri_s_str,&ppri_s);
-        //HexStringToByteArray(pri_s_str_u,&ppri_u);
-        memcpy(&local_ec256_fix_data.ec256_public_key,ppub,sizeof(sgx_ec256_public_t));
-        //memcpy(&local_ec256_fix_data.ec256_private_key,ppri_u,sizeof(sgx_ec256_private_t));
-        memcpy(local_ec256_fix_data.p_sealed_data,ppri_s,592);
-        local_ec256_fix_data.sealed_data_size = 592;
-
-        Log("\tbefore public  key:%s",pub_str);
-        Log("\tsealed private dat:%s",pri_s_str);
-        */
-
-
         retGIDStatus = sgx_ra_get_msg1(this->enclave->getContext(),
                                        this->enclave->getID(),
                                        sgx_ra_get_ga,
@@ -350,7 +323,6 @@ void MessageHandler::assembleAttestationMSG(Messages::AttestationMessage msg, ra
     Log("\t========= assemble attestation msg 1");
     sample_ra_att_result_msg_t *p_att_result_msg = NULL;
     ra_samp_response_header_t* p_att_result_msg_full = NULL;
-    Log("Could I get msg size?");
     int msg_size = msg.size();    
     Log("Att msg size %d", msg_size);
 
@@ -372,18 +344,15 @@ void MessageHandler::assembleAttestationMSG(Messages::AttestationMessage msg, ra
     p_att_result_msg = (sample_ra_att_result_msg_t *) p_att_result_msg_full->body;
 
     p_att_result_msg->platform_info_blob.sample_epid_group_status = msg.epidgroupstatus();
-    Log("Att result epid_group_status: %s", p_att_result_msg->platform_info_blob.sample_epid_group_status);
 
     p_att_result_msg->platform_info_blob.sample_tcb_evaluation_status = msg.tcbevaluationstatus();
     p_att_result_msg->platform_info_blob.pse_evaluation_status = msg.pseevaluationstatus();
-    Log("Att result pse_evaluation_status: %s", p_att_result_msg->platform_info_blob.pse_evaluation_status);
 
     for (int i=0; i<PSVN_SIZE; i++)
         p_att_result_msg->platform_info_blob.latest_equivalent_tcb_psvn[i] = msg.latestequivalenttcbpsvn(i);
 
     for (int i=0; i<ISVSVN_SIZE; i++)
         p_att_result_msg->platform_info_blob.latest_pse_isvsvn[i] = msg.latestpseisvsvn(i);
-    Log("Att result latest_pse_isvsvn generated");
 
     for (int i=0; i<PSDA_SVN_SIZE; i++)
         p_att_result_msg->platform_info_blob.latest_psda_svn[i] = msg.latestpsdasvn(i);
@@ -398,34 +367,21 @@ void MessageHandler::assembleAttestationMSG(Messages::AttestationMessage msg, ra
 
     for (int i=0; i<SAMPLE_MAC_SIZE; i++)
         p_att_result_msg->mac[i] = msg.macsmk(i);
-    Log("Att result mac generated");
 
     p_att_result_msg->secret.payload_size = msg.resultsize();
     Log("Att result payload_size: %d", p_att_result_msg->secret.payload_size);
 
-    /*
     for (int i=0; i<12; i++)
         p_att_result_msg->secret.reserved[i] = msg.reserved(i);
     Log("Att result reserved");
-    */
-
-    /*
-    for (int i=0; i<SAMPLE_SP_TAG_SIZE; i++)
-        p_att_result_msg->secret.payload_tag[i] = msg.payloadtag(i);
-    Log("Att result payload_tag");
-    */
 
     for (int i=0; i<SAMPLE_SP_TAG_SIZE; i++) {
         p_att_result_msg->secret.payload_tag[i] = msg.payloadtag(i);
-        printf("%u,",msg.payloadtag(i));
     }
-    printf("\n");
-    Log("Att result payload_tag:%s",ByteArrayToString(p_att_result_msg->secret.payload_tag,SAMPLE_SP_TAG_SIZE));
 
     for (int i=0; i<msg.resultsize(); i++) {
         p_att_result_msg->secret.payload[i] = (uint8_t)msg.payload(i);
     }
-    Log("Att result payload");
 
     *pp_att_msg = p_att_result_msg_full;
 }
@@ -442,7 +398,6 @@ string MessageHandler::handleAttestationResult(Messages::AttestationMessage msg)
 
     sgx_status_t status;
     sgx_status_t ret;
-/*  @@@@@@@@@@@@@ To do
     ret = verify_att_result_mac(this->enclave->getID(),
                                 &status,
                                 this->enclave->getContext(),
@@ -457,18 +412,13 @@ string MessageHandler::handleAttestationResult(Messages::AttestationMessage msg)
         Log("Error: INTEGRITY FAILED - attestation result message MK based cmac failed. status:%lx",status);
         return "";
     }
-*/
-    //Log("Verify Mac Success", log::error);
 
     if (0 != p_att_result_msg_full->status[0] || 0 != p_att_result_msg_full->status[1]) {
         Log("Error, attestation mac result message MK based cmac failed", log::error);
     } else {
-        uint8_t *cmac = new uint8_t[16];
         uint8_t *p_sk = new uint8_t[16];
         uint8_t *p_phoneNum = new uint8_t[32];
-        //char *p_phoneNum = new char[32];
         memset(p_phoneNum,'\0',32);
-        memset(cmac,'\0',16);
         ret = verify_secret_data(this->enclave->getID(),
                                  &status,
                                  this->enclave->getContext(),
@@ -476,56 +426,21 @@ string MessageHandler::handleAttestationResult(Messages::AttestationMessage msg)
                                  p_att_result_msg_body->secret.payload_size,
                                  p_att_result_msg_body->secret.payload_tag,
                                  MAX_VERIFICATION_RESULT,
-                                 cmac,
                                  p_sk,
                                  p_phoneNum);
-
-        Log("=============== sk key =============");
-        for(int i=0;i<16;i++) {
-            printf("%u,",p_sk[i]);
-        }
-        printf("\n");
-        Log("=============== mac from sdk =============");
-        for(int i=0;i<16;i++) {
-            printf("%u,",cmac[i]);
-        }
-        printf("\n");
-        Log("=============== mac from mengzhu ===============");
-        for(int i=0;i<16;i++){
-            printf("%u,",p_att_result_msg_body->secret.payload_tag[i]);
-        }
-        printf("\n");
-        //memcpy(p_phoneNum,"my name is:qilei",sizeof("my name is:qilei"));
-        Log("=============== phone num:[%s]",ByteArrayToString(p_phoneNum,10));
-        for(int i=0;i<2;i++) {
-            printf("%u,",p_phoneNum[i]);
-        }
-        printf("\n");
-        //Log("=============== phone num:[%s]",p_phoneNum);
-        Log("=============== payload ================");
-        for(int i=0;i<p_att_result_msg_body->secret.payload_size;i++) {
-            printf("%u,",p_att_result_msg_body->secret.payload[i]);
-        }
-        printf("\n");
-        Log("===============payload is:%s",ByteArrayToString(p_att_result_msg_body->secret.payload,p_att_result_msg_body->secret.payload_size));
-        //Log("===============return status code is:%lx",ret);
 
         SafeFree(p_att_result_msg_full);
 
         if (SGX_SUCCESS != ret) {
-            Log("Error, attestation result message secret using SK based AESGCM failed1", log::error);
-            Log("Error, attestation result message secret using SK based AESGCM failed1 %d", ret);
+            Log("Error, attestation result message secret using SK based AESGCM failed1 %d", ret, log::error);
 
             print_error_message(ret);
         } 
         else if (SGX_SUCCESS != status) {
-            Log("Error, attestation result message secret using SK based AESGCM failed2", log::error);
-            Log("Error, attestation result message secret using SK based AESGCM failed2 %d", status);
+            Log("Error, attestation result message secret using SK based AESGCM failed2 %d", status, log::error);
 
             print_error_message(status);
         } 
-        /*  @@@@@@@@@@ Todo
-        */
         else {
             Log("Send attestation okay");
 
@@ -602,10 +517,6 @@ string MessageHandler::createInitMsg(int type, string msg) {
 string MessageHandler::handleMessages(unsigned char* bytes, int len) {
     string res;
     bool ret;
-    for(int i=0;i<len;i++) {
-        printf("0x%d,",bytes[i]);
-    }
-    printf("\n");
 
     Messages::AllInOneMessage aio_msg;
     //ret = aio_msg.ParseFromString(v);
@@ -622,27 +533,28 @@ string MessageHandler::handleMessages(unsigned char* bytes, int len) {
         Log("========== Generate Msg0 ==========");
         Messages::InitialMessage init_msg = aio_msg.initmsg();
         res = this->handleVerification();
+        Log("========== Generate Msg0 ok ==========");
     }
     break;
     case Messages::Type::RA_MSG0: {		//Reply to MSG0
         Log("========== Generate Msg1 ==========");
         Messages::MessageMSG0 msg0 = aio_msg.msg0();
-        // generate MSG1 and send to SP
         res = this->handleMSG0(msg0);
+        Log("========== Generate Msg1 ok ==========");
     }
     break;
     case Messages::Type::RA_MSG2: {		//MSG2
         Log("========== Generate Msg3 ==========");
         Messages::MessageMSG2 msg2 = aio_msg.msg2();
-        // generate MSG3 and send to SP
         res = this->handleMSG2(msg2);
+        Log("========== Generate Msg3 ok ==========");
     }
     break;
     case Messages::Type::RA_ATT_RESULT: {	//Reply to MSG3
         Log("========== Generate att msg ==========");
         Messages::AttestationMessage att_msg = aio_msg.attestmsg();
-        // receive attestation msg and verify encrypted secret
         res = this->handleAttestationResult(att_msg);
+        Log("========== Generate att msg ok ==========");
     }
     break;
     default:

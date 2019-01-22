@@ -442,12 +442,11 @@ bool protected_fs_file::init_existing_file(const char* filename, const char* cle
 	if (restore_current_meta_data_key(import_key) == false)
 		return false;
 
-	// decrypt the encrypted part of the meta-data @@@@@ yaoz
+	// decrypt the encrypted part of the meta-data
 	status = sgx_rijndael128GCM_decrypt(&cur_key, 
 										(const uint8_t*)file_meta_data.encrypted_part, sizeof(meta_data_encrypted_blob_t), (uint8_t*)&encrypted_part_plain,
 										empty_iv, SGX_AESGCM_IV_SIZE,
 										NULL, 0,
-                                        NULL,
 										&file_meta_data.plain_part.meta_data_gmac);
 	if (status != SGX_SUCCESS)
 	{
@@ -517,10 +516,10 @@ bool protected_fs_file::init_existing_file(const char* filename, const char* cle
 			return false;
 		}
 
-		// this also verifies the root mht gmac against the gmac in the meta-data encrypted part @@@@@ yaoz
+		// this also verifies the root mht gmac against the gmac in the meta-data encrypted part
 		status = sgx_rijndael128GCM_decrypt(&encrypted_part_plain.mht_key, 
 											root_mht.encrypted.cipher, NODE_SIZE, (uint8_t*)&root_mht.plain, 
-											empty_iv, SGX_AESGCM_IV_SIZE, NULL, 0, NULL, &encrypted_part_plain.mht_gmac);
+											empty_iv, SGX_AESGCM_IV_SIZE, NULL, 0, &encrypted_part_plain.mht_gmac);
 		if (status != SGX_SUCCESS)
 		{
 			last_error = status;

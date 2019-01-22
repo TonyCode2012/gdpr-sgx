@@ -86,7 +86,6 @@ const getAttMsg = () => {
   const { content, tag } = encrypt(SHORT_KEY);
 
   console.log("=============== mac is:",tag);
-  console.log("=============== payload is:",hexStringToArray(content,1));
   console.log("=============== payload is:",content);
 
   return {
@@ -107,8 +106,7 @@ const getAttMsg = () => {
     resultSize: RESULT_SIZE,
     reserved: RESERVED,
     payloadTag: tag,
-    //payload: hexStringToArray(content,1)
-    payload: content
+    payload: hexStringToArray(content,2)
   };
 }
 

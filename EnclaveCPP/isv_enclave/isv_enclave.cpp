@@ -271,15 +271,11 @@ sgx_status_t verify_secret_data (
     uint32_t secret_size,
     uint8_t *p_gcm_mac,
     uint32_t max_verification_length,
-    uint8_t *cmac,
     uint8_t *p_sk,
     uint8_t *p_ret) {
     sgx_status_t ret = SGX_SUCCESS;
     sgx_ec_key_128bit_t sk_key;
 
-    //memcpy(p_ret,"my name is:qilei",sizeof("my name is:qilei"));
-    //uint8_t tmp[10] = {0x23,0x34,0x45,0x56,0x67,0x78,0x89,0x89,0x90,0x00};
-    //memcpy(p_ret,tmp,10);
     do {
         ret = sgx_ra_get_keys(context, SGX_RA_KEY_SK, &sk_key);
         if (SGX_SUCCESS != ret) {
@@ -298,7 +294,6 @@ sgx_status_t verify_secret_data (
                                          12,
                                          NULL,
                                          0,
-                                         cmac,
                                          (const sgx_aes_gcm_128bit_tag_t *) (p_gcm_mac));
 
         if (SGX_SUCCESS == ret) {
@@ -306,6 +301,7 @@ sgx_status_t verify_secret_data (
                 if (decrypted[1] != 7) {
                     ret = SGX_ERROR_INVALID_SIGNATURE;
                 }
+                memcpy(p_ret,decrypted,2);
             } else {
                 ret = SGX_ERROR_UNEXPECTED;
             }

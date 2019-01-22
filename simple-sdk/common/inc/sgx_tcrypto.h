@@ -308,7 +308,6 @@ extern "C" {
                                                 uint32_t iv_len,
                                                 const uint8_t *p_aad,
                                                 uint32_t aad_len,
-                                                uint8_t *cmac,
                                                 const sgx_aes_gcm_128bit_tag_t *p_in_mac);
 
    /** Message Authentication Rijndael 128 CMAC - Only 128-bit key size is supported.

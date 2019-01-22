@@ -19,7 +19,6 @@ enclave {
 												uint32_t secret_size,
 												[in,count=16] uint8_t* gcm_mac,
 												uint32_t max_verification_length,
-												[out,count=16] uint8_t *cmac,
 												[out,count=16] uint8_t *p_sk,
 												[out,count=32] uint8_t *p_ret);
     };

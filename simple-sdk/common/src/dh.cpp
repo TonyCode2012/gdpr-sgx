@@ -72,7 +72,6 @@ bool decrypt_msg(pse_message_t* pse_msg, uint8_t* data, sgx_key_128bit_t* authen
         12,
         NULL,
         0,
-        NULL,
         &pse_msg->payload_tag
         ));
 }

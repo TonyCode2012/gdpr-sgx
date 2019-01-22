@@ -418,8 +418,9 @@ string MessageHandler::handleAttestationResult(Messages::AttestationMessage msg)
     if (0 != p_att_result_msg_full->status[0] || 0 != p_att_result_msg_full->status[1]) {
         Log("Error, attestation mac result message MK based cmac failed", log::error);
     } else {
-        unsigned char p_sk[sizeof(sgx_ec_key_128bit_t)];
-        //memset(p_sk, 0, sizeof(sgx_ec_key_128bit_t));
+        uint8_t *cmac = new uint8_t[16];
+        uint8_t *p_sk = new uint8_t[16];
+        uint8_t *p_phoneNum = new uint8_t[32];
         unsigned char secretbuf[sizeof(sp_aes_gcm_data_t)];
         memcpy(secretbuf, &p_att_result_msg_body->secret, sizeof(sp_aes_gcm_data_t));
         Log("========== att secret ===========");
@@ -431,12 +432,24 @@ string MessageHandler::handleAttestationResult(Messages::AttestationMessage msg)
                                  p_att_result_msg_body->secret.payload_size,
                                  p_att_result_msg_body->secret.payload_tag,
                                  MAX_VERIFICATION_RESULT,
-                                 NULL,
-                                 p_sk);
-        /*
-        Log("========== SK ==========");
-        Log("\t SK:%s",ByteArrayToString(p_sk,sizeof(sgx_ec_key_128bit_t)));
-        */
+                                 cmac,
+                                 p_sk,
+                                 p_phoneNum);
+        Log("=============== mac from sdk =============");
+        for(int i=0;i<16;i++) {
+            printf("%u,",cmac[i]);
+        }
+        printf("\n");
+        Log("=============== mac from mengzhu ===============");
+        for(int i=0;i<16;i++){
+            printf("%u,",p_att_result_msg_body->secret.payload_tag[i]);
+        }
+        printf("\n");
+        Log("=============== decrypted data ===============");
+        for(int i=0;i<2;i++){
+            printf("%u,",p_phoneNum[i]);
+        }
+        printf("\n");
         //SafeFree(p_sk);
 
         SafeFree(p_att_result_msg_full);

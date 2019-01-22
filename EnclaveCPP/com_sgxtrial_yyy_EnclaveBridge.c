@@ -84,20 +84,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_sgxtrial_yyy_EnclaveBridge_handleMessages(
     int len = env->GetArrayLength (msg);
     unsigned char* buf = new unsigned char[len];
     env->GetByteArrayRegion (msg, 0, len, reinterpret_cast<jbyte*>(buf)); 
-    //for(int i=0; i<len; i++) {
-    //    printf("0x%d,",buf[i]);
-    //}
  
-	/*
-    printf("this is a test");
-    const char *p_msg = (const char*)env->GetByteArrayElements(msg,0);
-    const char parry[8] = {0x08,0x05,0x1a,0x04,0x08,0x01,0x10,0x08};
-    string MSG(parry);
-    */
-    //printf("===== chars strlen:(%d)\n",strlen(chars));
-    //printf("===== chars sizeof:(%d)\n",sizeof(chars));
-    //string MSG(chars);
-    //string res = ((MessageHandler*)msgHandlerAddr)->handleMessages(MSG);
     string res = ((MessageHandler*)msgHandlerAddr)->handleMessages(buf, len);
     fflush(stdout);
     //free(chars);

@@ -493,8 +493,8 @@ file_data_node_t* protected_fs_file::read_data_node()
 
 	gcm_crypto_data_t* gcm_crypto_data = &file_data_node->parent->plain.data_nodes_crypto[file_data_node->data_node_number % ATTACHED_DATA_NODES_COUNT];
 
-	// this function decrypt the data _and_ checks the integrity of the data against the gmac @@@@@ yaoz
-	status = sgx_rijndael128GCM_decrypt(&gcm_crypto_data->key, file_data_node->encrypted.cipher, NODE_SIZE, file_data_node->plain.data, empty_iv, SGX_AESGCM_IV_SIZE, NULL, 0, NULL, &gcm_crypto_data->gmac);
+	// this function decrypt the data _and_ checks the integrity of the data against the gmac
+	status = sgx_rijndael128GCM_decrypt(&gcm_crypto_data->key, file_data_node->encrypted.cipher, NODE_SIZE, file_data_node->plain.data, empty_iv, SGX_AESGCM_IV_SIZE, NULL, 0, &gcm_crypto_data->gmac);
 	if (status != SGX_SUCCESS)
 	{
 		delete file_data_node;
@@ -631,8 +631,8 @@ file_mht_node_t* protected_fs_file::read_mht_node(uint64_t mht_node_number)
 	
 	gcm_crypto_data_t* gcm_crypto_data = &file_mht_node->parent->plain.mht_nodes_crypto[(file_mht_node->mht_node_number - 1) % CHILD_MHT_NODES_COUNT];
 
-	// this function decrypt the data _and_ checks the integrity of the data against the gmac @@@@@ yaoz
-	status = sgx_rijndael128GCM_decrypt(&gcm_crypto_data->key, file_mht_node->encrypted.cipher, NODE_SIZE, (uint8_t*)&file_mht_node->plain, empty_iv, SGX_AESGCM_IV_SIZE, NULL, 0, NULL, &gcm_crypto_data->gmac);
+	// this function decrypt the data _and_ checks the integrity of the data against the gmac
+	status = sgx_rijndael128GCM_decrypt(&gcm_crypto_data->key, file_mht_node->encrypted.cipher, NODE_SIZE, (uint8_t*)&file_mht_node->plain, empty_iv, SGX_AESGCM_IV_SIZE, NULL, 0, &gcm_crypto_data->gmac);
 	if (status != SGX_SUCCESS)
 	{
 		delete file_mht_node;
