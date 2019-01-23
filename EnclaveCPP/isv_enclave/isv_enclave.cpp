@@ -328,8 +328,7 @@ sgx_status_t register_user (
             break;
         }
 
-        //uint8_t *decrypted = (uint8_t*) malloc(sizeof(uint8_t) * secret_size);
-        uint8_t decrypted[secret_size] = {0};
+        uint8_t *decrypted = (uint8_t*) malloc(sizeof(uint8_t) * secret_size);
         uint8_t aes_gcm_iv[12] = {0};
 
         ret = sgx_rijndael128GCM_decrypt(&sk_key,
@@ -349,22 +348,18 @@ sgx_status_t register_user (
                 memcpy(p_user_id, p_hash, SGX_SHA256_HASH_SIZE/2);
                 delete(p_hash);
 
-                uint32_t sealed_len = sgx_calc_sealed_data_size(0, sizeof(decrypted));
-                //uint32_t sealed_len = sgx_calc_sealed_data_size(0, 8);
-                sgx_sealed_data_t sealed_data_buf;
+                uint32_t sealed_len = sgx_calc_sealed_data_size(0, secret_size);
+                sgx_sealed_data_t *sealed_data_buf = (sgx_sealed_data_t*)malloc(sealed_len);
                 ret = sgx_seal_data(0,
                                     NULL,
-                                    //8,
-                                    sizeof(decrypted),
+                                    secret_size,
                                     decrypted,
                                     sealed_len,
-                                    &sealed_data_buf);
+                                    sealed_data_buf);
 
                 if(SGX_SUCCESS == ret) {
-                    //memcpy(p_sealed_phone, (uint8_t*)&sealed_data_buf, sizeof(sealed_data_buf));
-                    //memcpy(p_sealed_phone, (uint8_t*)&sealed_data_buf, sealed_len);
+                    memcpy(p_sealed_phone, (uint8_t*)sealed_data_buf, sealed_len);
                     *sealed_data_len = sealed_len;
-                    //*sealed_data_len = sizeof(decrypted);
                 }
             }
         }

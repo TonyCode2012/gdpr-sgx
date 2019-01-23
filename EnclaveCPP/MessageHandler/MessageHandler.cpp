@@ -472,7 +472,7 @@ string MessageHandler::handleRegisterMSG(Messages::RegisterMessage msg) {
     uint8_t *p_cipher = new uint8_t[11];
     uint8_t *p_mac = new uint8_t[16];
     uint8_t *p_user_id = new uint8_t[16];
-    //uint8_t *p_sealed_phone = new uint8_t[580];
+    uint8_t *p_sealed_phone = new uint8_t[1024];
     uint32_t sealed_data_len;
     
     for(int i=0;i<11;i++) {
@@ -492,14 +492,13 @@ string MessageHandler::handleRegisterMSG(Messages::RegisterMessage msg) {
                                      p_mac,
                                      MAX_VERIFICATION_RESULT,
                                      p_user_id,
-                                     NULL,
-                                     //p_sealed_phone,
+                                     p_sealed_phone,
                                      &sealed_data_len);
 
     Log("========== sealed phone:%d ===========",sealed_data_len);
-    //for(int i=0; i<sealed_data_len; i++) {
-    //    printf("%u,",p_sealed_phone[i]);
-    //}
+    for(int i=0; i<sealed_data_len; i++) {
+        printf("%u,",p_sealed_phone[i]);
+    }
     printf("\n");
 
     if (SGX_SUCCESS != ret) {
