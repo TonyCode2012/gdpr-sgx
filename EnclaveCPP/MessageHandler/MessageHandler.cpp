@@ -416,9 +416,6 @@ string MessageHandler::handleAttestationResult(Messages::AttestationMessage msg)
     if (0 != p_att_result_msg_full->status[0] || 0 != p_att_result_msg_full->status[1]) {
         Log("Error, attestation mac result message MK based cmac failed", log::error);
     } else {
-        uint8_t *p_sk = new uint8_t[16];
-        uint8_t *p_phoneNum = new uint8_t[32];
-        memset(p_phoneNum,'\0',32);
         ret = verify_secret_data(this->enclave->getID(),
                                  &status,
                                  this->enclave->getContext(),
@@ -426,8 +423,7 @@ string MessageHandler::handleAttestationResult(Messages::AttestationMessage msg)
                                  p_att_result_msg_body->secret.payload_size,
                                  p_att_result_msg_body->secret.payload_tag,
                                  MAX_VERIFICATION_RESULT,
-                                 p_sk,
-                                 p_phoneNum);
+                                 NULL);
 
         SafeFree(p_att_result_msg_full);
 
@@ -469,10 +465,11 @@ string MessageHandler::handleAttestationResult(Messages::AttestationMessage msg)
 }
 
 string MessageHandler::handleRegisterMSG(Messages::RegisterMessage msg) {
-    uint8_t *p_sk = new uint8_t[16];
-    uint8_t *p_phoneNum = new uint8_t[32];
     uint8_t *p_cipher = new uint8_t[11];
     uint8_t *p_mac = new uint8_t[16];
+    uint8_t *p_user_id = new uint8_t[16];
+    uint8_t *p_sealed_phone = new uint8_t[1024];
+    uint32_t sealed_data_len;
     
     for(int i=0;i<11;i++) {
         p_cipher[i] = msg.cipherphone(i);
@@ -483,24 +480,21 @@ string MessageHandler::handleRegisterMSG(Messages::RegisterMessage msg) {
     }
 
     sgx_status_t status;
-    sgx_status_t ret = verify_secret_data(this->enclave->getID(),
-                                          &status,
-                                          this->enclave->getContext(),
-                                          p_cipher,
-                                          11,
-                                          p_mac,
-                                          MAX_VERIFICATION_RESULT,
-                                          p_sk,
-                                          p_phoneNum);
+    sgx_status_t ret = register_user(this->enclave->getID(),
+                                     &status,
+                                     this->enclave->getContext(),
+                                     p_cipher,
+                                     11,
+                                     p_mac,
+                                     MAX_VERIFICATION_RESULT,
+                                     p_user_id,
+                                     p_sealed_phone,
+                                     &sealed_data_len);
 
-    for(int i=0;i<16;i++) {
-        printf("%u,",p_sk[i]);
-    }
-    printf("\n");
-
-    for(int i=0;i<11;i++) {
-        printf("%u,",p_phoneNum[i]);
-    }
+    Log("========== sealed phone:%d ===========",sealed_data_len);
+    //for(int i=0; i<sealed_data_len; i++) {
+    //    printf("%u,",p_sealed_phone[i]);
+    //}
     printf("\n");
 
     if (SGX_SUCCESS != ret) {
@@ -513,8 +507,13 @@ string MessageHandler::handleRegisterMSG(Messages::RegisterMessage msg) {
     } 
     else {
         Log("Send attestation okay");
+        string userID = ByteArrayToString(p_user_id, 16);
+        Log("user id:%s",userID);
         Messages::ResponseMessage *msg = new Messages::ResponseMessage();
         msg->set_type(Messages::Type::PHONE_RES);
+        for(int i=0; i<16; i++) {
+            msg->add_userid(p_user_id[i]);
+        }
         msg->set_size(16);
         string s;
         Messages::AllInOneMessage aio_ret_msg;

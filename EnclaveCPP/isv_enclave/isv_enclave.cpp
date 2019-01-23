@@ -5,6 +5,7 @@
 #include "isv_enclave_t.h"
 #include "sgx_tkey_exchange.h"
 #include "sgx_tcrypto.h"
+#include "sgx_tseal.h"
 #include "string.h"
 
 // This is the public EC key of the SP. The corresponding private EC key is
@@ -271,7 +272,6 @@ sgx_status_t verify_secret_data (
     uint32_t secret_size,
     uint8_t *p_gcm_mac,
     uint32_t max_verification_length,
-    uint8_t *p_sk,
     uint8_t *p_ret) {
     sgx_status_t ret = SGX_SUCCESS;
     sgx_ec_key_128bit_t sk_key;
@@ -281,7 +281,6 @@ sgx_status_t verify_secret_data (
         if (SGX_SUCCESS != ret) {
             break;
         }
-        memcpy(p_ret,(uint8_t*)sk_key,sizeof(sgx_ec_key_128bit_t));
 
         uint8_t *decrypted = (uint8_t*) malloc(sizeof(uint8_t) * secret_size);
         uint8_t aes_gcm_iv[12] = {0};
@@ -295,15 +294,12 @@ sgx_status_t verify_secret_data (
                                          NULL,
                                          0,
                                          (const sgx_aes_gcm_128bit_tag_t *) (p_gcm_mac));
-        memcpy(p_sk,sk_key,16);
-        memcpy(p_ret,decrypted,11);
 
         if (SGX_SUCCESS == ret) {
             if (decrypted[0] == 6) {
                 if (decrypted[1] != 7) {
                     ret = SGX_ERROR_INVALID_SIGNATURE;
                 }
-                memcpy(p_ret,decrypted,2);
             } else {
                 ret = SGX_ERROR_UNEXPECTED;
             }
@@ -314,7 +310,62 @@ sgx_status_t verify_secret_data (
     return ret;
 }
 
+sgx_status_t register_user (
+    sgx_ra_context_t context,
+    uint8_t *p_secret,
+    uint32_t secret_size,
+    uint8_t *p_gcm_mac,
+    uint32_t max_verification_length,
+    uint8_t *p_user_id,
+    uint8_t *p_sealed_phone,
+    uint32_t *sealed_data_len) {
+    sgx_status_t ret = SGX_SUCCESS;
+    sgx_ec_key_128bit_t sk_key;
 
+    do {
+        ret = sgx_ra_get_keys(context, SGX_RA_KEY_SK, &sk_key);
+        if (SGX_SUCCESS != ret) {
+            break;
+        }
 
+        //uint8_t *decrypted = (uint8_t*) malloc(sizeof(uint8_t) * secret_size);
+        uint8_t decrypted[secret_size] = {0};
+        uint8_t aes_gcm_iv[12] = {0};
 
+        ret = sgx_rijndael128GCM_decrypt(&sk_key,
+                                         p_secret,
+                                         secret_size,
+                                         decrypted,
+                                         &aes_gcm_iv[0],
+                                         12,
+                                         NULL,
+                                         0,
+                                         (const sgx_aes_gcm_128bit_tag_t *) (p_gcm_mac));
 
+        if (SGX_SUCCESS == ret) {
+            sgx_sha256_hash_t *p_hash = (sgx_sha256_hash_t*)malloc(SGX_SHA256_HASH_SIZE);
+            ret = sgx_sha256_msg(decrypted, secret_size, p_hash);
+            if(SGX_SUCCESS == ret) {
+                memcpy(p_user_id, p_hash, SGX_SHA256_HASH_SIZE/2);
+                uint32_t sealed_len = sgx_calc_sealed_data_size(0, sizeof(decrypted));
+                sgx_sealed_data_t sealed_data_buf;
+
+                ret = sgx_seal_data(0,
+                                    NULL,
+                                    sizeof(decrypted),
+                                    decrypted,
+                                    sealed_len,
+                                    &sealed_data_buf);
+
+                if(SGX_SUCCESS == ret) {
+                    memcpy(p_sealed_phone, (uint8_t*)&sealed_data_buf, sizeof(sealed_data_buf));
+                    //*sealed_data_len = sealed_len;
+                    *sealed_data_len = sizeof(decrypted);
+                }
+            }
+        }
+
+    } while(0);
+
+    return ret;
+}

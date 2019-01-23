@@ -2,6 +2,7 @@ import React from "react";
 import protobuf from "protobufjs";
 import proto from "../utils/demo/Messages.proto";
 import registry from "../utils/demo/messageRegistry";
+import { buf2hexString } from "../utils/hexHelpers"
 import {
   RA_VERIFICATION, 
   RA_MSG0, 
@@ -139,8 +140,12 @@ class GDPRDemo extends React.Component {
 
       case RA_APP_ATT_OK:
         msgToSent = this.assemble(PHONE_REG);
+        break;
 
       case PHONE_RES:
+        const { resMsg } = message;
+        const { userID } = resMsg;
+        console.log("==========userid:",buf2hexString(userID),"==========");
         break;
 
       default:

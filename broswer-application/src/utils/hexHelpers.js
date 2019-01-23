@@ -6,7 +6,10 @@ const bigInt = require("big-integer");
  * @returns {String} result
  */
 export function switchEndian(string) {
-  if (string.length % 2) throw new Error();
+  if (string.length % 2) {
+      string += '0'
+  }
+  //throw new Error();
 
   let result = []
   for (let i = 0; i < string.length; i = i + 2) {
@@ -32,7 +35,11 @@ export function toHex(input) {
  * @returns {Array} result
  */
 export function hexStringToArray(str, step) {
-  if (str.length % step) throw new Error();
+  if (str.length % step){
+      const gap = step - str.length % step
+      str += "0".repeat(gap)
+  } 
+  //throw new Error();
 
   let result = [];
   for (let i = 0; i < str.length; i = i + step) {
@@ -42,4 +49,8 @@ export function hexStringToArray(str, step) {
   }
 
   return result;
+}
+
+export function buf2hexString(buffer) { // buffer is an ArrayBuffer
+  return Array.prototype.map.call(new Uint8Array(buffer), x => ('00'  + x.toString(16)).slice(-2)).join('');
 }
