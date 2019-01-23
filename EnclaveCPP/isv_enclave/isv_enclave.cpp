@@ -347,20 +347,24 @@ sgx_status_t register_user (
             ret = sgx_sha256_msg(decrypted, secret_size, p_hash);
             if(SGX_SUCCESS == ret) {
                 memcpy(p_user_id, p_hash, SGX_SHA256_HASH_SIZE/2);
-                uint32_t sealed_len = sgx_calc_sealed_data_size(0, sizeof(decrypted));
-                sgx_sealed_data_t sealed_data_buf;
+                delete(p_hash);
 
+                uint32_t sealed_len = sgx_calc_sealed_data_size(0, sizeof(decrypted));
+                //uint32_t sealed_len = sgx_calc_sealed_data_size(0, 8);
+                sgx_sealed_data_t sealed_data_buf;
                 ret = sgx_seal_data(0,
                                     NULL,
+                                    //8,
                                     sizeof(decrypted),
                                     decrypted,
                                     sealed_len,
                                     &sealed_data_buf);
 
                 if(SGX_SUCCESS == ret) {
-                    memcpy(p_sealed_phone, (uint8_t*)&sealed_data_buf, sizeof(sealed_data_buf));
-                    //*sealed_data_len = sealed_len;
-                    *sealed_data_len = sizeof(decrypted);
+                    //memcpy(p_sealed_phone, (uint8_t*)&sealed_data_buf, sizeof(sealed_data_buf));
+                    //memcpy(p_sealed_phone, (uint8_t*)&sealed_data_buf, sealed_len);
+                    *sealed_data_len = sealed_len;
+                    //*sealed_data_len = sizeof(decrypted);
                 }
             }
         }

@@ -26,7 +26,7 @@ enclave {
 												[in,count=16] uint8_t* gcm_mac,
 												uint32_t max_verification_length,
 												[out,count=16] uint8_t *p_user_id,
-												[out,count=1024] uint8_t *p_sealed_phone,
+												[out] uint8_t *p_sealed_phone,
 												[out] uint32_t *sealed_data_len);
     };
 

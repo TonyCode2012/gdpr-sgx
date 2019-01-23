@@ -105,6 +105,7 @@ string MessageHandler::generateMSG1() {
                                        &sgxMsg1Obj,
                                        &local_ec256_fix_data);
         
+        /*
         unsigned char pubbuf[sizeof(sgx_ec256_public_t)];
         memcpy(pubbuf, (unsigned char*)&local_ec256_fix_data.ec256_public_key, sizeof(sgx_ec256_public_t));
         Log("\tenclave public key:%s",ByteArrayToString(pubbuf,sizeof(pubbuf)));
@@ -115,6 +116,7 @@ string MessageHandler::generateMSG1() {
         unsigned char psealedbuf[local_ec256_fix_data.sealed_data_size];
         memcpy(psealedbuf, (unsigned char*)local_ec256_fix_data.p_sealed_data, local_ec256_fix_data.sealed_data_size);
         Log("\tp sealed data is  :%s",ByteArrayToString(psealedbuf,sizeof(psealedbuf)));
+        */
         
 
         if (retGIDStatus == SGX_SUCCESS) {
@@ -248,6 +250,7 @@ string MessageHandler::handleMSG2(Messages::MessageMSG2 msg) {
     int ret = 0;
 
     Log("========== sgx ra proc msg2 para ==========");
+    /*
     uint8_t cbuf1[sizeof(sgx_ra_context_t)];
     sgx_ra_context_t tmp_context = this->enclave->getContext();
     memcpy(cbuf1, (uint8_t*)&tmp_context,sizeof(sgx_ra_context_t));
@@ -257,6 +260,7 @@ string MessageHandler::handleMSG2(Messages::MessageMSG2 msg) {
     memcpy(cbuf2, (uint8_t*)p_msg2, sizeof(sgx_ra_msg2_t));
     Log("\tp_msg2:%s",ByteArrayToString(cbuf2,sizeof(sgx_ra_msg2_t)));
     printf("%" PRIu64 "\n",this->enclave->getID());
+    */
 
     do {
         ret = sgx_ra_proc_msg2(this->enclave->getContext(),
@@ -468,7 +472,7 @@ string MessageHandler::handleRegisterMSG(Messages::RegisterMessage msg) {
     uint8_t *p_cipher = new uint8_t[11];
     uint8_t *p_mac = new uint8_t[16];
     uint8_t *p_user_id = new uint8_t[16];
-    uint8_t *p_sealed_phone = new uint8_t[1024];
+    //uint8_t *p_sealed_phone = new uint8_t[580];
     uint32_t sealed_data_len;
     
     for(int i=0;i<11;i++) {
@@ -488,7 +492,8 @@ string MessageHandler::handleRegisterMSG(Messages::RegisterMessage msg) {
                                      p_mac,
                                      MAX_VERIFICATION_RESULT,
                                      p_user_id,
-                                     p_sealed_phone,
+                                     NULL,
+                                     //p_sealed_phone,
                                      &sealed_data_len);
 
     Log("========== sealed phone:%d ===========",sealed_data_len);

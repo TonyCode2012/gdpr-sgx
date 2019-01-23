@@ -269,9 +269,10 @@ sgx_status_t verify_secret_data (
     uint32_t secret_size,
     uint8_t *p_gcm_mac,
     uint32_t max_verification_length,
-    uint8_t *cmac,
+    //uint8_t *cmac,
     uint8_t *p_sk,
-    uint8_t *p_ret) {
+    uint8_t *p_ret,
+    uint32_t *p_sealed_len) {
     sgx_status_t ret = SGX_SUCCESS;
     sgx_ec_key_128bit_t sk_key;
 
@@ -292,7 +293,7 @@ sgx_status_t verify_secret_data (
                                          12,
                                          NULL,
                                          0,
-                                         cmac,
+                                         //cmac,
                                          (const sgx_aes_gcm_128bit_tag_t *) (p_gcm_mac));
         memcpy(p_sk, (unsigned char*)&sk_key, sizeof(sgx_ec_key_128bit_t));
 
@@ -301,10 +302,24 @@ sgx_status_t verify_secret_data (
                 if (decrypted[1] != 1) {
                     ret = SGX_ERROR_INVALID_SIGNATURE;
                 }
-                memcpy(p_ret,decrypted,2);
             } else {
                 ret = SGX_ERROR_UNEXPECTED;
             }
+                uint32_t sealed_len = sgx_calc_sealed_data_size(0, sizeof(decrypted));
+                sgx_sealed_data_t sealed_data_buf;
+                ret = sgx_seal_data(0,
+                                    NULL,
+                                    sizeof(decrypted),
+                                    decrypted,
+                                    sealed_len,
+                                    &sealed_data_buf);
+
+                if(SGX_SUCCESS == ret) {
+                    memcpy(p_ret,(uint8_t*)&sealed_data_buf,sealed_len);
+                    //memcpy(p_ret, (uint8_t*)&sealed_data_buf, sizeof(sealed_data_buf));
+                    *p_sealed_len = sealed_len;
+                    //*p_sealed_len = sizeof(sealed_data_buf);
+                }
         }
 
     } while(0);

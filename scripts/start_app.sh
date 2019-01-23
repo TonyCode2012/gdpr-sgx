@@ -53,7 +53,15 @@ function rebuild_enclave()
         exit 1
     fi
     cp $jnilibName $tomcatdir/shared/lib
+    if [ $? -ne 0 ]; then
+        verbose ERROR "cp jni library failed!" h
+        exit 1
+    fi
     cp $jniSignedName $tomcatdir
+    if [ $? -ne 0 ]; then
+        verbose ERROR "cp jni signed lib failed!" h
+        exit 1
+    fi
     cd -
 }
 
