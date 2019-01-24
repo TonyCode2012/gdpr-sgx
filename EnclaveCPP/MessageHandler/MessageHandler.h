@@ -16,6 +16,7 @@
 #include "../Network_def.h"
 //#include "GeneralSettings.h"
 #include "../GeneralSettings.h"
+#include "MysqlConnector.h"
 
 using namespace std;
 using namespace util;
@@ -41,6 +42,7 @@ public:
     void assembleAttestationMSG(Messages::AttestationMessage msg, ra_samp_response_header_t **pp_att_msg);
     string handleAttestationResult(Messages::AttestationMessage msg);
     string handleRegisterMSG(Messages::RegisterMessage msg);
+    string handleSMS(Messages::SMSMessage msg);
     string handleMessages(unsigned char *bytes, int len);
     void assembleMSG2(Messages::MessageMSG2 msg, sgx_ra_msg2_t **pp_msg2);
     string handleMSG2(Messages::MessageMSG2 msg);
@@ -48,6 +50,8 @@ public:
     string generateMSG1();
     string handleVerification();
     string generateMSG0();
+    bool getPhoneByUserID(uint8_t *userID, uint8_t *p_unsealed_phone);
+    bool putSealedPhone(uint8_t *userID, uint8_t *p_sealed_phone, uint32_t sealed_phone_len);
     //string createInitMsg(int type, string msg);
     uint32_t my_flag = 0;
     sgx_enclave_id_t local_enclave_id;
@@ -60,19 +64,9 @@ protected:
 
 private:
     int busy_retry_time = 4;
+    MysqlConnector *mysqlConnector = NULL;
     //NetworkManagerServer *nm = NULL;
 
 };
 
 #endif
-
-
-
-
-
-
-
-
-
-
-

@@ -346,7 +346,6 @@ sgx_status_t register_user (
             ret = sgx_sha256_msg(decrypted, secret_size, p_hash);
             if(SGX_SUCCESS == ret) {
                 memcpy(p_user_id, p_hash, SGX_SHA256_HASH_SIZE/2);
-                delete(p_hash);
 
                 uint32_t sealed_len = sgx_calc_sealed_data_size(0, secret_size);
                 sgx_sealed_data_t *sealed_data_buf = (sgx_sealed_data_t*)malloc(sealed_len);
@@ -357,7 +356,7 @@ sgx_status_t register_user (
                                     sealed_len,
                                     sealed_data_buf);
 
-                if(SGX_SUCCESS == ret) {
+                if (SGX_SUCCESS == ret) {
                     memcpy(p_sealed_phone, (uint8_t*)sealed_data_buf, sealed_len);
                     *sealed_data_len = sealed_len;
                 }
@@ -365,6 +364,37 @@ sgx_status_t register_user (
         }
 
     } while(0);
+
+    return ret;
+}
+
+sgx_status_t unseal_phone(sgx_ra_context_t context,
+                          uint8_t *p_sealed_phone, 
+                          uint32_t sealed_phone_len, 
+                          uint8_t *p_unsealed_phone,
+                          uint32_t *p_unsealed_phone_len) {
+
+    sgx_status_t ret = SGX_SUCCESS;
+    sgx_sealed_data_t *sealed_data = (sgx_sealed_data_t*)malloc(sealed_phone_len);
+    memcpy(sealed_data, p_sealed_phone, sealed_phone_len);
+    uint32_t unsealed_len = sgx_get_encrypt_txt_len(sealed_data);
+    uint8_t *unsealed_data = (uint8_t*)malloc(unsealed_len);
+
+    ret = sgx_unseal_data(sealed_data,
+                          NULL,
+                          0,
+                          unsealed_data,
+                          &unsealed_len);
+
+    if (SGX_SUCCESS == ret) {
+        memcpy(p_unsealed_phone, unsealed_data, unsealed_len);
+        *p_unsealed_phone_len = unsealed_len;
+    } else {
+        ret = SGX_ERROR_UNEXPECTED;
+    }
+
+    free(sealed_data);
+    free(unsealed_data);
 
     return ret;
 }

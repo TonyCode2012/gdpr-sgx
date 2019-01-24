@@ -6,6 +6,8 @@ using namespace util;
 
 MessageHandler::MessageHandler(int port) {
     this->local_ec256_fix_data.g_key_flag = 1;
+    mysqlConnector = new MysqlConnector();
+    mysqlConnector->initDB("localhost", "root", "fishbowl", "SMS");
 }
 
 MessageHandler::~MessageHandler() {
@@ -469,10 +471,10 @@ string MessageHandler::handleAttestationResult(Messages::AttestationMessage msg)
 }
 
 string MessageHandler::handleRegisterMSG(Messages::RegisterMessage msg) {
-    uint8_t *p_cipher = new uint8_t[11];
-    uint8_t *p_mac = new uint8_t[16];
-    uint8_t *p_user_id = new uint8_t[16];
-    uint8_t *p_sealed_phone = new uint8_t[1024];
+    uint8_t *p_cipher = (uint8_t*)malloc(11);
+    uint8_t *p_mac = (uint8_t*)malloc(16);
+    uint8_t *p_user_id = (uint8_t*)malloc(16);
+    uint8_t *p_sealed_phone = (uint8_t*)malloc(1024);
     uint32_t sealed_data_len;
     
     for(int i=0;i<11;i++) {
@@ -500,6 +502,30 @@ string MessageHandler::handleRegisterMSG(Messages::RegisterMessage msg) {
         printf("%u,",p_sealed_phone[i]);
     }
     printf("\n");
+
+    if(!putSealedPhone(p_user_id, p_sealed_phone, sealed_data_len)){
+        return "";
+    }
+
+
+    /*
+    uint8_t *p_unsealed_phone = new uint8_t[64];
+    uint32_t unsealed_phone_len;
+    ret = unseal_phone(this->enclave->getID(),
+                       &status,
+                       this->enclave->getContext(),
+                       p_sealed_phone,
+                       sealed_data_len,
+                       p_unsealed_phone,
+                       &unsealed_phone_len);
+
+    Log("========== unsealed phone:%d ===========",unsealed_phone_len);
+    for(int i=0; i<unsealed_phone_len; i++) {
+        printf("%u,",p_unsealed_phone[i]);
+    }
+    printf("\n");
+    */
+
 
     if (SGX_SUCCESS != ret) {
         Log("Error, attestation result message secret using SK based AESGCM failed1 %d", ret, log::error);
@@ -529,13 +555,87 @@ string MessageHandler::handleRegisterMSG(Messages::RegisterMessage msg) {
         else {
             Log("Serialization failed", log::error);
             s = "";
+            goto cleanup;
         }
-        return s;
     }
+
+cleanup:
+    free(p_cipher);
+    free(p_mac);
+    free(p_user_id);
+    free(p_sealed_phone);
 
     return "";
 }
 
+bool MessageHandler::putSealedPhone(uint8_t *userID, uint8_t *p_sealed_phone, uint32_t sealed_phone_len) {
+    bool ret = true;
+    string userID_str = ByteArrayToString(userID, 16);
+    string sealed_phone_str = ByteArrayToString(p_sealed_phone, sealed_phone_len);
+    string sql_str = string("INSERT INTO userID2Phone (userID,cipherPhone) VALUE ") + "('" + userID_str + "','" + sealed_phone_str + "')";
+    Log("========== query:%s",sql_str);
+
+    if (mysqlConnector->exeQuery(sql_str, NULL, 0)) {
+        Log("Store sealed data successfully");
+    } else {
+        Log("Store sealed data failed", log::error);
+        ret = false;
+    }
+
+    return ret;
+}
+/*
+*/
+
+/*
+bool MessageHandler::getPhoneByUserID(uint8_t *userID, uint8_t *p_unsealed_phone) {
+    sgx_status_t ret;
+    sgx_status_t status;
+    string userID_str = ByteArrayToString(userID, 16);
+    string sql_str = "select cipherPhone from userID2Phone where userID='" + userID_str + "'";
+    uint8_t *sealed_data = new uint8_t[1024];
+    uint32_t sealed_data_len;
+
+    if(mysqlConnector->exeQuery(sql_str, sealed_data, &sealed_data_len)) {
+        uint32_t unsealed_phone_len;
+        ret = unseal_phone(this->enclave->getID(),
+                           &status,
+                           this->enclave->getContext(),
+                           sealed_data,
+                           sealed_data_len,
+                           p_unsealed_phone,
+                           &unsealed_phone_len);
+
+        if (SGX_SUCCESS != ret) {
+            Log("Unseal phone number failed!", log::error);
+        }
+    } else {
+        Log("Get sealed data from database failed!", log::error);
+        ret = SGX_ERROR_UNEXPECTED;
+    }
+
+    if (SGX_SUCCESS != ret) {
+        return false;
+    }
+
+    return true;
+}
+*/
+
+string MessageHandler::handleSMS(Messages::SMSMessage msg) {
+    uint8_t *userID = new uint8_t[16];
+    uint32_t sms_size = msg.size();
+    uint8_t *sms_data = new uint8_t[sms_size];
+
+    for(int i=0; i<16; i++) {
+        userID[i] = msg.userid(i);
+    }
+
+    for(int i=0; i<sms_size; i++) {
+        sms_data[i] = msg.sms(i);
+    }
+
+}
 
 string MessageHandler::handleMSG0(Messages::MessageMSG0 msg) {
     Log("MSG0 response received");
@@ -630,6 +730,13 @@ string MessageHandler::handleMessages(unsigned char* bytes, int len) {
         Messages::RegisterMessage reg_msg = aio_msg.regmsg();
         res = this->handleRegisterMSG(reg_msg);
         Log("========== Generate user ID ok ==========");
+    }
+    break;
+    case Messages::Type::SMS_SEND: {
+        Log("========== send short message ==========");
+        Messages::SMSMessage sms_msg = aio_msg.smsmsg();
+        res = this->handleSMS(sms_msg);
+        Log("========== send short message end ==========");
     }
     break;
     default:

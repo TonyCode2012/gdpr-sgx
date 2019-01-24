@@ -10,6 +10,7 @@ enum Type {
     RA_APP_ATT_OK = 6;
     PHONE_REG = 7;
     PHONE_RES = 8;
+    SMS_SEND = 9;
 }
 
 message SecretMessage {
@@ -94,6 +95,13 @@ message ResponseMessage {
     optional uint32 size = 3;
 }
 
+message SMSMessage {
+    required Type type = 1;
+    repeated uint32 userID = 2 [packed=true];
+    repeated uint32 sms = 3 [packed=true];
+    optional uint32 size = 4;
+}
+
 message AllInOneMessage {
     required Type type = 1;
     optional SecretMessage secretMsg = 2;
@@ -105,4 +113,5 @@ message AllInOneMessage {
     optional AttestationMessage attestMsg = 8;
     optional RegisterMessage regMsg = 9;
     optional ResponseMessage resMsg = 10;
+    optional SMSMessage smsMsg = 11;
 }

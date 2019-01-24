@@ -288,26 +288,3 @@ string Base64decode(const string val) {
 string Base64encodeUint8(uint8_t *val, uint32_t len) {
     return base64_encode(val, len);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -87,7 +87,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_sgxtrial_yyy_EnclaveBridge_handleMessages(
  
     string res = ((MessageHandler*)msgHandlerAddr)->handleMessages(buf, len);
     fflush(stdout);
-    //free(chars);
+    free(buf);
     return string2jbyteArray(env, res);
 
 }

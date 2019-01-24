@@ -43,6 +43,7 @@ class MessageMSG3;
 class AttestationMessage;
 class RegisterMessage;
 class ResponseMessage;
+class SMSMessage;
 class AllInOneMessage;
 
 enum Type {
@@ -54,11 +55,12 @@ enum Type {
   RA_VERIFICATION = 5,
   RA_APP_ATT_OK = 6,
   PHONE_REG = 7,
-  PHONE_RES = 8
+  PHONE_RES = 8,
+  SMS_SEND = 9
 };
 bool Type_IsValid(int value);
 const Type Type_MIN = RA_MSG0;
-const Type Type_MAX = PHONE_RES;
+const Type Type_MAX = SMS_SEND;
 const int Type_ARRAYSIZE = Type_MAX + 1;
 
 const ::google::protobuf::EnumDescriptor* Type_descriptor();
@@ -1336,6 +1338,123 @@ class ResponseMessage : public ::google::protobuf::Message {
 };
 // -------------------------------------------------------------------
 
+class SMSMessage : public ::google::protobuf::Message {
+ public:
+  SMSMessage();
+  virtual ~SMSMessage();
+
+  SMSMessage(const SMSMessage& from);
+
+  inline SMSMessage& operator=(const SMSMessage& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const SMSMessage& default_instance();
+
+  void Swap(SMSMessage* other);
+
+  // implements Message ----------------------------------------------
+
+  SMSMessage* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const SMSMessage& from);
+  void MergeFrom(const SMSMessage& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required .Messages.Type type = 1;
+  inline bool has_type() const;
+  inline void clear_type();
+  static const int kTypeFieldNumber = 1;
+  inline ::Messages::Type type() const;
+  inline void set_type(::Messages::Type value);
+
+  // repeated uint32 userID = 2 [packed = true];
+  inline int userid_size() const;
+  inline void clear_userid();
+  static const int kUserIDFieldNumber = 2;
+  inline ::google::protobuf::uint32 userid(int index) const;
+  inline void set_userid(int index, ::google::protobuf::uint32 value);
+  inline void add_userid(::google::protobuf::uint32 value);
+  inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
+      userid() const;
+  inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
+      mutable_userid();
+
+  // repeated uint32 sms = 3 [packed = true];
+  inline int sms_size() const;
+  inline void clear_sms();
+  static const int kSmsFieldNumber = 3;
+  inline ::google::protobuf::uint32 sms(int index) const;
+  inline void set_sms(int index, ::google::protobuf::uint32 value);
+  inline void add_sms(::google::protobuf::uint32 value);
+  inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
+      sms() const;
+  inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
+      mutable_sms();
+
+  // optional uint32 size = 4;
+  inline bool has_size() const;
+  inline void clear_size();
+  static const int kSizeFieldNumber = 4;
+  inline ::google::protobuf::uint32 size() const;
+  inline void set_size(::google::protobuf::uint32 value);
+
+  // @@protoc_insertion_point(class_scope:Messages.SMSMessage)
+ private:
+  inline void set_has_type();
+  inline void clear_has_type();
+  inline void set_has_size();
+  inline void clear_has_size();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  ::google::protobuf::RepeatedField< ::google::protobuf::uint32 > userid_;
+  mutable int _userid_cached_byte_size_;
+  int type_;
+  ::google::protobuf::uint32 size_;
+  ::google::protobuf::RepeatedField< ::google::protobuf::uint32 > sms_;
+  mutable int _sms_cached_byte_size_;
+  friend void  protobuf_AddDesc_Messages_2eproto();
+  friend void protobuf_AssignDesc_Messages_2eproto();
+  friend void protobuf_ShutdownFile_Messages_2eproto();
+
+  void InitAsDefaultInstance();
+  static SMSMessage* default_instance_;
+};
+// -------------------------------------------------------------------
+
 class AllInOneMessage : public ::google::protobuf::Message {
  public:
   AllInOneMessage();
@@ -1477,6 +1596,15 @@ class AllInOneMessage : public ::google::protobuf::Message {
   inline ::Messages::ResponseMessage* release_resmsg();
   inline void set_allocated_resmsg(::Messages::ResponseMessage* resmsg);
 
+  // optional .Messages.SMSMessage smsMsg = 11;
+  inline bool has_smsmsg() const;
+  inline void clear_smsmsg();
+  static const int kSmsMsgFieldNumber = 11;
+  inline const ::Messages::SMSMessage& smsmsg() const;
+  inline ::Messages::SMSMessage* mutable_smsmsg();
+  inline ::Messages::SMSMessage* release_smsmsg();
+  inline void set_allocated_smsmsg(::Messages::SMSMessage* smsmsg);
+
   // @@protoc_insertion_point(class_scope:Messages.AllInOneMessage)
  private:
   inline void set_has_type();
@@ -1499,6 +1627,8 @@ class AllInOneMessage : public ::google::protobuf::Message {
   inline void clear_has_regmsg();
   inline void set_has_resmsg();
   inline void clear_has_resmsg();
+  inline void set_has_smsmsg();
+  inline void clear_has_smsmsg();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -1513,6 +1643,7 @@ class AllInOneMessage : public ::google::protobuf::Message {
   ::Messages::AttestationMessage* attestmsg_;
   ::Messages::RegisterMessage* regmsg_;
   ::Messages::ResponseMessage* resmsg_;
+  ::Messages::SMSMessage* smsmsg_;
   int type_;
   friend void  protobuf_AddDesc_Messages_2eproto();
   friend void protobuf_AssignDesc_Messages_2eproto();
@@ -3011,6 +3142,119 @@ inline void ResponseMessage::set_size(::google::protobuf::uint32 value) {
 
 // -------------------------------------------------------------------
 
+// SMSMessage
+
+// required .Messages.Type type = 1;
+inline bool SMSMessage::has_type() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void SMSMessage::set_has_type() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void SMSMessage::clear_has_type() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void SMSMessage::clear_type() {
+  type_ = 0;
+  clear_has_type();
+}
+inline ::Messages::Type SMSMessage::type() const {
+  // @@protoc_insertion_point(field_get:Messages.SMSMessage.type)
+  return static_cast< ::Messages::Type >(type_);
+}
+inline void SMSMessage::set_type(::Messages::Type value) {
+  assert(::Messages::Type_IsValid(value));
+  set_has_type();
+  type_ = value;
+  // @@protoc_insertion_point(field_set:Messages.SMSMessage.type)
+}
+
+// repeated uint32 userID = 2 [packed = true];
+inline int SMSMessage::userid_size() const {
+  return userid_.size();
+}
+inline void SMSMessage::clear_userid() {
+  userid_.Clear();
+}
+inline ::google::protobuf::uint32 SMSMessage::userid(int index) const {
+  // @@protoc_insertion_point(field_get:Messages.SMSMessage.userID)
+  return userid_.Get(index);
+}
+inline void SMSMessage::set_userid(int index, ::google::protobuf::uint32 value) {
+  userid_.Set(index, value);
+  // @@protoc_insertion_point(field_set:Messages.SMSMessage.userID)
+}
+inline void SMSMessage::add_userid(::google::protobuf::uint32 value) {
+  userid_.Add(value);
+  // @@protoc_insertion_point(field_add:Messages.SMSMessage.userID)
+}
+inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
+SMSMessage::userid() const {
+  // @@protoc_insertion_point(field_list:Messages.SMSMessage.userID)
+  return userid_;
+}
+inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
+SMSMessage::mutable_userid() {
+  // @@protoc_insertion_point(field_mutable_list:Messages.SMSMessage.userID)
+  return &userid_;
+}
+
+// repeated uint32 sms = 3 [packed = true];
+inline int SMSMessage::sms_size() const {
+  return sms_.size();
+}
+inline void SMSMessage::clear_sms() {
+  sms_.Clear();
+}
+inline ::google::protobuf::uint32 SMSMessage::sms(int index) const {
+  // @@protoc_insertion_point(field_get:Messages.SMSMessage.sms)
+  return sms_.Get(index);
+}
+inline void SMSMessage::set_sms(int index, ::google::protobuf::uint32 value) {
+  sms_.Set(index, value);
+  // @@protoc_insertion_point(field_set:Messages.SMSMessage.sms)
+}
+inline void SMSMessage::add_sms(::google::protobuf::uint32 value) {
+  sms_.Add(value);
+  // @@protoc_insertion_point(field_add:Messages.SMSMessage.sms)
+}
+inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
+SMSMessage::sms() const {
+  // @@protoc_insertion_point(field_list:Messages.SMSMessage.sms)
+  return sms_;
+}
+inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
+SMSMessage::mutable_sms() {
+  // @@protoc_insertion_point(field_mutable_list:Messages.SMSMessage.sms)
+  return &sms_;
+}
+
+// optional uint32 size = 4;
+inline bool SMSMessage::has_size() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void SMSMessage::set_has_size() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void SMSMessage::clear_has_size() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void SMSMessage::clear_size() {
+  size_ = 0u;
+  clear_has_size();
+}
+inline ::google::protobuf::uint32 SMSMessage::size() const {
+  // @@protoc_insertion_point(field_get:Messages.SMSMessage.size)
+  return size_;
+}
+inline void SMSMessage::set_size(::google::protobuf::uint32 value) {
+  set_has_size();
+  size_ = value;
+  // @@protoc_insertion_point(field_set:Messages.SMSMessage.size)
+}
+
+// -------------------------------------------------------------------
+
 // AllInOneMessage
 
 // required .Messages.Type type = 1;
@@ -3405,6 +3649,47 @@ inline void AllInOneMessage::set_allocated_resmsg(::Messages::ResponseMessage* r
     clear_has_resmsg();
   }
   // @@protoc_insertion_point(field_set_allocated:Messages.AllInOneMessage.resMsg)
+}
+
+// optional .Messages.SMSMessage smsMsg = 11;
+inline bool AllInOneMessage::has_smsmsg() const {
+  return (_has_bits_[0] & 0x00000400u) != 0;
+}
+inline void AllInOneMessage::set_has_smsmsg() {
+  _has_bits_[0] |= 0x00000400u;
+}
+inline void AllInOneMessage::clear_has_smsmsg() {
+  _has_bits_[0] &= ~0x00000400u;
+}
+inline void AllInOneMessage::clear_smsmsg() {
+  if (smsmsg_ != NULL) smsmsg_->::Messages::SMSMessage::Clear();
+  clear_has_smsmsg();
+}
+inline const ::Messages::SMSMessage& AllInOneMessage::smsmsg() const {
+  // @@protoc_insertion_point(field_get:Messages.AllInOneMessage.smsMsg)
+  return smsmsg_ != NULL ? *smsmsg_ : *default_instance_->smsmsg_;
+}
+inline ::Messages::SMSMessage* AllInOneMessage::mutable_smsmsg() {
+  set_has_smsmsg();
+  if (smsmsg_ == NULL) smsmsg_ = new ::Messages::SMSMessage;
+  // @@protoc_insertion_point(field_mutable:Messages.AllInOneMessage.smsMsg)
+  return smsmsg_;
+}
+inline ::Messages::SMSMessage* AllInOneMessage::release_smsmsg() {
+  clear_has_smsmsg();
+  ::Messages::SMSMessage* temp = smsmsg_;
+  smsmsg_ = NULL;
+  return temp;
+}
+inline void AllInOneMessage::set_allocated_smsmsg(::Messages::SMSMessage* smsmsg) {
+  delete smsmsg_;
+  smsmsg_ = smsmsg;
+  if (smsmsg) {
+    set_has_smsmsg();
+  } else {
+    clear_has_smsmsg();
+  }
+  // @@protoc_insertion_point(field_set_allocated:Messages.AllInOneMessage.smsMsg)
 }
 
 

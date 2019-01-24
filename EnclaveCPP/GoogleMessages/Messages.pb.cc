@@ -47,6 +47,9 @@ const ::google::protobuf::internal::GeneratedMessageReflection*
 const ::google::protobuf::Descriptor* ResponseMessage_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   ResponseMessage_reflection_ = NULL;
+const ::google::protobuf::Descriptor* SMSMessage_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  SMSMessage_reflection_ = NULL;
 const ::google::protobuf::Descriptor* AllInOneMessage_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   AllInOneMessage_reflection_ = NULL;
@@ -240,8 +243,26 @@ void protobuf_AssignDesc_Messages_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(ResponseMessage));
-  AllInOneMessage_descriptor_ = file->message_type(9);
-  static const int AllInOneMessage_offsets_[10] = {
+  SMSMessage_descriptor_ = file->message_type(9);
+  static const int SMSMessage_offsets_[4] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SMSMessage, type_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SMSMessage, userid_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SMSMessage, sms_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SMSMessage, size_),
+  };
+  SMSMessage_reflection_ =
+    new ::google::protobuf::internal::GeneratedMessageReflection(
+      SMSMessage_descriptor_,
+      SMSMessage::default_instance_,
+      SMSMessage_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SMSMessage, _has_bits_[0]),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SMSMessage, _unknown_fields_),
+      -1,
+      ::google::protobuf::DescriptorPool::generated_pool(),
+      ::google::protobuf::MessageFactory::generated_factory(),
+      sizeof(SMSMessage));
+  AllInOneMessage_descriptor_ = file->message_type(10);
+  static const int AllInOneMessage_offsets_[11] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AllInOneMessage, type_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AllInOneMessage, secretmsg_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AllInOneMessage, initmsg_),
@@ -252,6 +273,7 @@ void protobuf_AssignDesc_Messages_2eproto() {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AllInOneMessage, attestmsg_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AllInOneMessage, regmsg_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AllInOneMessage, resmsg_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AllInOneMessage, smsmsg_),
   };
   AllInOneMessage_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -296,6 +318,8 @@ void protobuf_RegisterTypes(const ::std::string&) {
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
     ResponseMessage_descriptor_, &ResponseMessage::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+    SMSMessage_descriptor_, &SMSMessage::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
     AllInOneMessage_descriptor_, &AllInOneMessage::default_instance());
 }
 
@@ -320,6 +344,8 @@ void protobuf_ShutdownFile_Messages_2eproto() {
   delete RegisterMessage_reflection_;
   delete ResponseMessage::default_instance_;
   delete ResponseMessage_reflection_;
+  delete SMSMessage::default_instance_;
+  delete SMSMessage_reflection_;
   delete AllInOneMessage::default_instance_;
   delete AllInOneMessage_reflection_;
 }
@@ -365,21 +391,25 @@ void protobuf_AddDesc_Messages_2eproto() {
     "cipherPhone\030\002 \003(\rB\002\020\001\022\017\n\003mac\030\004 \003(\rB\002\020\001\022\014"
     "\n\004size\030\003 \001(\r\"Q\n\017ResponseMessage\022\034\n\004type\030"
     "\001 \002(\0162\016.Messages.Type\022\022\n\006userID\030\002 \003(\rB\002\020"
-    "\001\022\014\n\004size\030\003 \001(\r\"\241\003\n\017AllInOneMessage\022\034\n\004t"
-    "ype\030\001 \002(\0162\016.Messages.Type\022*\n\tsecretMsg\030\002"
-    " \001(\0132\027.Messages.SecretMessage\022)\n\007initMsg"
-    "\030\003 \001(\0132\030.Messages.InitialMessage\022#\n\004msg0"
-    "\030\004 \001(\0132\025.Messages.MessageMSG0\022#\n\004msg1\030\005 "
-    "\001(\0132\025.Messages.MessageMSG1\022#\n\004msg2\030\006 \001(\013"
-    "2\025.Messages.MessageMSG2\022#\n\004msg3\030\007 \001(\0132\025."
-    "Messages.MessageMSG3\022/\n\tattestMsg\030\010 \001(\0132"
-    "\034.Messages.AttestationMessage\022)\n\006regMsg\030"
-    "\t \001(\0132\031.Messages.RegisterMessage\022)\n\006resM"
-    "sg\030\n \001(\0132\031.Messages.ResponseMessage*\223\001\n\004"
-    "Type\022\013\n\007RA_MSG0\020\000\022\013\n\007RA_MSG1\020\001\022\013\n\007RA_MSG"
-    "2\020\002\022\013\n\007RA_MSG3\020\003\022\021\n\rRA_ATT_RESULT\020\004\022\023\n\017R"
-    "A_VERIFICATION\020\005\022\021\n\rRA_APP_ATT_OK\020\006\022\r\n\tP"
-    "HONE_REG\020\007\022\r\n\tPHONE_RES\020\010", 1945);
+    "\001\022\014\n\004size\030\003 \001(\r\"]\n\nSMSMessage\022\034\n\004type\030\001 "
+    "\002(\0162\016.Messages.Type\022\022\n\006userID\030\002 \003(\rB\002\020\001\022"
+    "\017\n\003sms\030\003 \003(\rB\002\020\001\022\014\n\004size\030\004 \001(\r\"\307\003\n\017AllIn"
+    "OneMessage\022\034\n\004type\030\001 \002(\0162\016.Messages.Type"
+    "\022*\n\tsecretMsg\030\002 \001(\0132\027.Messages.SecretMes"
+    "sage\022)\n\007initMsg\030\003 \001(\0132\030.Messages.Initial"
+    "Message\022#\n\004msg0\030\004 \001(\0132\025.Messages.Message"
+    "MSG0\022#\n\004msg1\030\005 \001(\0132\025.Messages.MessageMSG"
+    "1\022#\n\004msg2\030\006 \001(\0132\025.Messages.MessageMSG2\022#"
+    "\n\004msg3\030\007 \001(\0132\025.Messages.MessageMSG3\022/\n\ta"
+    "ttestMsg\030\010 \001(\0132\034.Messages.AttestationMes"
+    "sage\022)\n\006regMsg\030\t \001(\0132\031.Messages.Register"
+    "Message\022)\n\006resMsg\030\n \001(\0132\031.Messages.Respo"
+    "nseMessage\022$\n\006smsMsg\030\013 \001(\0132\024.Messages.SM"
+    "SMessage*\241\001\n\004Type\022\013\n\007RA_MSG0\020\000\022\013\n\007RA_MSG"
+    "1\020\001\022\013\n\007RA_MSG2\020\002\022\013\n\007RA_MSG3\020\003\022\021\n\rRA_ATT_"
+    "RESULT\020\004\022\023\n\017RA_VERIFICATION\020\005\022\021\n\rRA_APP_"
+    "ATT_OK\020\006\022\r\n\tPHONE_REG\020\007\022\r\n\tPHONE_RES\020\010\022\014"
+    "\n\010SMS_SEND\020\t", 2092);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "Messages.proto", &protobuf_RegisterTypes);
   SecretMessage::default_instance_ = new SecretMessage();
@@ -391,6 +421,7 @@ void protobuf_AddDesc_Messages_2eproto() {
   AttestationMessage::default_instance_ = new AttestationMessage();
   RegisterMessage::default_instance_ = new RegisterMessage();
   ResponseMessage::default_instance_ = new ResponseMessage();
+  SMSMessage::default_instance_ = new SMSMessage();
   AllInOneMessage::default_instance_ = new AllInOneMessage();
   SecretMessage::default_instance_->InitAsDefaultInstance();
   InitialMessage::default_instance_->InitAsDefaultInstance();
@@ -401,6 +432,7 @@ void protobuf_AddDesc_Messages_2eproto() {
   AttestationMessage::default_instance_->InitAsDefaultInstance();
   RegisterMessage::default_instance_->InitAsDefaultInstance();
   ResponseMessage::default_instance_->InitAsDefaultInstance();
+  SMSMessage::default_instance_->InitAsDefaultInstance();
   AllInOneMessage::default_instance_->InitAsDefaultInstance();
   ::google::protobuf::internal::OnShutdown(&protobuf_ShutdownFile_Messages_2eproto);
 }
@@ -426,6 +458,7 @@ bool Type_IsValid(int value) {
     case 6:
     case 7:
     case 8:
+    case 9:
       return true;
     default:
       return false;
@@ -4995,6 +5028,413 @@ void ResponseMessage::Swap(ResponseMessage* other) {
 // ===================================================================
 
 #ifndef _MSC_VER
+const int SMSMessage::kTypeFieldNumber;
+const int SMSMessage::kUserIDFieldNumber;
+const int SMSMessage::kSmsFieldNumber;
+const int SMSMessage::kSizeFieldNumber;
+#endif  // !_MSC_VER
+
+SMSMessage::SMSMessage()
+  : ::google::protobuf::Message() {
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:Messages.SMSMessage)
+}
+
+void SMSMessage::InitAsDefaultInstance() {
+}
+
+SMSMessage::SMSMessage(const SMSMessage& from)
+  : ::google::protobuf::Message() {
+  SharedCtor();
+  MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:Messages.SMSMessage)
+}
+
+void SMSMessage::SharedCtor() {
+  _cached_size_ = 0;
+  type_ = 0;
+  size_ = 0u;
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+}
+
+SMSMessage::~SMSMessage() {
+  // @@protoc_insertion_point(destructor:Messages.SMSMessage)
+  SharedDtor();
+}
+
+void SMSMessage::SharedDtor() {
+  if (this != default_instance_) {
+  }
+}
+
+void SMSMessage::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* SMSMessage::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return SMSMessage_descriptor_;
+}
+
+const SMSMessage& SMSMessage::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_Messages_2eproto();
+  return *default_instance_;
+}
+
+SMSMessage* SMSMessage::default_instance_ = NULL;
+
+SMSMessage* SMSMessage::New() const {
+  return new SMSMessage;
+}
+
+void SMSMessage::Clear() {
+#define OFFSET_OF_FIELD_(f) (reinterpret_cast<char*>(      \
+  &reinterpret_cast<SMSMessage*>(16)->f) - \
+   reinterpret_cast<char*>(16))
+
+#define ZR_(first, last) do {                              \
+    size_t f = OFFSET_OF_FIELD_(first);                    \
+    size_t n = OFFSET_OF_FIELD_(last) - f + sizeof(last);  \
+    ::memset(&first, 0, n);                                \
+  } while (0)
+
+  ZR_(type_, size_);
+
+#undef OFFSET_OF_FIELD_
+#undef ZR_
+
+  userid_.Clear();
+  sms_.Clear();
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  mutable_unknown_fields()->Clear();
+}
+
+bool SMSMessage::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:Messages.SMSMessage)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // required .Messages.Type type = 1;
+      case 1: {
+        if (tag == 8) {
+          int value;
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
+                 input, &value)));
+          if (::Messages::Type_IsValid(value)) {
+            set_type(static_cast< ::Messages::Type >(value));
+          } else {
+            mutable_unknown_fields()->AddVarint(1, value);
+          }
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(18)) goto parse_userID;
+        break;
+      }
+
+      // repeated uint32 userID = 2 [packed = true];
+      case 2: {
+        if (tag == 18) {
+         parse_userID:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPackedPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, this->mutable_userid())));
+        } else if (tag == 16) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadRepeatedPrimitiveNoInline<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 1, 18, input, this->mutable_userid())));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(26)) goto parse_sms;
+        break;
+      }
+
+      // repeated uint32 sms = 3 [packed = true];
+      case 3: {
+        if (tag == 26) {
+         parse_sms:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPackedPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, this->mutable_sms())));
+        } else if (tag == 24) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadRepeatedPrimitiveNoInline<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 1, 26, input, this->mutable_sms())));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(32)) goto parse_size;
+        break;
+      }
+
+      // optional uint32 size = 4;
+      case 4: {
+        if (tag == 32) {
+         parse_size:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &size_)));
+          set_has_size();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectAtEnd()) goto success;
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:Messages.SMSMessage)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:Messages.SMSMessage)
+  return false;
+#undef DO_
+}
+
+void SMSMessage::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:Messages.SMSMessage)
+  // required .Messages.Type type = 1;
+  if (has_type()) {
+    ::google::protobuf::internal::WireFormatLite::WriteEnum(
+      1, this->type(), output);
+  }
+
+  // repeated uint32 userID = 2 [packed = true];
+  if (this->userid_size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteTag(2, ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED, output);
+    output->WriteVarint32(_userid_cached_byte_size_);
+  }
+  for (int i = 0; i < this->userid_size(); i++) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32NoTag(
+      this->userid(i), output);
+  }
+
+  // repeated uint32 sms = 3 [packed = true];
+  if (this->sms_size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteTag(3, ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED, output);
+    output->WriteVarint32(_sms_cached_byte_size_);
+  }
+  for (int i = 0; i < this->sms_size(); i++) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32NoTag(
+      this->sms(i), output);
+  }
+
+  // optional uint32 size = 4;
+  if (has_size()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(4, this->size(), output);
+  }
+
+  if (!unknown_fields().empty()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+  // @@protoc_insertion_point(serialize_end:Messages.SMSMessage)
+}
+
+::google::protobuf::uint8* SMSMessage::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:Messages.SMSMessage)
+  // required .Messages.Type type = 1;
+  if (has_type()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
+      1, this->type(), target);
+  }
+
+  // repeated uint32 userID = 2 [packed = true];
+  if (this->userid_size() > 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteTagToArray(
+      2,
+      ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED,
+      target);
+    target = ::google::protobuf::io::CodedOutputStream::WriteVarint32ToArray(
+      _userid_cached_byte_size_, target);
+  }
+  for (int i = 0; i < this->userid_size(); i++) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteUInt32NoTagToArray(this->userid(i), target);
+  }
+
+  // repeated uint32 sms = 3 [packed = true];
+  if (this->sms_size() > 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteTagToArray(
+      3,
+      ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED,
+      target);
+    target = ::google::protobuf::io::CodedOutputStream::WriteVarint32ToArray(
+      _sms_cached_byte_size_, target);
+  }
+  for (int i = 0; i < this->sms_size(); i++) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteUInt32NoTagToArray(this->sms(i), target);
+  }
+
+  // optional uint32 size = 4;
+  if (has_size()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(4, this->size(), target);
+  }
+
+  if (!unknown_fields().empty()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:Messages.SMSMessage)
+  return target;
+}
+
+int SMSMessage::ByteSize() const {
+  int total_size = 0;
+
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    // required .Messages.Type type = 1;
+    if (has_type()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::EnumSize(this->type());
+    }
+
+    // optional uint32 size = 4;
+    if (has_size()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->size());
+    }
+
+  }
+  // repeated uint32 userID = 2 [packed = true];
+  {
+    int data_size = 0;
+    for (int i = 0; i < this->userid_size(); i++) {
+      data_size += ::google::protobuf::internal::WireFormatLite::
+        UInt32Size(this->userid(i));
+    }
+    if (data_size > 0) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::Int32Size(data_size);
+    }
+    GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+    _userid_cached_byte_size_ = data_size;
+    GOOGLE_SAFE_CONCURRENT_WRITES_END();
+    total_size += data_size;
+  }
+
+  // repeated uint32 sms = 3 [packed = true];
+  {
+    int data_size = 0;
+    for (int i = 0; i < this->sms_size(); i++) {
+      data_size += ::google::protobuf::internal::WireFormatLite::
+        UInt32Size(this->sms(i));
+    }
+    if (data_size > 0) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::Int32Size(data_size);
+    }
+    GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+    _sms_cached_byte_size_ = data_size;
+    GOOGLE_SAFE_CONCURRENT_WRITES_END();
+    total_size += data_size;
+  }
+
+  if (!unknown_fields().empty()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void SMSMessage::MergeFrom(const ::google::protobuf::Message& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  const SMSMessage* source =
+    ::google::protobuf::internal::dynamic_cast_if_available<const SMSMessage*>(
+      &from);
+  if (source == NULL) {
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+    MergeFrom(*source);
+  }
+}
+
+void SMSMessage::MergeFrom(const SMSMessage& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  userid_.MergeFrom(from.userid_);
+  sms_.MergeFrom(from.sms_);
+  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (from.has_type()) {
+      set_type(from.type());
+    }
+    if (from.has_size()) {
+      set_size(from.size());
+    }
+  }
+  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+}
+
+void SMSMessage::CopyFrom(const ::google::protobuf::Message& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void SMSMessage::CopyFrom(const SMSMessage& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool SMSMessage::IsInitialized() const {
+  if ((_has_bits_[0] & 0x00000001) != 0x00000001) return false;
+
+  return true;
+}
+
+void SMSMessage::Swap(SMSMessage* other) {
+  if (other != this) {
+    std::swap(type_, other->type_);
+    userid_.Swap(&other->userid_);
+    sms_.Swap(&other->sms_);
+    std::swap(size_, other->size_);
+    std::swap(_has_bits_[0], other->_has_bits_[0]);
+    _unknown_fields_.Swap(&other->_unknown_fields_);
+    std::swap(_cached_size_, other->_cached_size_);
+  }
+}
+
+::google::protobuf::Metadata SMSMessage::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = SMSMessage_descriptor_;
+  metadata.reflection = SMSMessage_reflection_;
+  return metadata;
+}
+
+
+// ===================================================================
+
+#ifndef _MSC_VER
 const int AllInOneMessage::kTypeFieldNumber;
 const int AllInOneMessage::kSecretMsgFieldNumber;
 const int AllInOneMessage::kInitMsgFieldNumber;
@@ -5005,6 +5445,7 @@ const int AllInOneMessage::kMsg3FieldNumber;
 const int AllInOneMessage::kAttestMsgFieldNumber;
 const int AllInOneMessage::kRegMsgFieldNumber;
 const int AllInOneMessage::kResMsgFieldNumber;
+const int AllInOneMessage::kSmsMsgFieldNumber;
 #endif  // !_MSC_VER
 
 AllInOneMessage::AllInOneMessage()
@@ -5023,6 +5464,7 @@ void AllInOneMessage::InitAsDefaultInstance() {
   attestmsg_ = const_cast< ::Messages::AttestationMessage*>(&::Messages::AttestationMessage::default_instance());
   regmsg_ = const_cast< ::Messages::RegisterMessage*>(&::Messages::RegisterMessage::default_instance());
   resmsg_ = const_cast< ::Messages::ResponseMessage*>(&::Messages::ResponseMessage::default_instance());
+  smsmsg_ = const_cast< ::Messages::SMSMessage*>(&::Messages::SMSMessage::default_instance());
 }
 
 AllInOneMessage::AllInOneMessage(const AllInOneMessage& from)
@@ -5044,6 +5486,7 @@ void AllInOneMessage::SharedCtor() {
   attestmsg_ = NULL;
   regmsg_ = NULL;
   resmsg_ = NULL;
+  smsmsg_ = NULL;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -5063,6 +5506,7 @@ void AllInOneMessage::SharedDtor() {
     delete attestmsg_;
     delete regmsg_;
     delete resmsg_;
+    delete smsmsg_;
   }
 }
 
@@ -5112,12 +5556,15 @@ void AllInOneMessage::Clear() {
       if (attestmsg_ != NULL) attestmsg_->::Messages::AttestationMessage::Clear();
     }
   }
-  if (_has_bits_[8 / 32] & 768) {
+  if (_has_bits_[8 / 32] & 1792) {
     if (has_regmsg()) {
       if (regmsg_ != NULL) regmsg_->::Messages::RegisterMessage::Clear();
     }
     if (has_resmsg()) {
       if (resmsg_ != NULL) resmsg_->::Messages::ResponseMessage::Clear();
+    }
+    if (has_smsmsg()) {
+      if (smsmsg_ != NULL) smsmsg_->::Messages::SMSMessage::Clear();
     }
   }
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
@@ -5266,6 +5713,19 @@ bool AllInOneMessage::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
+        if (input->ExpectTag(90)) goto parse_smsMsg;
+        break;
+      }
+
+      // optional .Messages.SMSMessage smsMsg = 11;
+      case 11: {
+        if (tag == 90) {
+         parse_smsMsg:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_smsmsg()));
+        } else {
+          goto handle_unusual;
+        }
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -5355,6 +5815,12 @@ void AllInOneMessage::SerializeWithCachedSizes(
       10, this->resmsg(), output);
   }
 
+  // optional .Messages.SMSMessage smsMsg = 11;
+  if (has_smsmsg()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      11, this->smsmsg(), output);
+  }
+
   if (!unknown_fields().empty()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -5432,6 +5898,13 @@ void AllInOneMessage::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
         10, this->resmsg(), target);
+  }
+
+  // optional .Messages.SMSMessage smsMsg = 11;
+  if (has_smsmsg()) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteMessageNoVirtualToArray(
+        11, this->smsmsg(), target);
   }
 
   if (!unknown_fields().empty()) {
@@ -5517,6 +5990,13 @@ int AllInOneMessage::ByteSize() const {
           this->resmsg());
     }
 
+    // optional .Messages.SMSMessage smsMsg = 11;
+    if (has_smsmsg()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          this->smsmsg());
+    }
+
   }
   if (!unknown_fields().empty()) {
     total_size +=
@@ -5576,6 +6056,9 @@ void AllInOneMessage::MergeFrom(const AllInOneMessage& from) {
     if (from.has_resmsg()) {
       mutable_resmsg()->::Messages::ResponseMessage::MergeFrom(from.resmsg());
     }
+    if (from.has_smsmsg()) {
+      mutable_smsmsg()->::Messages::SMSMessage::MergeFrom(from.smsmsg());
+    }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
 }
@@ -5622,6 +6105,9 @@ bool AllInOneMessage::IsInitialized() const {
   if (has_resmsg()) {
     if (!this->resmsg().IsInitialized()) return false;
   }
+  if (has_smsmsg()) {
+    if (!this->smsmsg().IsInitialized()) return false;
+  }
   return true;
 }
 
@@ -5637,6 +6123,7 @@ void AllInOneMessage::Swap(AllInOneMessage* other) {
     std::swap(attestmsg_, other->attestmsg_);
     std::swap(regmsg_, other->regmsg_);
     std::swap(resmsg_, other->resmsg_);
+    std::swap(smsmsg_, other->smsmsg_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);
