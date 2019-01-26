@@ -32,6 +32,7 @@ bool MysqlConnector::initDB(string host, string user, string passwd, string db_n
 }
 
 bool MysqlConnector::exeQuery(string sql, uint8_t *sealed_data, uint32_t *sealed_data_len) {
+    Log("=========== query is:%s",sql);
     if (mysql_query(mysql,sql.c_str())) {
         Log("Query failed!%s", mysql_error(mysql), log::error);
         return false;
@@ -41,18 +42,18 @@ bool MysqlConnector::exeQuery(string sql, uint8_t *sealed_data, uint32_t *sealed
            int num_fields = mysql_num_fields(g_query_result);
            int num_rows = mysql_num_rows(g_query_result);
            g_query_row = mysql_fetch_row(g_query_result);
-           if (g_query_row < 0 || num_fields != 2) {
+           if (g_query_row < 0 || num_fields != 1) {
                 Log("Get sealed data failed!%s", mysql_error(mysql), log::error);
                 return false;
            }
            unsigned long *fieldLength = mysql_fetch_lengths(g_query_result);
-           uint32_t sealed_data_len = fieldLength[1];
-           memcpy(sealed_data, (uint8_t*)g_query_row[1], sealed_data_len);
+           //*sealed_data_len = fieldLength[0];
+           *sealed_data_len = HexStringToByteArray(g_query_row[0], sealed_data);
         } else {
-            if (mysql_field_count(mysql) == 0)   //代表执行的是update,insert,delete类的非查询语句
+            if (mysql_field_count(mysql) == 0)   //non update,insert,delete query
             {
                 // (it was not a SELECT)
-                int num_rows = mysql_affected_rows(mysql);  //返回update,insert,delete影响的行数
+                int num_rows = mysql_affected_rows(mysql);  //return line number affected by update,insert,delete query
             } else {
                 Log("Get g_query_result error!%s", mysql_error(mysql), log::error);
                 return false;

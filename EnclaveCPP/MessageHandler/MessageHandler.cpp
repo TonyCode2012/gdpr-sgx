@@ -471,10 +471,12 @@ string MessageHandler::handleAttestationResult(Messages::AttestationMessage msg)
 }
 
 string MessageHandler::handleRegisterMSG(Messages::RegisterMessage msg) {
+    string result;
     uint8_t *p_cipher = (uint8_t*)malloc(11);
     uint8_t *p_mac = (uint8_t*)malloc(16);
     uint8_t *p_user_id = (uint8_t*)malloc(16);
     uint8_t *p_sealed_phone = (uint8_t*)malloc(1024);
+    uint8_t *p_unsealed_phone = (uint8_t*)malloc(32);
     uint32_t sealed_data_len;
     
     for(int i=0;i<11;i++) {
@@ -503,28 +505,19 @@ string MessageHandler::handleRegisterMSG(Messages::RegisterMessage msg) {
     }
     printf("\n");
 
+
     if(!putSealedPhone(p_user_id, p_sealed_phone, sealed_data_len)){
-        return "";
     }
-
-
-    /*
-    uint8_t *p_unsealed_phone = new uint8_t[64];
-    uint32_t unsealed_phone_len;
-    ret = unseal_phone(this->enclave->getID(),
-                       &status,
-                       this->enclave->getContext(),
-                       p_sealed_phone,
-                       sealed_data_len,
-                       p_unsealed_phone,
-                       &unsealed_phone_len);
-
-    Log("========== unsealed phone:%d ===========",unsealed_phone_len);
-    for(int i=0; i<unsealed_phone_len; i++) {
-        printf("%u,",p_unsealed_phone[i]);
+    
+    if(getPhoneByUserID(p_user_id, p_unsealed_phone)) {
+        for(int i=0; i<11; i++) {
+            printf("%u,",p_unsealed_phone[i]);
+        }
+        printf("\n");
+    } else {
+        Log("========== get phone failed!", log::error);
+        goto cleanup;
     }
-    printf("\n");
-    */
 
 
     if (SGX_SUCCESS != ret) {
@@ -545,27 +538,28 @@ string MessageHandler::handleRegisterMSG(Messages::RegisterMessage msg) {
             msg->add_userid(p_user_id[i]);
         }
         msg->set_size(16);
-        string s;
         Messages::AllInOneMessage aio_ret_msg;
         aio_ret_msg.set_type(Messages::Type::PHONE_RES);
         aio_ret_msg.set_allocated_resmsg(msg);
-        if(aio_ret_msg.SerializeToString(&s)) {
+        if(aio_ret_msg.SerializeToString(&result)) {
             Log("Serialization successful");
         }
         else {
             Log("Serialization failed", log::error);
-            s = "";
             goto cleanup;
         }
     }
 
 cleanup:
+    /*
     free(p_cipher);
     free(p_mac);
     free(p_user_id);
     free(p_sealed_phone);
+    free(p_unsealed_phone);
+    */
 
-    return "";
+    return result;
 }
 
 bool MessageHandler::putSealedPhone(uint8_t *userID, uint8_t *p_sealed_phone, uint32_t sealed_phone_len) {
@@ -573,7 +567,6 @@ bool MessageHandler::putSealedPhone(uint8_t *userID, uint8_t *p_sealed_phone, ui
     string userID_str = ByteArrayToString(userID, 16);
     string sealed_phone_str = ByteArrayToString(p_sealed_phone, sealed_phone_len);
     string sql_str = string("INSERT INTO userID2Phone (userID,cipherPhone) VALUE ") + "('" + userID_str + "','" + sealed_phone_str + "')";
-    Log("========== query:%s",sql_str);
 
     if (mysqlConnector->exeQuery(sql_str, NULL, 0)) {
         Log("Store sealed data successfully");
@@ -584,29 +577,31 @@ bool MessageHandler::putSealedPhone(uint8_t *userID, uint8_t *p_sealed_phone, ui
 
     return ret;
 }
-/*
-*/
 
-/*
 bool MessageHandler::getPhoneByUserID(uint8_t *userID, uint8_t *p_unsealed_phone) {
+    bool ret_b = true;
     sgx_status_t ret;
     sgx_status_t status;
     string userID_str = ByteArrayToString(userID, 16);
-    string sql_str = "select cipherPhone from userID2Phone where userID='" + userID_str + "'";
-    uint8_t *sealed_data = new uint8_t[1024];
+    string sql_str = "SELECT cipherPhone from userID2Phone where userID='" + userID_str + "'";
+    uint8_t *sealed_data = (uint8_t*)malloc(1024);
     uint32_t sealed_data_len;
 
     if(mysqlConnector->exeQuery(sql_str, sealed_data, &sealed_data_len)) {
         uint32_t unsealed_phone_len;
+        uint8_t *unsealed_data = (uint8_t*)malloc(32);
         ret = unseal_phone(this->enclave->getID(),
                            &status,
                            this->enclave->getContext(),
                            sealed_data,
                            sealed_data_len,
-                           p_unsealed_phone,
+                           //p_unsealed_phone,
+                           unsealed_data,
                            &unsealed_phone_len);
 
-        if (SGX_SUCCESS != ret) {
+        if (SGX_SUCCESS == ret) {
+            memcpy(p_unsealed_phone, unsealed_data, unsealed_phone_len);
+        } else {
             Log("Unseal phone number failed!", log::error);
         }
     } else {
@@ -615,12 +610,11 @@ bool MessageHandler::getPhoneByUserID(uint8_t *userID, uint8_t *p_unsealed_phone
     }
 
     if (SGX_SUCCESS != ret) {
-        return false;
+        ret_b = false;
     }
 
-    return true;
+    return ret_b;
 }
-*/
 
 string MessageHandler::handleSMS(Messages::SMSMessage msg) {
     uint8_t *userID = new uint8_t[16];

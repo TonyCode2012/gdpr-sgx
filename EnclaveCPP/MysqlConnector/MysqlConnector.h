@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <mysql/mysql.h>
 #include "LogBase.h"
+#include "UtilityFunctions.h"
 
 using namespace std;
 

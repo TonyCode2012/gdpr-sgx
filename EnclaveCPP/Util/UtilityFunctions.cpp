@@ -40,7 +40,7 @@ string ByteArrayToStringNoFill(const uint8_t *arr, int size) {
 }
 
 
-int HexStringToByteArray(string str, uint8_t **arr) {
+int HexStringToByteArray(string str, uint8_t *arr) {
     vector<uint8_t> bytes;
 
     for (unsigned int i=0; i<str.length(); i+=2) {
@@ -49,8 +49,8 @@ int HexStringToByteArray(string str, uint8_t **arr) {
         bytes.push_back((unsigned char)byte);
     }
 
-    *arr = (uint8_t*) malloc(sizeof(uint8_t) * bytes.size());
-    copy(bytes.begin(), bytes.end(), *arr);
+    //*arr = (uint8_t*) malloc(sizeof(uint8_t) * bytes.size());
+    copy(bytes.begin(), bytes.end(), arr);
 
     return bytes.size();
 }

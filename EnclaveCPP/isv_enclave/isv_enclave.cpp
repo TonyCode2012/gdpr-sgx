@@ -365,6 +365,10 @@ sgx_status_t register_user (
 
     } while(0);
 
+    //free(decrypted);
+    //free(p_hash);
+    //free(sealed_data_buf);
+
     return ret;
 }
 
@@ -393,8 +397,8 @@ sgx_status_t unseal_phone(sgx_ra_context_t context,
         ret = SGX_ERROR_UNEXPECTED;
     }
 
-    free(sealed_data);
-    free(unsealed_data);
+    //free(sealed_data);
+    //free(unsealed_data);
 
     return ret;
 }
