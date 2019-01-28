@@ -33,7 +33,6 @@ protobuf
 
 const origin = {
   value: "",
-  disabled: true,
   userId: ""
 };
 
@@ -44,8 +43,6 @@ class GDPRDemo extends React.Component {
 
     this.handleOnChange = this.handleOnChange.bind(this);
     this.handleOnSubmit = this.handleOnSubmit.bind(this);
-
-    this.setupWebSocket();
   }
 
   setupWebSocket() {
@@ -152,7 +149,8 @@ class GDPRDemo extends React.Component {
         break;
 
       case RA_APP_ATT_OK:
-        this.setState({ disabled: false });
+        const { value } = this.state;
+        msgToSent = this.assemble(PHONE_REG, value);
         break;
 
       case PHONE_RES:
@@ -171,7 +169,7 @@ class GDPRDemo extends React.Component {
   }
 
   render() {
-    const { value, disabled, userId } = this.state;
+    const { value, userId } = this.state;
 
     return (
       <div>
@@ -192,7 +190,6 @@ class GDPRDemo extends React.Component {
         <Col className="text-center">
           <Button
             color="primary"
-            disabled={disabled}
             onClick={this.handleOnSubmit}
           >
             Submit
@@ -208,11 +205,7 @@ class GDPRDemo extends React.Component {
   }
 
   handleOnSubmit() {
-    const { value } = this.state;
-    const msgToSent = this.assemble(PHONE_REG, value);
-
-    WEB_SOCKET.send(msgToSent);
-    console.log("======== Message sent ========\n\n\n\n\n");
+    this.setupWebSocket();
   }
 }
 

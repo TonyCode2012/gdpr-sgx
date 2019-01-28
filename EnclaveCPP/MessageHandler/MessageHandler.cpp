@@ -631,6 +631,7 @@ string MessageHandler::handleSMS(Messages::SMSMessage msg) {
         sms_data[i] = msg.sms(i);
     }
 
+        /*
     if(getPhoneByUserID(p_user_id, p_unsealed_phone)) {
         Log("========== get phone successfully! ==========");
         for(int i=0; i<11; i++) {
@@ -638,7 +639,6 @@ string MessageHandler::handleSMS(Messages::SMSMessage msg) {
         }
         printf("\n");
 
-        /*
         Messages::SMSMessage *msg = new Messages::SMSMessage();
         msg->set_type(Messages::Type::SMS_SEND);
         for(int i=0; i<16; i++) {
@@ -655,11 +655,11 @@ string MessageHandler::handleSMS(Messages::SMSMessage msg) {
             Log("Serialization failed", log::error);
             goto cleanup;
         }
-        */
     } else {
         Log("========== get phone failed!", log::error);
         goto cleanup;
     }
+        */
 
 }
 
