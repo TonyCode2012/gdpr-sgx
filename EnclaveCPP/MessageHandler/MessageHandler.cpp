@@ -509,6 +509,7 @@ string MessageHandler::handleRegisterMSG(Messages::RegisterMessage msg) {
     if(!putSealedPhone(p_user_id, p_sealed_phone, sealed_data_len)){
     }
     
+    /*
     if(getPhoneByUserID(p_user_id, p_unsealed_phone)) {
         for(int i=0; i<11; i++) {
             printf("%u,",p_unsealed_phone[i]);
@@ -518,6 +519,7 @@ string MessageHandler::handleRegisterMSG(Messages::RegisterMessage msg) {
         Log("========== get phone failed!", log::error);
         goto cleanup;
     }
+    */
 
 
     if (SGX_SUCCESS != ret) {
