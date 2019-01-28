@@ -631,6 +631,17 @@ string MessageHandler::handleSMS(Messages::SMSMessage msg) {
         sms_data[i] = msg.sms(i);
     }
 
+    if(getPhoneByUserID(p_user_id, p_unsealed_phone)) {
+        Log("========== get phone successfully! ==========");
+        for(int i=0; i<11; i++) {
+            printf("%u,",p_unsealed_phone[i]);
+        }
+        printf("\n");
+    } else {
+        Log("========== get phone failed!", log::error);
+        goto cleanup;
+    }
+
 }
 
 string MessageHandler::handleMSG0(Messages::MessageMSG0 msg) {
