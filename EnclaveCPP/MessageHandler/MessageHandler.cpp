@@ -637,6 +637,25 @@ string MessageHandler::handleSMS(Messages::SMSMessage msg) {
             printf("%u,",p_unsealed_phone[i]);
         }
         printf("\n");
+
+        /*
+        Messages::SMSMessage *msg = new Messages::SMSMessage();
+        msg->set_type(Messages::Type::SMS_SEND);
+        for(int i=0; i<16; i++) {
+            msg->add_userid(p_user_id[i]);
+        }
+        msg->set_size(16);
+        Messages::AllInOneMessage aio_sms_msg;
+        aio_ret_msg.set_type(Messages::Type::SMS_SEND);
+        aio_ret_msg.set_allocated_resmsg(msg);
+        if(aio_ret_msg.SerializeToString(&result)) {
+            Log("Serialization successful");
+        }
+        else {
+            Log("Serialization failed", log::error);
+            goto cleanup;
+        }
+        */
     } else {
         Log("========== get phone failed!", log::error);
         goto cleanup;
