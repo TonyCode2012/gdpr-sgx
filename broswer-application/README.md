@@ -14,4 +14,5 @@ Register and login server will be running on [http://localhost:3001](http://loca
 ### `npm run client`
 
 Suggested. Run only the broswer app. 
-Visit [http://localhost:3000/demo](http://localhost:3000/demo), and open developement panel in your broswer, to view messages printed in console.
+For personal users, visit [http://localhost:3000/demo/personal](http://localhost:3000/demo/personal) to register with phone number.
+For business users, visit [http://localhost:3000/demo/business](http://localhost:3000/demo/business) to send sms messages with legal user ID.

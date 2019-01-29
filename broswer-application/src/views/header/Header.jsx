@@ -60,7 +60,7 @@ class Header extends Component {
             </Row>
           </Col>
 
-          {authenticated ? (
+          {/* {authenticated ? (
             <Col xs={{ size: 3, offset: 5 }}>
               <Button
                 outline
@@ -79,7 +79,7 @@ class Header extends Component {
                 <Link name="login" color="info" />
                 <Link name="register" color="warning" />
               </Col>
-            )}
+            )} */}
         </Row>
       </div>
     );

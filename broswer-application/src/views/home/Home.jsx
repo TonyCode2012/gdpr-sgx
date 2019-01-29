@@ -1,17 +1,25 @@
-import React, { Component } from "react";
+import React from "react";
+import { Row, Col } from "reactstrap";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
+
+import Link from "../../components/links/Link";
 import ECDHKeyChange from "../../components/ECDHKeyChange";
 
-class Home extends Component {
+class Home extends React.Component {
   render() {
     return this.props.authenticated ? (
       <ECDHKeyChange />
     ) : (
-      <div className="text-center">
-        <h5>Welcome!</h5>
-      </div>
-    );
+        <Row className="text-center">
+          <Col xs={12} className="base-margin-top base-margin-bottom">
+            <Link name="personal" color="info" />
+          </Col>
+          <Col xs={12}>
+            <Link name="business" color="warning" />
+          </Col>
+        </Row>
+      );
   }
 }
 
