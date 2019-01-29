@@ -2,8 +2,8 @@ import React from "react";
 import { Row, Col, Input, Button, Alert } from "reactstrap";
 
 import protobuf from "protobufjs";
-import proto from "../utils/demo/Messages.proto";
-import registry from "../utils/demo/messageRegistry";
+import proto from "../utils/messages/Messages.proto";
+import registry from "../utils/messages/messageRegistry";
 import { buf2hexString } from "../utils/hexHelpers";
 import {
   RA_VERIFICATION,
@@ -46,8 +46,6 @@ class GDPRDemo extends React.Component {
   }
 
   setupWebSocket() {
-    if (WEB_SOCKET) return;
-
     WEB_SOCKET = new WebSocket(
       "ws://localhost:8080/com.sgxtrial/websocketendpoint"
     );

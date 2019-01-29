@@ -1,4 +1,4 @@
-import { RA_VERIFICATION } from "../../../metadata/messageTypes";
+import { RA_VERIFICATION } from "../../metadata/messageTypes";
 
 
 const getInitMsg = () => {

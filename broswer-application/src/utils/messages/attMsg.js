@@ -1,4 +1,4 @@
-import { RA_ATT_RESULT } from "../../../metadata/messageTypes";
+import { RA_ATT_RESULT } from "../../metadata/messageTypes";
 import {
   ATT_SIZE,
   IAS_EPID_GROUP_STATUS_REVOKED_BIT_POS,
@@ -19,11 +19,13 @@ import {
   SIGNATURE_Y,
   RESULT_SIZE,
   RESERVED
-} from "../../../metadata/ecConstants";
+} from "../../metadata/ecConstants";
 import {
-  switchEndian,
+  encrypt
+} from "../gcmHelpers";
+import {
   hexStringToArray
-} from "../../hexHelpers";
+} from "../hexHelpers";
 
 const crypto = require('crypto');
 const aesCmac = require("node-aes-cmac").aesCmac;
@@ -49,29 +51,6 @@ const pseEvaluationStatus = (
 );
 
 
-function encrypt(key) {
-  const text = new Buffer(Uint8Array.from('67'), 'hex');
-  const iv = new Buffer('000000000000000000000000', 'hex');
-  const bufferKey = new Buffer(key, 'hex');
-
-  const cipher = crypto.createCipheriv('aes-128-gcm', bufferKey, iv);
-
-  console.log("=====shared key is:",bufferKey);
-
-  var encrypted = cipher.update(text, 'utf9', 'hex')
-  encrypted += cipher.final('hex');
-  const tag = cipher.getAuthTag();
-  console.log("=====tag is:",tag);
-  console.log("=====secrat is:",encrypted);
-
-
-  return {
-    content: encrypted,
-    tag: tag
-  };
-}
-
-
 const getAttMsg = () => {
   const { SHORT_KEY } = findKeys();
 
@@ -83,10 +62,7 @@ const getAttMsg = () => {
   /**
    * @desc calc encrypted payload & payload_tag
    */
-  const { content, tag } = encrypt(SHORT_KEY);
-
-  console.log("=============== mac is:",tag);
-  console.log("=============== payload is:",content);
+  const { encrypted, tag } = encrypt(SHORT_KEY, '67');
 
   return {
     type: RA_ATT_RESULT,
@@ -106,7 +82,7 @@ const getAttMsg = () => {
     resultSize: RESULT_SIZE,
     reserved: RESERVED,
     payloadTag: tag,
-    payload: hexStringToArray(content,2)
+    payload: hexStringToArray(encrypted, 2)
   };
 }
 
