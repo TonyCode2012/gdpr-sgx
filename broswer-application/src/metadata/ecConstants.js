@@ -30,6 +30,8 @@ export const SIGNATURE_Y = "0000000000000000"; //16 bits
  */
 export const MSG2_SIZE = 168;
 export const ATT_SIZE = 145;
+export const REG_SIZE = 11;
+export const RES_SIZE = 16;
 export const SIZE_SIGRL = 0;
 export const SIGRL = 0;
 export const RESERVED = "000000000000";

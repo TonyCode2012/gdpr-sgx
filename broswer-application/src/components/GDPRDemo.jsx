@@ -1,9 +1,9 @@
 import React from "react";
 import { Row, Col, Input, Button, Alert } from "reactstrap";
-
 import protobuf from "protobufjs";
-import proto from "../utils/demo/Messages.proto";
-import registry from "../utils/demo/messageRegistry";
+
+import registry from "../utils/messages";
+import proto from "../utils/messages/Messages.proto";
 import { buf2hexString } from "../utils/hexHelpers";
 import {
   RA_VERIFICATION,
@@ -14,7 +14,8 @@ import {
   RA_ATT_RESULT,
   RA_APP_ATT_OK,
   PHONE_REG,
-  PHONE_RES
+  PHONE_RES,
+  SMS_SEND
 } from "../metadata/messageTypes";
 
 let PROTO, WEB_SOCKET;
@@ -32,8 +33,10 @@ protobuf
   });
 
 const origin = {
-  value: "",
-  userId: ""
+  phone: "",
+  userID: "",
+  content: "",
+  alert: ""
 };
 
 class GDPRDemo extends React.Component {
@@ -42,7 +45,6 @@ class GDPRDemo extends React.Component {
     this.state = { ...origin };
 
     this.handleOnChange = this.handleOnChange.bind(this);
-    this.handleOnSubmit = this.handleOnSubmit.bind(this);
   }
 
   setupWebSocket() {
@@ -53,8 +55,10 @@ class GDPRDemo extends React.Component {
     WEB_SOCKET.onopen = () => {
       console.log("Connection open ...");
 
-      const initMsg = this.assemble(RA_VERIFICATION);
-      WEB_SOCKET.send(initMsg);
+      const { end } = this.props.match.params;
+      const msgToSent = end === "personal" ? this.assemble(RA_VERIFICATION) : this.assemble(SMS_SEND, this.state);
+
+      WEB_SOCKET.send(msgToSent);
       console.log("======== Initial message sent ========\n\n\n\n\n");
     };
 
@@ -64,7 +68,6 @@ class GDPRDemo extends React.Component {
 
       reader.onload = () => {
         const ecMsg = new Uint8Array(reader.result);
-        console.log("onmessage", ecMsg);
 
         if (ecMsg) {
           this.handleMessage(ecMsg);
@@ -147,13 +150,13 @@ class GDPRDemo extends React.Component {
         break;
 
       case RA_APP_ATT_OK:
-        const { value } = this.state;
-        msgToSent = this.assemble(PHONE_REG, value);
+        const { phone } = this.state;
+        msgToSent = this.assemble(PHONE_REG, phone);
         break;
 
       case PHONE_RES:
         const { userID } = message.resMsg;
-        this.setState({ userId: buf2hexString(userID) });
+        this.setState({ alert: buf2hexString(userID) });
         break;
 
       default:
@@ -167,19 +170,28 @@ class GDPRDemo extends React.Component {
   }
 
   render() {
-    const { value, userId } = this.state;
+    const { end } = this.props.match.params;
+
+    if (end === "personal") return this.renderPersonal();
+    if (end === "business") return this.renderBusiness();
+
+    return null;
+  }
+
+  renderPersonal() {
+    const { phone, alert } = this.state;
 
     return (
-      <div>
-        {!!userId && (
-          <Alert color="success">
-            Registration success! User ID is: {userId}
-          </Alert>
-        )}
+      <Col xs={12} md={{ size: 8, offset: 2 }}>
+        <Alert color="success" isOpen={!!alert} >
+          Registration success! <br />
+          User ID is: {alert}
+        </Alert>
         <Row className="base-margin-bottom">
-          <Col xs={12} md={{ size: 8, offset: 2 }}>
+          <Col xs={12} md={{ size: 10, offset: 1 }}>
             <Input
-              value={value}
+              name="phone"
+              value={phone}
               placeholder="phone"
               onChange={this.handleOnChange}
             />
@@ -188,22 +200,52 @@ class GDPRDemo extends React.Component {
         <Col className="text-center">
           <Button
             color="primary"
-            onClick={this.handleOnSubmit}
+            onClick={this.setupWebSocket.bind(this)}
           >
             Submit
           </Button>
         </Col>
-      </div>
+      </Col>
+    );
+  }
+
+  renderBusiness() {
+    const { userID, content } = this.state;
+
+    return (
+      <Col xs={12} md={{ size: 8, offset: 2 }}>
+        <Row className="base-margin-bottom">
+          <Input
+            name="userID"
+            value={userID}
+            placeholder="User ID"
+            onChange={this.handleOnChange}
+          />
+        </Row>
+        <Row className="base-margin-bottom">
+          <Input
+            name="content"
+            type="textarea"
+            value={content}
+            placeholder="Text content..."
+            onChange={this.handleOnChange}
+          />
+        </Row>
+        <Col className="text-center">
+          <Button
+            color="primary"
+            onClick={this.setupWebSocket.bind(this)}
+          >
+            Submit
+          </Button>
+        </Col>
+      </Col>
     );
   }
 
   handleOnChange(event) {
-    const { value } = event.target;
-    this.setState({ value });
-  }
-
-  handleOnSubmit() {
-    this.setupWebSocket();
+    const { value, name } = event.target;
+    this.setState({ [name]: value });
   }
 }
 

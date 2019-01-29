@@ -1,6 +1,7 @@
 module.exports = [
   "/register",
   "/login",
-  "/demo",
+  "/demo/personal",
+  "/demo/business",
   "/"
 ]

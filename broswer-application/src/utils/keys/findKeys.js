@@ -1,4 +1,4 @@
-const { switchEndian, toHex } = require("../../hexHelpers")
+const { switchEndian, toHex } = require("../hexHelpers");
 const {
   myPrivateKey,
   getMyPublicKey,

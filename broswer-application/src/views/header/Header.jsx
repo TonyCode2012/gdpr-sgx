@@ -56,11 +56,11 @@ class Header extends Component {
                 alt="logo"
                 onClick={this.goToHomePage}
               />
-              <span id="app-name">Daily Record</span>
+              <span id="app-name">GDPR SGX</span>
             </Row>
           </Col>
 
-          {authenticated ? (
+          {/* {authenticated ? (
             <Col xs={{ size: 3, offset: 5 }}>
               <Button
                 outline
@@ -75,11 +75,11 @@ class Header extends Component {
               </Button>
             </Col>
           ) : (
-            <Col xs={{ size: 3, offset: 5 }}>
-              <Link name="login" color="info" />
-              <Link name="register" color="warning" />
-            </Col>
-          )}
+              <Col xs={{ size: 3, offset: 5 }}>
+                <Link name="login" color="info" />
+                <Link name="register" color="warning" />
+              </Col>
+            )} */}
         </Row>
       </div>
     );

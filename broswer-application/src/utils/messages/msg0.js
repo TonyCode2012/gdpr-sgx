@@ -1,4 +1,4 @@
-import { RA_MSG0 } from "../../../metadata/messageTypes";
+import { RA_MSG0 } from "../../metadata/messageTypes";
 
 
 const getMsg0 = () => {
