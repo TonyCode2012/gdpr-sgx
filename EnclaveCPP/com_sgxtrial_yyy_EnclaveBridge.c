@@ -17,6 +17,7 @@ char* jstringToChar(JNIEnv* env, jstring jstr) {
     env->ReleaseByteArrayElements(barr, ba, 0);
     return rtn;
 }
+*/
 
 jstring charTojstring(JNIEnv* env, const char* pat) {
     //定义java String类 strClass
@@ -33,6 +34,7 @@ jstring charTojstring(JNIEnv* env, const char* pat) {
     return (jstring) (env)->NewObject(strClass, ctorID, bytes, encoding);
 }
 
+/*
 string jstring2string(JNIEnv *env, jstring jStr) {
     if (!jStr)
         return "";
@@ -67,7 +69,7 @@ JNIEXPORT jlong JNICALL Java_com_sgxtrial_yyy_EnclaveBridge_createMessageHandler
     return (jlong) new MessageHandler();
 }
 
-JNIEXPORT jbyteArray JNICALL Java_com_sgxtrial_yyy_EnclaveBridge_handleMessages(JNIEnv *env, jobject obj, jlong msgHandlerAddr, jbyteArray msg)
+JNIEXPORT jbyteArray JNICALL Java_com_sgxtrial_yyy_EnclaveBridge_handleMessages(JNIEnv *env, jobject obj, jlong msgHandlerAddr, jbyteArray msg, jobjectArray data)
 {
     printf("========== receive serivce provider message ==========\n");
 
@@ -85,7 +87,29 @@ JNIEXPORT jbyteArray JNICALL Java_com_sgxtrial_yyy_EnclaveBridge_handleMessages(
     unsigned char* buf = new unsigned char[len];
     env->GetByteArrayRegion (msg, 0, len, reinterpret_cast<jbyte*>(buf)); 
  
-    string res = ((MessageHandler*)msgHandlerAddr)->handleMessages(buf, len);
+    /*
+    unsigned char *p_data[2];
+    p_data[0] = (unsigned char*)malloc(32);
+    p_data[1] = (unsigned char*)malloc(32);
+    memset(p_data[0],0,32);
+    memset(p_data[1],0,32);
+    */
+    unsigned char *p_data = (unsigned char*)malloc(32);
+    int size = 0;
+    string res = ((MessageHandler*)msgHandlerAddr)->handleMessages(buf, len, p_data, &size);
+    if(size != 0) {
+        printf("========================================================================\n");
+        char *p1 = (char*)malloc(16);
+        memset(p1,0,16);
+        memcpy(p1,p_data,16);
+        string phoneNum(p1);
+        printf("%s\n",p1);
+        memcpy(p1,p_data+16,16);
+        string sms(p1);
+        printf("%s\n",p1);
+        env->SetObjectArrayElement(data, 0, charTojstring(env, phoneNum.c_str()));
+        env->SetObjectArrayElement(data, 1, charTojstring(env, sms.c_str()));
+    }
     fflush(stdout);
     free(buf);
     return string2jbyteArray(env, res);

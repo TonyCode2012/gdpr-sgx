@@ -10,6 +10,6 @@ public class EnclaveBridge {
     }
 
     public native long createMessageHandlerOBJ();
-    public native byte[] handleMessages(long msgHandlerAddr, byte[] msg);
+    public native byte[] handleMessages(long msgHandlerAddr, byte[] msg, String[] data);
 
 }

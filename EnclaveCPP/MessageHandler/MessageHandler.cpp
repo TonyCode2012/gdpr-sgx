@@ -274,7 +274,7 @@ string MessageHandler::handleMSG2(Messages::MessageMSG2 msg) {
                                &p_msg3,
                                &msg3_size);
     } while (SGX_ERROR_BUSY == ret && busy_retry_time--);
-    SafeFree(p_msg2);
+    //SafeFree(p_msg2);
 
     if (SGX_SUCCESS != (sgx_status_t)ret) {
         Log("Error, call sgx_ra_proc_msg2 fail, error code: %lx", ret);
@@ -303,7 +303,7 @@ string MessageHandler::handleMSG2(Messages::MessageMSG2 msg) {
             msg3->add_quote(p_msg3->quote[i]);
         }
 
-        SafeFree(p_msg3);
+        //SafeFree(p_msg3);
 
         string s;
         Messages::AllInOneMessage aio_ret_msg;
@@ -319,7 +319,7 @@ string MessageHandler::handleMSG2(Messages::MessageMSG2 msg) {
         return s;
     }
 
-    SafeFree(p_msg3);
+    //SafeFree(p_msg3);
 
     return "";
 }
@@ -431,7 +431,7 @@ string MessageHandler::handleAttestationResult(Messages::AttestationMessage msg)
                                  MAX_VERIFICATION_RESULT,
                                  NULL);
 
-        SafeFree(p_att_result_msg_full);
+        //SafeFree(p_att_result_msg_full);
 
         if (SGX_SUCCESS != ret) {
             Log("Error, attestation result message secret using SK based AESGCM failed1 %d", ret, log::error);
@@ -465,7 +465,7 @@ string MessageHandler::handleAttestationResult(Messages::AttestationMessage msg)
         }
     }
 
-    SafeFree(p_att_result_msg_full);
+    //SafeFree(p_att_result_msg_full);
 
     return "";
 }
@@ -618,48 +618,31 @@ bool MessageHandler::getPhoneByUserID(uint8_t *userID, uint8_t *p_unsealed_phone
     return ret_b;
 }
 
-string MessageHandler::handleSMS(Messages::SMSMessage msg) {
-    uint8_t *userID = new uint8_t[16];
+void MessageHandler::handleSMS(Messages::SMSMessage msg, unsigned char* p_data) {
+    uint8_t *p_user_id = (uint8_t*)malloc(16);
+    uint8_t *p_unsealed_phone = (uint8_t*)malloc(11);
     uint32_t sms_size = msg.size();
-    uint8_t *sms_data = new uint8_t[sms_size];
+    uint8_t *sms_data = (uint8_t*)malloc(sms_size);
 
     for(int i=0; i<16; i++) {
-        userID[i] = msg.userid(i);
+        p_user_id[i] = msg.userid(i);
     }
 
     for(int i=0; i<sms_size; i++) {
         sms_data[i] = msg.sms(i);
     }
 
-        /*
     if(getPhoneByUserID(p_user_id, p_unsealed_phone)) {
         Log("========== get phone successfully! ==========");
         for(int i=0; i<11; i++) {
             printf("%u,",p_unsealed_phone[i]);
         }
         printf("\n");
-
-        Messages::SMSMessage *msg = new Messages::SMSMessage();
-        msg->set_type(Messages::Type::SMS_SEND);
-        for(int i=0; i<16; i++) {
-            msg->add_userid(p_user_id[i]);
-        }
-        msg->set_size(16);
-        Messages::AllInOneMessage aio_sms_msg;
-        aio_ret_msg.set_type(Messages::Type::SMS_SEND);
-        aio_ret_msg.set_allocated_resmsg(msg);
-        if(aio_ret_msg.SerializeToString(&result)) {
-            Log("Serialization successful");
-        }
-        else {
-            Log("Serialization failed", log::error);
-            goto cleanup;
-        }
+        memcpy(p_data, p_unsealed_phone, 11);
+        memcpy(p_data+12, sms_data, sms_size);
     } else {
         Log("========== get phone failed!", log::error);
-        goto cleanup;
     }
-        */
 
 }
 
@@ -708,7 +691,7 @@ string MessageHandler::createInitMsg(int type, string msg) {
 */
 
 
-string MessageHandler::handleMessages(unsigned char* bytes, int len) {
+string MessageHandler::handleMessages(unsigned char* bytes, int len, unsigned char *p_data, int *p_size) {
     string res;
     bool ret;
 
@@ -761,7 +744,7 @@ string MessageHandler::handleMessages(unsigned char* bytes, int len) {
     case Messages::Type::SMS_SEND: {
         Log("========== send short message ==========");
         Messages::SMSMessage sms_msg = aio_msg.smsmsg();
-        res = this->handleSMS(sms_msg);
+        this->handleSMS(sms_msg, p_data);
         Log("========== send short message end ==========");
     }
     break;

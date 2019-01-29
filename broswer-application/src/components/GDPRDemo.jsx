@@ -46,8 +46,6 @@ class GDPRDemo extends React.Component {
   }
 
   setupWebSocket() {
-    if (WEB_SOCKET) return;
-
     WEB_SOCKET = new WebSocket(
       "ws://localhost:8080/com.sgxtrial/websocketendpoint"
     );

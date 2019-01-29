@@ -84,7 +84,11 @@ function rebuild_web()
         verbose ERROR "build web server war failed!" h
         exit 1
     fi
-    cp $webwarName $tomcatdir/webapps
+    cp target/$webwarName $tomcatdir/webapps
+    if [ $? -ne 0 ]; then
+        verbose ERROR "cp war package to tomcat failed!" h
+        exit 1
+    fi
     cd -
 }
 

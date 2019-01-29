@@ -19,10 +19,10 @@ JNIEXPORT jlong JNICALL Java_com_sgxtrial_yyy_EnclaveBridge_createMessageHandler
 /*
  * Class:     com_sgxtrial_yyy_EnclaveBridge
  * Method:    handleMessages
- * Signature: (J[B)[B
+ * Signature: (J[B[Ljava/lang/String;)[B
  */
 JNIEXPORT jbyteArray JNICALL Java_com_sgxtrial_yyy_EnclaveBridge_handleMessages
-  (JNIEnv *, jobject, jlong, jbyteArray);
+  (JNIEnv *, jobject, jlong, jbyteArray, jobjectArray);
 
 #ifdef __cplusplus
 }
