@@ -4,6 +4,7 @@ import msg2 from "./msg2";
 import attMsg from "./attMsg";
 import regMsg from "./regMsg";
 import resMsg from "./resMsg";
+import smsMsg from "./smsMsg";
 
 import {
   RA_MSG0,
@@ -14,7 +15,8 @@ import {
   RA_VERIFICATION,
   RA_APP_ATT_OK,
   PHONE_REG,
-  PHONE_RES
+  PHONE_RES,
+  SMS_SEND
 } from "../../metadata/messageTypes";
 
 
@@ -22,7 +24,7 @@ const registry = {
   [RA_MSG0]: {
     defName: "MessageMSG0",
     fieldName: "msg0",
-    getPayload: () => msg0()
+    getPayload: msg0
   },
   [RA_MSG1]: {
     defName: "MessageMSG1",
@@ -37,7 +39,7 @@ const registry = {
   [RA_MSG2]: {
     defName: "MessageMSG2",
     fieldName: "msg2",
-    getPayload: ecPublicKey => msg2(ecPublicKey)
+    getPayload: msg2
   },
   [RA_MSG3]: {
     defName: "MessageMSG3",
@@ -47,12 +49,12 @@ const registry = {
   [RA_ATT_RESULT]: {
     defName: "AttestationMessage",
     fieldName: "attestMsg",
-    getPayload: () => attMsg()
+    getPayload: attMsg
   },
   [RA_VERIFICATION]: {
     defName: "InitialMessage",
     fieldName: "initMsg",
-    getPayload: () => initMsg()
+    getPayload: initMsg
   },
   [RA_APP_ATT_OK]: {
     defName: "SecretMessage",
@@ -62,12 +64,17 @@ const registry = {
   [PHONE_REG]: {
     defName: "RegisterMessage",
     fieldName: "regMsg",
-    getPayload: phoneNum => regMsg(phoneNum)
+    getPayload: regMsg
   },
   [PHONE_RES]: {
     defName: "ResponseMessage",
     fieldName: "resMsg",
-    getPayload: () => resMsg()
+    getPayload: resMsg
+  },
+  [SMS_SEND]: {
+    defName: "SMSMessage",
+    fieldName: "smsMsg",
+    getPayload: smsMsg
   },
 }
 

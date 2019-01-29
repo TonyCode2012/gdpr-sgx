@@ -38,7 +38,7 @@ const App = () => {
             md={{ size: 8, offset: 2 }}
             lg={{ size: 6, offset: 3 }}
           >
-            <Route path="/demo" component={Demo} />
+            <Route path="/demo/:end" component={Demo} />
             <Route path="/login" component={Login} />
             <Route path="/register" component={Register} />
           </Col>

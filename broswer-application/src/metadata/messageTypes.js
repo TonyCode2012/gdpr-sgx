@@ -7,3 +7,4 @@ export const RA_VERIFICATION = 5;
 export const RA_APP_ATT_OK = 6;
 export const PHONE_REG = 7;
 export const PHONE_RES = 8;
+export const SMS_SEND = 9;
