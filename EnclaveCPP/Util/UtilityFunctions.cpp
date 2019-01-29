@@ -4,7 +4,7 @@ using namespace util;
 
 void SafeFree(void *ptr) {
     if (NULL != ptr) {
-        free(ptr);
+        //free(ptr);
         ptr = NULL;
     }
 }

@@ -28,14 +28,17 @@ public class WebSocketServer {
         logger.info("receive msg with thread: " + Thread.currentThread().toString());
         logger.info("js msg:" + message.toString());
         logger.info("js msg lenght:" + message.length);
-        String[] arr = new String[2];
-        byte[] enclaveResults = EnclaveThreadManager.getInstance().getBridge().callEnclave(message,arr);
+        //String[] arr = new String[2];
+        byte[] enclaveResults = EnclaveThreadManager.getInstance().getBridge().callEnclave(message);
+        //byte[] enclaveResults = EnclaveThreadManager.getInstance().getBridge().callEnclave(message,arr);
+        /*
         if(arr[0] != null) {
             logger.info("phone number:"+arr[0]);
             logger.info("short message:"+arr[1]);
 		    SMSSender sender = new SMSSender();
-		    //sender.sendMsg(arr[0],arr[1]);
+		    sender.sendMsg(arr[0],arr[1]);
         }
+        */
         logger.info("enclave msg:" + enclaveResults.toString());
         try {
             session.getBasicRemote().sendBinary(ByteBuffer.wrap(enclaveResults));

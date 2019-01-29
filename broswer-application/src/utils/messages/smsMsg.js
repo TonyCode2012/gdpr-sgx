@@ -9,7 +9,7 @@ const getSmsMsg = ({ userID, content }) => {
   return {
     type: SMS_SEND,
     userID: Uint8Array.from(hexStringToArray(userID, 2)),
-    sms: content,
+    sms: Uint8Array.from(content),
     size: 0
   };
 }
