@@ -31,7 +31,7 @@ enclave {
         public sgx_status_t unseal_phone(sgx_ra_context_t context,
                                            [in,size=sealed_phone_len] uint8_t *p_sealed_phone, 
                                            uint32_t sealed_phone_len,
-                                           [out,count=64] uint8_t *p_unsealed_phone,
+                                           [out,count=32] uint8_t *p_unsealed_phone,
                                            [out] uint32_t *p_unsealed_phone_len);
     };
 

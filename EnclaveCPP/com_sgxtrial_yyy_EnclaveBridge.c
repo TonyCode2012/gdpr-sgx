@@ -94,29 +94,22 @@ JNIEXPORT jbyteArray JNICALL Java_com_sgxtrial_yyy_EnclaveBridge_handleMessages(
     memset(p_data[0],0,32);
     memset(p_data[1],0,32);
     */
-    //unsigned char *p_data = (unsigned char*)malloc(32);
-    //memset(p_data,0,32);
+    unsigned char *p_data = (unsigned char*)malloc(32);
+    memset(p_data,0,32);
     int size = 0;
-    //string res = ((MessageHandler*)msgHandlerAddr)->handleMessages(buf, len, p_data, &size);
-    string res = ((MessageHandler*)msgHandlerAddr)->handleMessages(buf, len, NULL, &size);
+    string res = ((MessageHandler*)msgHandlerAddr)->handleMessages(buf, len, p_data, &size);
     if(size != 0) {
         printf("========================================================================\n");
-        /*
         int tmpsize = 32;
         char *p1 = (char*)malloc(tmpsize);
         memset(p1,0,tmpsize);
         memcpy(p1,p_data,11);
         string phoneNum(p1);
         memset(p1,0,tmpsize);
-        //printf("%s\n",p1);
         memcpy(p1,p_data+11,7);
         string sms(p1);
-        //printf("%s\n",p1);
-        */
-        env->SetObjectArrayElement(data, 0, charTojstring(env, "15021128363"));
-        env->SetObjectArrayElement(data, 1, charTojstring(env, "test test test"));
-        //env->SetObjectArrayElement(data, 0, charTojstring(env, phoneNum.c_str()));
-        //env->SetObjectArrayElement(data, 1, charTojstring(env, sms.c_str()));
+        env->SetObjectArrayElement(data, 0, charTojstring(env, phoneNum.c_str()));
+        env->SetObjectArrayElement(data, 1, charTojstring(env, sms.c_str()));
         //free(p1);
     }
     fflush(stdout);
