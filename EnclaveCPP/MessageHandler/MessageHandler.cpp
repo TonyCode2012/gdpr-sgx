@@ -431,6 +431,11 @@ string MessageHandler::handleAttestationResult(Messages::AttestationMessage msg)
                                  MAX_VERIFICATION_RESULT,
                                  NULL);
 
+        Log("========== input mac ==========");
+        for(int i=0;i<MAX_VERIFICATION_RESULT;i++) {
+            printf("%u,",p_att_result_msg_body->secret.payload_tag[i]);
+        }
+        printf("\n");
         //SafeFree(p_att_result_msg_full);
 
         if (SGX_SUCCESS != ret) {

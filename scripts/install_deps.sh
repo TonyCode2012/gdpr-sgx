@@ -46,6 +46,10 @@ function install_attest_deps()
     apply_pkg_result $? "$libc9v5pkg"
     sudo dpkg -i $compilerpkg
     apply_pkg_result $? "$compilerpkg"
+
+    sudo apt-get install mysql-server
+    sudo mysql_secure_installation
+    sudo apt-get install libmysqld-dev
 }
 
 function install_sdk_deps()

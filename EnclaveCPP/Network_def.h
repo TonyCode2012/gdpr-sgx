@@ -1,7 +1,7 @@
 #ifndef NETWORK_DEF_H
 #define NETWORK_DEF_H
 
-#define MAX_VERIFICATION_RESULT 2
+#define MAX_VERIFICATION_RESULT 16
 
 /*
 typedef enum _ra_msg_types {
