@@ -19,7 +19,7 @@ function verbose()
     local tips=$3
     local color=$GREEN
     local time=`date "+%Y/%m/%d %T.%3N"`
-    if [ x"$tips" !=  x"" ]; then tips=H; fi
+    if [ x"$tips" != x"" ]; then tips=H; fi
     case $type in
         INFO)   eval color=\$${tips}GREEN;;
         WARN)   eval color=\$${tips}YELLOW;;
@@ -97,6 +97,10 @@ function restart_web()
     cd $tomcatdir
     ./bin/shutdown.sh
     ./bin/startup.sh
+    if [ $? -ne 0 ]; then
+        verbose ERROR "Start up web server failed!" h
+        exit 1
+    fi
     tail -f logs/catalina.out
 }
 
