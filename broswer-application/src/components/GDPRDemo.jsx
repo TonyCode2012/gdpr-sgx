@@ -1,5 +1,5 @@
 import React from "react";
-import { Row, Col, Input, Button, Alert } from "reactstrap";
+import { Row, Col, Input, Alert } from "reactstrap";
 import protobuf from "protobufjs";
 
 import registry from "../utils/messages";
@@ -56,7 +56,10 @@ class GDPRDemo extends React.Component {
       console.log("Connection open ...");
 
       const { end } = this.props.match.params;
-      const msgToSent = end === "personal" ? this.assemble(RA_VERIFICATION) : this.assemble(SMS_SEND, this.state);
+      const msgToSent =
+        end === "personal"
+          ? this.assemble(RA_VERIFICATION)
+          : this.assemble(SMS_SEND, this.state);
 
       WEB_SOCKET.send(msgToSent);
       console.log("======== Initial message sent ========\n\n\n\n\n");
@@ -182,8 +185,8 @@ class GDPRDemo extends React.Component {
     const { phone, alert } = this.state;
 
     return (
-      <Col xs={12} md={{ size: 8, offset: 2 }}>
-        <Alert color="success" isOpen={!!alert} >
+      <Col xs={12} md={{ size: 8, offset: 2 }} className="base-margin-top">
+        <Alert color="success" isOpen={!!alert}>
           Registration success! <br />
           User ID is: {alert}
         </Alert>
@@ -198,12 +201,7 @@ class GDPRDemo extends React.Component {
           </Col>
         </Row>
         <Col className="text-center">
-          <Button
-            color="primary"
-            onClick={this.setupWebSocket.bind(this)}
-          >
-            Submit
-          </Button>
+          <button onClick={this.setupWebSocket.bind(this)}>Register</button>
         </Col>
       </Col>
     );
@@ -213,7 +211,7 @@ class GDPRDemo extends React.Component {
     const { userID, content } = this.state;
 
     return (
-      <Col xs={12} md={{ size: 8, offset: 2 }}>
+      <Col xs={12} md={{ size: 8, offset: 2 }} className="base-margin-top">
         <Row className="base-margin-bottom">
           <Input
             name="userID"
@@ -232,12 +230,7 @@ class GDPRDemo extends React.Component {
           />
         </Row>
         <Col className="text-center">
-          <Button
-            color="primary"
-            onClick={this.setupWebSocket.bind(this)}
-          >
-            Submit
-          </Button>
+          <button onClick={this.setupWebSocket.bind(this)}>Send Message</button>
         </Col>
       </Col>
     );

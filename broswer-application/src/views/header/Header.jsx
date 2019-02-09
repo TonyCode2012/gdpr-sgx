@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import { Row, Col, Button } from "reactstrap";
+import { Row, Col } from "reactstrap";
 import Link from "../../components/links/Link";
-import logoUrl from "../../static/images/logo.png";
+import { PathName } from "../../utils/locations";
 
 const origin = {
   showDropdownItem: false
@@ -15,8 +15,6 @@ class Header extends Component {
     this.state = { ...origin };
 
     this.goToHomePage = this.goToHomePage.bind(this);
-    this.handleLogout = this.handleLogout.bind(this);
-    this.handleOnToggle = this.handleOnToggle.bind(this);
   }
 
   componentDidMount() {
@@ -27,60 +25,28 @@ class Header extends Component {
     this.props.history.push("/");
   }
 
-  handleLogout() {
-    localStorage.removeItem("access_token");
-
-    this.props.dispatch({
-      namespace: "header",
-      desc: "log out",
-      type: "SET_ORIGIN"
-    });
-  }
-
-  handleOnToggle() {
-    const { showDropdownItem } = this.state;
-    this.setState({ showDropdownItem: !showDropdownItem });
-  }
-
   render() {
-    const { authenticated, username } = this.props.authentication;
+    const subpage = PathName !== "/";
 
     return (
-      <div id="app-header">
-        <Row className="align-items-center">
-          <Col xs={{ size: 3, offset: 1 }}>
-            <Row className="align-items-center">
-              <img
-                id="app-logo"
-                src={logoUrl}
-                alt="logo"
-                onClick={this.goToHomePage}
-              />
-              <span id="app-name">GDPR SGX</span>
-            </Row>
-          </Col>
-
-          {/* {authenticated ? (
-            <Col xs={{ size: 3, offset: 5 }}>
-              <Button
-                outline
-                color="info"
-                className="half-margin-right"
-                disabled
-              >
-                Hi, {username}
-              </Button>
-              <Button color="info" onClick={this.handleLogout}>
-                Log out
-              </Button>
+      <div id="app-header" className={`${subpage && "subpage"}`}>
+        <Col xs={12} sm={{ size: 10, offset: 1 }} lg={{ size: 8, offset: 2 }}>
+          <Row>
+            <Col id="header-name" xs={4}>
+              <span>GDPR SGX</span>
             </Col>
-          ) : (
-              <Col xs={{ size: 3, offset: 5 }}>
-                <Link name="login" color="info" />
-                <Link name="register" color="warning" />
-              </Col>
-            )} */}
-        </Row>
+
+            <Col id="header-nav" xs={8}>
+              <Link dest="home">Home</Link>
+              <Link dest="personal" label="Personal">
+                Personal
+              </Link>
+              <Link dest="business" label="Business">
+                Business
+              </Link>
+            </Col>
+          </Row>
+        </Col>
       </div>
     );
   }

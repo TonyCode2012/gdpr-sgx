@@ -1,0 +1,154 @@
+#banner {
+  padding: 8em 0 9em 0;
+  background-image: url(../static/images/banner.jpg);
+  background-size: cover;
+  background-position: bottom;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  text-align: center;
+  position: relative;
+}
+
+#banner:before {
+  content: '';
+  background: rgba(75, 75, 93, 0.85);
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+
+#banner .inner {
+  border-top: 2px solid rgba(255, 255, 255, 0.2);
+  position: relative;
+  z-index: 10005;
+  padding-top: 8em;
+
+  .middle-block {
+    border-left: 2px solid rgba(255, 255, 255, 0.2);
+    border-right: 2px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .button {
+    margin: auto;
+    text-decoration: none;
+  }
+}
+
+#banner h1 {
+  font-size: 3.5em;
+  font-weight: 400;
+  color: white;
+  line-height: 1em;
+  margin: 0 auto;
+  padding: 0;
+}
+
+#banner h3 {
+  font-weight: 400;
+  color: white;
+  margin: 0;
+  font-size: 1.5em;
+}
+
+#banner .fa {
+  color: $color-green;
+  font-size: 2em;
+  margin: .5em;
+}
+
+#banner p {
+  line-height: 2em;
+  font-size: 1em;
+  color: rgba(255, 255, 255, 0.55);
+  margin-bottom: 1.75em;
+}
+
+@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) {
+
+  #banner {
+    background-attachment: scroll;
+  }
+
+}
+
+@media screen and (max-width: 1280px) {
+
+  #banner {
+    padding: 7em 0 6em 0;
+  }
+
+  #banner .inner {
+    padding-top: 6em;
+  }
+
+  #banner h1 {
+    font-size: 3em;
+  }
+
+  #banner h3 {
+    font-size: 1.25em;
+  }
+
+}
+
+@media screen and (max-width: 980px) {
+
+  #banner {
+    background-attachment: scroll;
+    padding: 5em 0 4em 0;
+  }
+
+  #banner .inner {
+    padding-top: 4em;
+  }
+
+  #banner h1 {
+    font-size: 2.5em;
+  }
+
+  #banner h3 {
+    font-size: 1.25em;
+  }
+
+}
+
+@media screen and (max-width: 736px) {
+
+  #banner {
+    padding: 4em 0 3em 0;
+  }
+
+  #banner .inner {
+    padding-top: 3em;
+  }
+
+  #banner h1 {
+    font-size: 2em;
+  }
+
+  #banner h3 {
+    font-size: 1.25em;
+  }
+
+}
+
+@media screen and (max-width: 480px) {
+
+  #banner h1 {
+    font-size: 1.5em;
+  }
+
+}
+
+
+.img-round {
+  margin: 1em auto;
+  width: 160px;
+  border-radius: 100%;
+}
+
+#user-entry {
+  text-align: center
+}
