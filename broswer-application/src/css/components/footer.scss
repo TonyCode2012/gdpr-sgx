@@ -1,0 +1,32 @@
+#footer {
+  padding: 4em 0;
+  background: $color-green;
+  color: white;
+  text-align: center;
+}
+
+#footer a {
+  color: white;
+  margin-bottom: 2em !important;
+}
+
+#footer label {
+  text-align: left;
+  color: white;
+}
+
+#footer .copyright {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.8em;
+  margin: 0 0 1em 0;
+  padding: 0;
+}
+
+#footer .copyright a {
+  color: rgba(255, 255, 255, 0.5);
+  text-decoration: none;
+}
+
+#footer .copyright a:hover {
+  color: white;
+}

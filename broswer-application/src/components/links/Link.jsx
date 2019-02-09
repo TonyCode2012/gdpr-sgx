@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { Button } from "reactstrap";
 import { withRouter } from "react-router-dom";
 import { findLinkConfig } from "./linksRegistry";
 
@@ -8,7 +7,7 @@ class Link extends Component {
   constructor(props) {
     super(props);
 
-    this.config = findLinkConfig(this.props.name);
+    this.config = findLinkConfig(this.props.dest);
 
     this.handleOnClick = this.handleOnClick.bind(this);
   }
@@ -23,25 +22,21 @@ class Link extends Component {
   }
 
   render() {
+    const { label, ...rest } = this.props;
+
     return (
-      <Button
-        className="links"
-        color={this.props.color}
-        onClick={this.handleOnClick}
-      >
-        {this.config.label}
-      </Button>
+      <a href={this.config.path} {...rest}>
+        {label || this.config.label}
+      </a>
     );
   }
 }
 Link.propTypes = {
-  name: PropTypes.string.isRequired,
-  color: PropTypes.string
+  dest: PropTypes.string.isRequired
 };
 
 Link.defaultProps = {
-  name: "register",
-  color: "link"
+  dest: "register"
 };
 
 export default withRouter(Link);
