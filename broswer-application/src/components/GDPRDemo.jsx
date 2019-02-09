@@ -37,7 +37,8 @@ const origin = {
   phone: "",
   userID: "",
   content: "",
-  alert: ""
+  alert: "",
+  alertType: ""
 };
 
 class GDPRDemo extends React.Component {
@@ -83,6 +84,11 @@ class GDPRDemo extends React.Component {
 
     WEB_SOCKET.onclose = () => {
       console.log("Connection closing...");
+
+      this.setState({
+        alertType: "warning",
+        alert: this.state.alert || "Unknown error happened. Please try later."
+      });
     };
   }
 
@@ -124,9 +130,7 @@ class GDPRDemo extends React.Component {
 
   handleMessage(buffer) {
     const message = this.disassemble(buffer);
-
     const { type } = message;
-    //const { defName } = registry[type];
 
     console.log("Buffer received:", buffer);
     console.log("Message Received:", message);
@@ -159,12 +163,20 @@ class GDPRDemo extends React.Component {
 
       case PHONE_RES:
         const { userID } = message.resMsg;
-        this.setState({ alert: buf2hexString(userID) });
+        this.setState({
+          alert: buf2hexString(userID),
+          alertType: "success"
+        });
         break;
 
       case SMS_RES:
         const { statusCode } = message.smsresMsg;
-        console.log("status code is:",statusCode);
+        if (statusCode === 200) {
+          this.setState({
+            alert: "Message sent successfully!",
+            alertType: "success"
+          });
+        }
         break;
 
       default:
@@ -187,11 +199,11 @@ class GDPRDemo extends React.Component {
   }
 
   renderPersonal() {
-    const { phone, alert } = this.state;
+    const { phone, alert, alertType } = this.state;
 
     return (
       <Col xs={12} md={{ size: 8, offset: 2 }} className="base-margin-top">
-        <Alert color="success" isOpen={!!alert}>
+        <Alert color={alertType} isOpen={!!alert}>
           Registration success! <br />
           User ID is: {alert}
         </Alert>
@@ -213,10 +225,13 @@ class GDPRDemo extends React.Component {
   }
 
   renderBusiness() {
-    const { userID, content } = this.state;
+    const { userID, content, alert, alertType } = this.state;
 
     return (
       <Col xs={12} md={{ size: 8, offset: 2 }} className="base-margin-top">
+        <Alert color={alertType} isOpen={!!alert}>
+          {alert}
+        </Alert>
         <Row className="base-margin-bottom">
           <Input
             name="userID"
