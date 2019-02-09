@@ -583,7 +583,7 @@ bool MessageHandler::getPhoneByUserID(uint8_t *userID, uint8_t *p_unsealed_phone
     return ret_b;
 }
 
-string MessageHandler::handleSMS(Messages::SMSMessage msg, unsigned char* p_data) {
+string MessageHandler::handleSMS(Messages::SMSMessage msg, unsigned char *p_data, int *p_size) {
     string result;
     uint8_t *p_user_id = new uint8_t[USER_ID_SIZE];
     uint8_t *p_unsealed_phone = new uint8_t[32];
@@ -598,6 +598,9 @@ string MessageHandler::handleSMS(Messages::SMSMessage msg, unsigned char* p_data
         sms_data[i] = msg.sms(i);
     }
 
+    Messages::SMSResponseMessage *smsresMsg = new Messages::SMSResponseMessage();
+    smsresMsg->set_type(Messages::Type::SMS_RES);
+
     if(getPhoneByUserID(p_user_id, p_unsealed_phone)) {
         Log("========== get phone successfully! ==========");
         for(int i=0; i<PHONE_SIZE; i++) {
@@ -607,21 +610,23 @@ string MessageHandler::handleSMS(Messages::SMSMessage msg, unsigned char* p_data
         memcpy(p_data, ByteArrayToStringNoFill(p_unsealed_phone, PHONE_SIZE).c_str(), PHONE_SIZE);
         memcpy(p_data+PHONE_SIZE, ByteArrayToStringNoFill(sms_data,sms_size).c_str(), sms_size);
 
-        Messages::SMSResponseMessage *smsresMsg = new Messages::SMSResponseMessage();
-        smsresMsg->set_type(Messages::Type::SMS_RES);
         smsresMsg->set_statuscode(200);
 
-        Messages::AllInOneMessage aio_ret_msg;
-        aio_ret_msg.set_type(Messages::Type::SMS_RES);
-        aio_ret_msg.set_allocated_smsresmsg(smsresMsg);
-        if(aio_ret_msg.SerializeToString(&result)) {
-            Log("Serialization successful");
-        }
-        else {
-            Log("Serialization failed", log::error);
-        }
     } else {
+        smsresMsg->set_statuscode(400);
         Log("========== get phone failed!", log::error);
+    }
+
+    Messages::AllInOneMessage aio_ret_msg;
+    aio_ret_msg.set_type(Messages::Type::SMS_RES);
+    aio_ret_msg.set_allocated_smsresmsg(smsresMsg);
+    if(aio_ret_msg.SerializeToString(&result)) {
+        Log("Serialization successful");
+        *p_size = 2;
+    }
+    else {
+        Log("Serialization failed", log::error);
+        result = "";
     }
 
     return result;
@@ -725,8 +730,7 @@ string MessageHandler::handleMessages(unsigned char* bytes, int len, unsigned ch
     case Messages::Type::SMS_SEND: {
         Log("========== send short message ==========");
         Messages::SMSMessage sms_msg = aio_msg.smsmsg();
-        res = this->handleSMS(sms_msg, p_data);
-        *p_size = 2;
+        res = this->handleSMS(sms_msg, p_data, p_size);
         Log("========== send short message end ==========");
     }
     break;
