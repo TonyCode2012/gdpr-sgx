@@ -11,6 +11,7 @@ enum Type {
     PHONE_REG = 7;
     PHONE_RES = 8;
     SMS_SEND = 9;
+    SMS_RES = 10;
 }
 
 message SecretMessage {
@@ -102,6 +103,12 @@ message SMSMessage {
     optional uint32 size = 4;
 }
 
+message SMSResponseMessage {
+    required Type type = 1;
+    required uint32 statusCode = 2;
+    optional uint32 size = 3;
+}
+
 message AllInOneMessage {
     required Type type = 1;
     optional SecretMessage secretMsg = 2;
@@ -114,4 +121,5 @@ message AllInOneMessage {
     optional RegisterMessage regMsg = 9;
     optional ResponseMessage resMsg = 10;
     optional SMSMessage smsMsg = 11;
+    optional SMSResponseMessage smsresMsg = 12;
 }

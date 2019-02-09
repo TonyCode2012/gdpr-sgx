@@ -15,7 +15,8 @@ import {
   RA_APP_ATT_OK,
   PHONE_REG,
   PHONE_RES,
-  SMS_SEND
+  SMS_SEND,
+  SMS_RES
 } from "../metadata/messageTypes";
 
 let PROTO, WEB_SOCKET;
@@ -125,9 +126,8 @@ class GDPRDemo extends React.Component {
     const message = this.disassemble(buffer);
 
     const { type } = message;
-    const { defName } = registry[type];
+    //const { defName } = registry[type];
 
-    console.log("======== ", defName, "received ========");
     console.log("Buffer received:", buffer);
     console.log("Message Received:", message);
 
@@ -160,6 +160,11 @@ class GDPRDemo extends React.Component {
       case PHONE_RES:
         const { userID } = message.resMsg;
         this.setState({ alert: buf2hexString(userID) });
+        break;
+
+      case SMS_RES:
+        const { statusCode } = message.smsresMsg;
+        console.log("status code is:",statusCode);
         break;
 
       default:

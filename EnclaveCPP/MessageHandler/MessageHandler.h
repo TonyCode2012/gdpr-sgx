@@ -11,12 +11,16 @@
 //#include "NetworkManagerServer.h"
 #include "Messages.pb.h"
 #include "UtilityFunctions.h"
-#include "../remote_attestation_result.h"
+#include "remote_attestation_result.h"
 #include "LogBase.h"
-#include "../Network_def.h"
-//#include "GeneralSettings.h"
-#include "../GeneralSettings.h"
+#include "Network_def.h"
+#include "GeneralSettings.h"
 #include "MysqlConnector.h"
+
+#define PHONE_SIZE              11
+#define CIPHER_MAC_SIZE         16
+#define USER_ID_SIZE            16
+#define CIPHER_SIZE             1024 
 
 using namespace std;
 using namespace util;
@@ -42,7 +46,7 @@ public:
     void assembleAttestationMSG(Messages::AttestationMessage msg, ra_samp_response_header_t **pp_att_msg);
     string handleAttestationResult(Messages::AttestationMessage msg);
     string handleRegisterMSG(Messages::RegisterMessage msg);
-    void handleSMS(Messages::SMSMessage msg, unsigned char* p_data);
+    string handleSMS(Messages::SMSMessage msg, unsigned char* p_data);
     string handleMessages(unsigned char *bytes, int len, unsigned char *p_data, int *p_size);
     void assembleMSG2(Messages::MessageMSG2 msg, sgx_ra_msg2_t **pp_msg2);
     string handleMSG2(Messages::MessageMSG2 msg);
@@ -63,7 +67,7 @@ protected:
     Enclave *enclave = NULL;
 
 private:
-    int busy_retry_time = 4;
+    const int busy_retry_time = 4;
     MysqlConnector *mysqlConnector = NULL;
     //NetworkManagerServer *nm = NULL;
 

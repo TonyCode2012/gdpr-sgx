@@ -12,6 +12,7 @@ MessageHandler::MessageHandler(int port) {
 
 MessageHandler::~MessageHandler() {
     delete this->enclave;
+    delete this->mysqlConnector;
 }
 
 
@@ -106,19 +107,6 @@ string MessageHandler::generateMSG1() {
                                        sgx_ra_get_ga,
                                        &sgxMsg1Obj,
                                        &local_ec256_fix_data);
-        
-        /*
-        unsigned char pubbuf[sizeof(sgx_ec256_public_t)];
-        memcpy(pubbuf, (unsigned char*)&local_ec256_fix_data.ec256_public_key, sizeof(sgx_ec256_public_t));
-        Log("\tenclave public key:%s",ByteArrayToString(pubbuf,sizeof(pubbuf)));
-        unsigned char pribuf_r[sizeof(sgx_ec256_private_t)];
-        memcpy(pribuf_r, (unsigned char*)&local_ec256_fix_data.ec256_private_key, sizeof(sgx_ec256_private_t));
-        Log("\tenclave privat key:%s",ByteArrayToString(pribuf_r,sizeof(pribuf_r)));
-        Log("\tsealed data size  :%d",local_ec256_fix_data.sealed_data_size);
-        unsigned char psealedbuf[local_ec256_fix_data.sealed_data_size];
-        memcpy(psealedbuf, (unsigned char*)local_ec256_fix_data.p_sealed_data, local_ec256_fix_data.sealed_data_size);
-        Log("\tp sealed data is  :%s",ByteArrayToString(psealedbuf,sizeof(psealedbuf)));
-        */
         
 
         if (retGIDStatus == SGX_SUCCESS) {
@@ -226,7 +214,8 @@ void MessageHandler::assembleMSG2(Messages::MessageMSG2 msg, sgx_ra_msg2_t **pp_
     memcpy(&p_msg2->mac, &smac, sizeof(smac));
 
     p_msg2->sig_rl_size = msg.sizesigrl();
-    uint8_t *sigrl = (uint8_t*) malloc(sizeof(uint8_t) * msg.sizesigrl());
+    //uint8_t *sigrl = (uint8_t*) malloc(sizeof(uint8_t) * msg.sizesigrl());
+    uint8_t *sigrl = new uint8_t[msg.sizesigrl()];
     Log("\tsig rl size:%d",p_msg2->sig_rl_size);
 
     for (int i=0; i<msg.sizesigrl(); i++)
@@ -252,18 +241,8 @@ string MessageHandler::handleMSG2(Messages::MessageMSG2 msg) {
     int ret = 0;
 
     Log("========== sgx ra proc msg2 para ==========");
-    /*
-    uint8_t cbuf1[sizeof(sgx_ra_context_t)];
-    sgx_ra_context_t tmp_context = this->enclave->getContext();
-    memcpy(cbuf1, (uint8_t*)&tmp_context,sizeof(sgx_ra_context_t));
-    Log("\tcontext:%s",ByteArrayToString(cbuf1,sizeof(sgx_ra_context_t)));
-    Log("\tsize:%d",size);
-    uint8_t cbuf2[sizeof(sgx_ra_msg2_t)];
-    memcpy(cbuf2, (uint8_t*)p_msg2, sizeof(sgx_ra_msg2_t));
-    Log("\tp_msg2:%s",ByteArrayToString(cbuf2,sizeof(sgx_ra_msg2_t)));
-    printf("%" PRIu64 "\n",this->enclave->getID());
-    */
 
+    int timeout = 0;
     do {
         ret = sgx_ra_proc_msg2(this->enclave->getContext(),
                                this->enclave->getID(),
@@ -273,7 +252,7 @@ string MessageHandler::handleMSG2(Messages::MessageMSG2 msg) {
                                size,
                                &p_msg3,
                                &msg3_size);
-    } while (SGX_ERROR_BUSY == ret && busy_retry_time--);
+    } while (SGX_ERROR_BUSY == ret && ++timeout < busy_retry_time);
     //SafeFree(p_msg2);
 
     if (SGX_SUCCESS != (sgx_status_t)ret) {
@@ -477,18 +456,18 @@ string MessageHandler::handleAttestationResult(Messages::AttestationMessage msg)
 
 string MessageHandler::handleRegisterMSG(Messages::RegisterMessage msg) {
     string result;
-    uint8_t *p_cipher = (uint8_t*)malloc(11);
-    uint8_t *p_mac = (uint8_t*)malloc(16);
-    uint8_t *p_user_id = (uint8_t*)malloc(16);
-    uint8_t *p_sealed_phone = (uint8_t*)malloc(1024);
-    uint8_t *p_unsealed_phone = (uint8_t*)malloc(32);
+    uint8_t *p_cipher = new uint8_t[PHONE_SIZE];
+    uint8_t *p_mac = new uint8_t[CIPHER_MAC_SIZE];
+    uint8_t *p_user_id = new uint8_t[USER_ID_SIZE];
+    uint8_t *p_sealed_phone = new uint8_t[CIPHER_SIZE];
+    uint8_t *p_unsealed_phone = new uint8_t[32];
     uint32_t sealed_data_len;
     
-    for(int i=0;i<11;i++) {
+    for(int i=0;i<PHONE_SIZE;i++) {
         p_cipher[i] = msg.cipherphone(i);
     }
 
-    for(int i=0;i<16;i++) {
+    for(int i=0;i<CIPHER_MAC_SIZE;i++) {
         p_mac[i] = msg.mac(i);
     }
 
@@ -497,7 +476,7 @@ string MessageHandler::handleRegisterMSG(Messages::RegisterMessage msg) {
                                      &status,
                                      this->enclave->getContext(),
                                      p_cipher,
-                                     11,
+                                     PHONE_SIZE,
                                      p_mac,
                                      MAX_VERIFICATION_RESULT,
                                      p_user_id,
@@ -512,6 +491,7 @@ string MessageHandler::handleRegisterMSG(Messages::RegisterMessage msg) {
 
 
     if(!putSealedPhone(p_user_id, p_sealed_phone, sealed_data_len)){
+        goto cleanup;
     }
     
 
@@ -525,14 +505,14 @@ string MessageHandler::handleRegisterMSG(Messages::RegisterMessage msg) {
     } 
     else {
         Log("Send attestation okay");
-        string userID = ByteArrayToString(p_user_id, 16);
+        string userID = ByteArrayToString(p_user_id, USER_ID_SIZE);
         Log("user id:%s",userID);
         Messages::ResponseMessage *msg = new Messages::ResponseMessage();
         msg->set_type(Messages::Type::PHONE_RES);
-        for(int i=0; i<16; i++) {
+        for(int i=0; i<USER_ID_SIZE; i++) {
             msg->add_userid(p_user_id[i]);
         }
-        msg->set_size(16);
+        msg->set_size(USER_ID_SIZE);
         Messages::AllInOneMessage aio_ret_msg;
         aio_ret_msg.set_type(Messages::Type::PHONE_RES);
         aio_ret_msg.set_allocated_resmsg(msg);
@@ -546,20 +526,13 @@ string MessageHandler::handleRegisterMSG(Messages::RegisterMessage msg) {
     }
 
 cleanup:
-    /*
-    free(p_cipher);
-    free(p_mac);
-    free(p_user_id);
-    free(p_sealed_phone);
-    free(p_unsealed_phone);
-    */
 
     return result;
 }
 
 bool MessageHandler::putSealedPhone(uint8_t *userID, uint8_t *p_sealed_phone, uint32_t sealed_phone_len) {
     bool ret = true;
-    string userID_str = ByteArrayToString(userID, 16);
+    string userID_str = ByteArrayToString(userID, USER_ID_SIZE);
     string sealed_phone_str = ByteArrayToString(p_sealed_phone, sealed_phone_len);
     string sql_str = string("INSERT INTO userID2Phone (userID,cipherPhone) VALUE ") + "('" + userID_str + "','" + sealed_phone_str + "')" + " on DUPLICATE KEY UPDATE cipherPhone='" + sealed_phone_str + "'";
 
@@ -577,14 +550,14 @@ bool MessageHandler::getPhoneByUserID(uint8_t *userID, uint8_t *p_unsealed_phone
     bool ret_b = true;
     sgx_status_t ret;
     sgx_status_t status;
-    string userID_str = ByteArrayToString(userID, 16);
+    string userID_str = ByteArrayToString(userID, USER_ID_SIZE);
     string sql_str = "SELECT cipherPhone from userID2Phone where userID='" + userID_str + "'";
-    uint8_t *sealed_data = (uint8_t*)malloc(1024);
+    uint8_t *sealed_data = new uint8_t[CIPHER_SIZE];
     uint32_t sealed_data_len;
 
     if(mysqlConnector->exeQuery(sql_str, sealed_data, &sealed_data_len)) {
         uint32_t unsealed_phone_len;
-        uint8_t *unsealed_data = (uint8_t*)malloc(32);
+        uint8_t *unsealed_data = new uint8_t[32];
         ret = unseal_phone(this->enclave->getID(),
                            &status,
                            this->enclave->getContext(),
@@ -610,14 +583,14 @@ bool MessageHandler::getPhoneByUserID(uint8_t *userID, uint8_t *p_unsealed_phone
     return ret_b;
 }
 
-void MessageHandler::handleSMS(Messages::SMSMessage msg, unsigned char* p_data) {
-    uint8_t *p_user_id = (uint8_t*)malloc(16);
-    uint8_t *p_unsealed_phone = (uint8_t*)malloc(32);
+string MessageHandler::handleSMS(Messages::SMSMessage msg, unsigned char* p_data) {
+    string result;
+    uint8_t *p_user_id = new uint8_t[USER_ID_SIZE];
+    uint8_t *p_unsealed_phone = new uint8_t[32];
     uint32_t sms_size = msg.size();
-    uint8_t *sms_data = (uint8_t*)malloc(sms_size);
-    memset(sms_data, 0, sms_size);
+    uint8_t *sms_data = new uint8_t[sms_size];
 
-    for(int i=0; i<16; i++) {
+    for(int i=0; i<USER_ID_SIZE; i++) {
         p_user_id[i] = msg.userid(i);
     }
 
@@ -627,23 +600,31 @@ void MessageHandler::handleSMS(Messages::SMSMessage msg, unsigned char* p_data) 
 
     if(getPhoneByUserID(p_user_id, p_unsealed_phone)) {
         Log("========== get phone successfully! ==========");
-        for(int i=0; i<11; i++) {
+        for(int i=0; i<PHONE_SIZE; i++) {
             printf("%u,",p_unsealed_phone[i]);
         }
         printf("\n");
-        memcpy(p_data, ByteArrayToStringNoFill(p_unsealed_phone, 11).c_str(), 11);
-        memcpy(p_data+11, ByteArrayToStringNoFill(sms_data,sms_size).c_str(), sms_size);
+        memcpy(p_data, ByteArrayToStringNoFill(p_unsealed_phone, PHONE_SIZE).c_str(), PHONE_SIZE);
+        memcpy(p_data+PHONE_SIZE, ByteArrayToStringNoFill(sms_data,sms_size).c_str(), sms_size);
+
+        Messages::SMSResponseMessage *smsresMsg = new Messages::SMSResponseMessage();
+        smsresMsg->set_type(Messages::Type::SMS_RES);
+        smsresMsg->set_statuscode(200);
+
+        Messages::AllInOneMessage aio_ret_msg;
+        aio_ret_msg.set_type(Messages::Type::SMS_RES);
+        aio_ret_msg.set_allocated_smsresmsg(smsresMsg);
+        if(aio_ret_msg.SerializeToString(&result)) {
+            Log("Serialization successful");
+        }
+        else {
+            Log("Serialization failed", log::error);
+        }
     } else {
         Log("========== get phone failed!", log::error);
     }
 
-    /*
-    free(p_user_id);
-    free(p_unsealed_phone);
-    free(sms_data);
-    */
-
-    return;
+    return result;
 }
 
 string MessageHandler::handleMSG0(Messages::MessageMSG0 msg) {
@@ -744,7 +725,7 @@ string MessageHandler::handleMessages(unsigned char* bytes, int len, unsigned ch
     case Messages::Type::SMS_SEND: {
         Log("========== send short message ==========");
         Messages::SMSMessage sms_msg = aio_msg.smsmsg();
-        this->handleSMS(sms_msg, p_data);
+        res = this->handleSMS(sms_msg, p_data);
         *p_size = 2;
         Log("========== send short message end ==========");
     }

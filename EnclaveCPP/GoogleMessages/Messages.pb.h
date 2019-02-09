@@ -44,6 +44,7 @@ class AttestationMessage;
 class RegisterMessage;
 class ResponseMessage;
 class SMSMessage;
+class SMSResponseMessage;
 class AllInOneMessage;
 
 enum Type {
@@ -56,11 +57,12 @@ enum Type {
   RA_APP_ATT_OK = 6,
   PHONE_REG = 7,
   PHONE_RES = 8,
-  SMS_SEND = 9
+  SMS_SEND = 9,
+  SMS_RES = 10
 };
 bool Type_IsValid(int value);
 const Type Type_MIN = RA_MSG0;
-const Type Type_MAX = SMS_SEND;
+const Type Type_MAX = SMS_RES;
 const int Type_ARRAYSIZE = Type_MAX + 1;
 
 const ::google::protobuf::EnumDescriptor* Type_descriptor();
@@ -1455,6 +1457,105 @@ class SMSMessage : public ::google::protobuf::Message {
 };
 // -------------------------------------------------------------------
 
+class SMSResponseMessage : public ::google::protobuf::Message {
+ public:
+  SMSResponseMessage();
+  virtual ~SMSResponseMessage();
+
+  SMSResponseMessage(const SMSResponseMessage& from);
+
+  inline SMSResponseMessage& operator=(const SMSResponseMessage& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const SMSResponseMessage& default_instance();
+
+  void Swap(SMSResponseMessage* other);
+
+  // implements Message ----------------------------------------------
+
+  SMSResponseMessage* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const SMSResponseMessage& from);
+  void MergeFrom(const SMSResponseMessage& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required .Messages.Type type = 1;
+  inline bool has_type() const;
+  inline void clear_type();
+  static const int kTypeFieldNumber = 1;
+  inline ::Messages::Type type() const;
+  inline void set_type(::Messages::Type value);
+
+  // required uint32 statusCode = 2;
+  inline bool has_statuscode() const;
+  inline void clear_statuscode();
+  static const int kStatusCodeFieldNumber = 2;
+  inline ::google::protobuf::uint32 statuscode() const;
+  inline void set_statuscode(::google::protobuf::uint32 value);
+
+  // optional uint32 size = 3;
+  inline bool has_size() const;
+  inline void clear_size();
+  static const int kSizeFieldNumber = 3;
+  inline ::google::protobuf::uint32 size() const;
+  inline void set_size(::google::protobuf::uint32 value);
+
+  // @@protoc_insertion_point(class_scope:Messages.SMSResponseMessage)
+ private:
+  inline void set_has_type();
+  inline void clear_has_type();
+  inline void set_has_statuscode();
+  inline void clear_has_statuscode();
+  inline void set_has_size();
+  inline void clear_has_size();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  int type_;
+  ::google::protobuf::uint32 statuscode_;
+  ::google::protobuf::uint32 size_;
+  friend void  protobuf_AddDesc_Messages_2eproto();
+  friend void protobuf_AssignDesc_Messages_2eproto();
+  friend void protobuf_ShutdownFile_Messages_2eproto();
+
+  void InitAsDefaultInstance();
+  static SMSResponseMessage* default_instance_;
+};
+// -------------------------------------------------------------------
+
 class AllInOneMessage : public ::google::protobuf::Message {
  public:
   AllInOneMessage();
@@ -1605,6 +1706,15 @@ class AllInOneMessage : public ::google::protobuf::Message {
   inline ::Messages::SMSMessage* release_smsmsg();
   inline void set_allocated_smsmsg(::Messages::SMSMessage* smsmsg);
 
+  // optional .Messages.SMSResponseMessage smsresMsg = 12;
+  inline bool has_smsresmsg() const;
+  inline void clear_smsresmsg();
+  static const int kSmsresMsgFieldNumber = 12;
+  inline const ::Messages::SMSResponseMessage& smsresmsg() const;
+  inline ::Messages::SMSResponseMessage* mutable_smsresmsg();
+  inline ::Messages::SMSResponseMessage* release_smsresmsg();
+  inline void set_allocated_smsresmsg(::Messages::SMSResponseMessage* smsresmsg);
+
   // @@protoc_insertion_point(class_scope:Messages.AllInOneMessage)
  private:
   inline void set_has_type();
@@ -1629,6 +1739,8 @@ class AllInOneMessage : public ::google::protobuf::Message {
   inline void clear_has_resmsg();
   inline void set_has_smsmsg();
   inline void clear_has_smsmsg();
+  inline void set_has_smsresmsg();
+  inline void clear_has_smsresmsg();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -1644,6 +1756,7 @@ class AllInOneMessage : public ::google::protobuf::Message {
   ::Messages::RegisterMessage* regmsg_;
   ::Messages::ResponseMessage* resmsg_;
   ::Messages::SMSMessage* smsmsg_;
+  ::Messages::SMSResponseMessage* smsresmsg_;
   int type_;
   friend void  protobuf_AddDesc_Messages_2eproto();
   friend void protobuf_AssignDesc_Messages_2eproto();
@@ -3255,6 +3368,83 @@ inline void SMSMessage::set_size(::google::protobuf::uint32 value) {
 
 // -------------------------------------------------------------------
 
+// SMSResponseMessage
+
+// required .Messages.Type type = 1;
+inline bool SMSResponseMessage::has_type() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void SMSResponseMessage::set_has_type() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void SMSResponseMessage::clear_has_type() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void SMSResponseMessage::clear_type() {
+  type_ = 0;
+  clear_has_type();
+}
+inline ::Messages::Type SMSResponseMessage::type() const {
+  // @@protoc_insertion_point(field_get:Messages.SMSResponseMessage.type)
+  return static_cast< ::Messages::Type >(type_);
+}
+inline void SMSResponseMessage::set_type(::Messages::Type value) {
+  assert(::Messages::Type_IsValid(value));
+  set_has_type();
+  type_ = value;
+  // @@protoc_insertion_point(field_set:Messages.SMSResponseMessage.type)
+}
+
+// required uint32 statusCode = 2;
+inline bool SMSResponseMessage::has_statuscode() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void SMSResponseMessage::set_has_statuscode() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void SMSResponseMessage::clear_has_statuscode() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void SMSResponseMessage::clear_statuscode() {
+  statuscode_ = 0u;
+  clear_has_statuscode();
+}
+inline ::google::protobuf::uint32 SMSResponseMessage::statuscode() const {
+  // @@protoc_insertion_point(field_get:Messages.SMSResponseMessage.statusCode)
+  return statuscode_;
+}
+inline void SMSResponseMessage::set_statuscode(::google::protobuf::uint32 value) {
+  set_has_statuscode();
+  statuscode_ = value;
+  // @@protoc_insertion_point(field_set:Messages.SMSResponseMessage.statusCode)
+}
+
+// optional uint32 size = 3;
+inline bool SMSResponseMessage::has_size() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void SMSResponseMessage::set_has_size() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void SMSResponseMessage::clear_has_size() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void SMSResponseMessage::clear_size() {
+  size_ = 0u;
+  clear_has_size();
+}
+inline ::google::protobuf::uint32 SMSResponseMessage::size() const {
+  // @@protoc_insertion_point(field_get:Messages.SMSResponseMessage.size)
+  return size_;
+}
+inline void SMSResponseMessage::set_size(::google::protobuf::uint32 value) {
+  set_has_size();
+  size_ = value;
+  // @@protoc_insertion_point(field_set:Messages.SMSResponseMessage.size)
+}
+
+// -------------------------------------------------------------------
+
 // AllInOneMessage
 
 // required .Messages.Type type = 1;
@@ -3690,6 +3880,47 @@ inline void AllInOneMessage::set_allocated_smsmsg(::Messages::SMSMessage* smsmsg
     clear_has_smsmsg();
   }
   // @@protoc_insertion_point(field_set_allocated:Messages.AllInOneMessage.smsMsg)
+}
+
+// optional .Messages.SMSResponseMessage smsresMsg = 12;
+inline bool AllInOneMessage::has_smsresmsg() const {
+  return (_has_bits_[0] & 0x00000800u) != 0;
+}
+inline void AllInOneMessage::set_has_smsresmsg() {
+  _has_bits_[0] |= 0x00000800u;
+}
+inline void AllInOneMessage::clear_has_smsresmsg() {
+  _has_bits_[0] &= ~0x00000800u;
+}
+inline void AllInOneMessage::clear_smsresmsg() {
+  if (smsresmsg_ != NULL) smsresmsg_->::Messages::SMSResponseMessage::Clear();
+  clear_has_smsresmsg();
+}
+inline const ::Messages::SMSResponseMessage& AllInOneMessage::smsresmsg() const {
+  // @@protoc_insertion_point(field_get:Messages.AllInOneMessage.smsresMsg)
+  return smsresmsg_ != NULL ? *smsresmsg_ : *default_instance_->smsresmsg_;
+}
+inline ::Messages::SMSResponseMessage* AllInOneMessage::mutable_smsresmsg() {
+  set_has_smsresmsg();
+  if (smsresmsg_ == NULL) smsresmsg_ = new ::Messages::SMSResponseMessage;
+  // @@protoc_insertion_point(field_mutable:Messages.AllInOneMessage.smsresMsg)
+  return smsresmsg_;
+}
+inline ::Messages::SMSResponseMessage* AllInOneMessage::release_smsresmsg() {
+  clear_has_smsresmsg();
+  ::Messages::SMSResponseMessage* temp = smsresmsg_;
+  smsresmsg_ = NULL;
+  return temp;
+}
+inline void AllInOneMessage::set_allocated_smsresmsg(::Messages::SMSResponseMessage* smsresmsg) {
+  delete smsresmsg_;
+  smsresmsg_ = smsresmsg;
+  if (smsresmsg) {
+    set_has_smsresmsg();
+  } else {
+    clear_has_smsresmsg();
+  }
+  // @@protoc_insertion_point(field_set_allocated:Messages.AllInOneMessage.smsresMsg)
 }
 
 

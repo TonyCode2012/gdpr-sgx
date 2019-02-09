@@ -49,7 +49,7 @@ endif
 App_Cpp_Files := MessageHandler/MessageHandler.cpp Util/LogBase.cpp GoogleMessages/Messages.pb.cpp \
 Util/UtilityFunctions.cpp Enclave/Enclave.cpp Util/Base64.cpp
 
-App_Include_Paths := -IUtil -I$(SGX_SDK)/include -Iheaders -IMysqlConnector -IMessageHandler -IEnclave -IGoogleMessages -I/usr/local/include -IEnclave \
+App_Include_Paths := -IUtil -I$(SGX_SDK)/include -I./ -Iheaders -IMysqlConnector -IMessageHandler -IEnclave -IGoogleMessages -I/usr/local/include -IEnclave \
 
 App_C_Flags := $(SGX_COMMON_CFLAGS) -fPIC -Wno-attributes $(App_Include_Paths)
 
