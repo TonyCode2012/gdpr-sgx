@@ -32,8 +32,8 @@ void MessageHandler::start() {
 
 
 sgx_status_t MessageHandler::initEnclave() {
-    Log("========== STATUS IS ==========");
-    Log("\tmy flag is:%d",this->my_flag);
+    //Log("========== STATUS IS ==========");
+    //Log("\tmy flag is:%d",this->my_flag);
     this->enclave = Enclave::getInstance();
     sgx_status_t ret = this->enclave->createEnclave();
     if(this->my_flag == 0) {
@@ -175,13 +175,13 @@ void MessageHandler::assembleMSG2(Messages::MessageMSG2 msg, sgx_ra_msg2_t **pp_
         pub_key_gx[i] = msg.publickeygx(i);
         pub_key_gy[i] = msg.publickeygy(i);
     }
-    Log("\tpub key gx:%s",ByteArrayToString(pub_key_gx,32));
-    Log("\tpub key gy:%s",ByteArrayToString(pub_key_gy,32));
+    //Log("\tpub key gx:%s",ByteArrayToString(pub_key_gx,32));
+    //Log("\tpub key gy:%s",ByteArrayToString(pub_key_gy,32));
 
     for (int i=0; i<16; i++) {
         spid.id[i] = msg.spid(i);
     }
-    Log("\tspid:%s",ByteArrayToString(spid.id,16));
+    //Log("\tspid:%s",ByteArrayToString(spid.id,16));
 
     for (int i=0; i<8; i++) {
         sign_gb_ga.x[i] = msg.signaturex(i);
@@ -203,24 +203,24 @@ void MessageHandler::assembleMSG2(Messages::MessageMSG2 msg, sgx_ra_msg2_t **pp_
 
     p_msg2->quote_type = (uint16_t)msg.quotetype();
     p_msg2->kdf_id = msg.cmackdfid();
-    Log("\tquote type:%d",p_msg2->quote_type);
-    Log("\tkdf id    :%d",p_msg2->kdf_id);
+    //Log("\tquote type:%d",p_msg2->quote_type);
+    //Log("\tkdf id    :%d",p_msg2->kdf_id);
 
     uint8_t smac[16];
     for (int i=0; i<16; i++)
         smac[i] = msg.smac(i);
-    Log("\tsmac:%s",ByteArrayToString(smac,16));
+    //Log("\tsmac:%s",ByteArrayToString(smac,16));
 
     memcpy(&p_msg2->mac, &smac, sizeof(smac));
 
     p_msg2->sig_rl_size = msg.sizesigrl();
     //uint8_t *sigrl = (uint8_t*) malloc(sizeof(uint8_t) * msg.sizesigrl());
     uint8_t *sigrl = new uint8_t[msg.sizesigrl()];
-    Log("\tsig rl size:%d",p_msg2->sig_rl_size);
+    //Log("\tsig rl size:%d",p_msg2->sig_rl_size);
 
     for (int i=0; i<msg.sizesigrl(); i++)
         sigrl[i] = msg.sigrl(i);
-    Log("\tsigrl:%s",ByteArrayToString(sigrl, p_msg2->sig_rl_size));
+    //Log("\tsigrl:%s",ByteArrayToString(sigrl, p_msg2->sig_rl_size));
 
     memcpy(&p_msg2->sig_rl, &sigrl, msg.sizesigrl());
 
@@ -305,17 +305,17 @@ string MessageHandler::handleMSG2(Messages::MessageMSG2 msg) {
 
 
 void MessageHandler::assembleAttestationMSG(Messages::AttestationMessage msg, ra_samp_response_header_t **pp_att_msg) {
-    Log("\t========= assemble attestation msg 1");
+    //Log("\t========= assemble attestation msg 1");
     sample_ra_att_result_msg_t *p_att_result_msg = NULL;
     ra_samp_response_header_t* p_att_result_msg_full = NULL;
     int msg_size = msg.size();    
-    Log("Att msg size %d", msg_size);
+    //Log("Att msg size %d", msg_size);
 
     int msg_resultsize = msg.resultsize();
-    Log("Att msg result size %d", msg_resultsize);
+    //Log("Att msg result size %d", msg_resultsize);
 
     int total_size = msg.size() + sizeof(ra_samp_response_header_t) + msg.resultsize();
-    Log("Att result total size %d", total_size);
+    //Log("Att result total size %d", total_size);
 
     p_att_result_msg_full = (ra_samp_response_header_t*) malloc(total_size);
 
@@ -323,8 +323,8 @@ void MessageHandler::assembleAttestationMSG(Messages::AttestationMessage msg, ra
 
     p_att_result_msg_full->type = Messages::Type::RA_ATT_RESULT;
     p_att_result_msg_full->size = msg.size();
-    Log("Att result type: %d", p_att_result_msg_full->type);
-    Log("Att platform_info_blob_t size: %d", sizeof(ias_platform_info_blob_t));
+    //Log("Att result type: %d", p_att_result_msg_full->type);
+    //Log("Att platform_info_blob_t size: %d", sizeof(ias_platform_info_blob_t));
 
     p_att_result_msg = (sample_ra_att_result_msg_t *) p_att_result_msg_full->body;
 
@@ -354,11 +354,11 @@ void MessageHandler::assembleAttestationMSG(Messages::AttestationMessage msg, ra
         p_att_result_msg->mac[i] = msg.macsmk(i);
 
     p_att_result_msg->secret.payload_size = msg.resultsize();
-    Log("Att result payload_size: %d", p_att_result_msg->secret.payload_size);
+    //Log("Att result payload_size: %d", p_att_result_msg->secret.payload_size);
 
     for (int i=0; i<12; i++)
         p_att_result_msg->secret.reserved[i] = msg.reserved(i);
-    Log("Att result reserved");
+    //Log("Att result reserved");
 
     for (int i=0; i<SAMPLE_SP_TAG_SIZE; i++) {
         p_att_result_msg->secret.payload_tag[i] = msg.payloadtag(i);
@@ -410,11 +410,13 @@ string MessageHandler::handleAttestationResult(Messages::AttestationMessage msg)
                                  MAX_VERIFICATION_RESULT,
                                  NULL);
 
+        /*
         Log("========== input mac ==========");
         for(int i=0;i<MAX_VERIFICATION_RESULT;i++) {
             printf("%u,",p_att_result_msg_body->secret.payload_tag[i]);
         }
         printf("\n");
+        */
         //SafeFree(p_att_result_msg_full);
 
         if (SGX_SUCCESS != ret) {
@@ -602,11 +604,13 @@ string MessageHandler::handleSMS(Messages::SMSMessage msg, unsigned char *p_data
     smsresMsg->set_type(Messages::Type::SMS_RES);
 
     if(getPhoneByUserID(p_user_id, p_unsealed_phone)) {
+        /*
         Log("========== get phone successfully! ==========");
         for(int i=0; i<PHONE_SIZE; i++) {
             printf("%u,",p_unsealed_phone[i]);
         }
         printf("\n");
+        */
         memcpy(p_data, ByteArrayToStringNoFill(p_unsealed_phone, PHONE_SIZE).c_str(), PHONE_SIZE);
         memcpy(p_data+PHONE_SIZE, ByteArrayToStringNoFill(sms_data,sms_size).c_str(), sms_size);
 
@@ -614,7 +618,7 @@ string MessageHandler::handleSMS(Messages::SMSMessage msg, unsigned char *p_data
 
     } else {
         smsresMsg->set_statuscode(400);
-        Log("========== get phone failed!", log::error);
+        //Log("========== get phone failed!", log::error);
     }
 
     Messages::AllInOneMessage aio_ret_msg;

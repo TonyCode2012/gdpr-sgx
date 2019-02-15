@@ -32,7 +32,7 @@ bool MysqlConnector::initDB(string host, string user, string passwd, string db_n
 }
 
 bool MysqlConnector::exeQuery(string sql, uint8_t *sealed_data, uint32_t *sealed_data_len) {
-    Log("=========== query is:%s",sql);
+    //Log("=========== query is:%s",sql);
     if (mysql_query(mysql,sql.c_str())) {
         Log("Query failed!%s", mysql_error(mysql), log::error);
         return false;
