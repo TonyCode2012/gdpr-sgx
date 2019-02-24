@@ -42,6 +42,7 @@ public class SMSSender {
 
 	public static void main(String[] args){
 		SMSSender sender = new SMSSender();
+		//sender.sendMsg("15366038076", "4321");
 		sender.sendMsg("15366038076", "4321");
 	}
 

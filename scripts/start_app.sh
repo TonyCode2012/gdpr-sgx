@@ -33,6 +33,7 @@ function checkJob()
 {
     [[ x"$f_rebuild_enclave" = x"false" ]] && [[ x"$f_restart_ui" = x"false" ]] && \
         [[ x"$f_restart_web" = x"false" ]] && [[ x"$f_rebuild_web" = x"false" ]] && \
+        [[ x"$f_restart_app" = x"false" ]] && \
         { verbose ERROR "NOT A VALID USE!" h; usage; exit 1; }
 }
 
@@ -42,6 +43,7 @@ function setAllTrue()
     f_restart_ui=true
     f_restart_web=true
     f_rebuild_web=true
+    f_restart_app=true
 }
 
 function rebuild_enclave()
@@ -104,6 +106,17 @@ function restart_web()
     tail -f logs/catalina.out
 }
 
+function restart_app()
+{
+    cd $appdir/Application
+    make SGX_MODE=SM SGX_PRERELEASE=1
+    if [ $? -ne 0 ]; then
+        verbose ERROR "Start up enclave server failed!" h
+        exit 1
+    fi
+    $appdir/Application/app
+}
+
 
 ############### MAIN BODY ###############
 
@@ -113,6 +126,7 @@ webdir=$basedir/../comsgxtrial
 uidir=$basedir/../broswer-application
 sgxdir=$basedir/../EnclaveCPP
 tomcatdir=$basedir/../apache-tomcat-9.0.14
+appdir=$basedir/../enclave-server
 webwarName="com.sgxtrial.war"
 jnilibName="libEnclaveBridge.so"
 jniSignedName="isv_enclave.signed.so"
@@ -130,8 +144,9 @@ f_rebuild_enclave=false
 f_restart_ui=false
 f_restart_web=false
 f_rebuild_web=false
+f_restart_app=false
 
-while getopts "awWnsm:" OPT; do
+while getopts "awWnsom:" OPT; do
     case $OPT in
         a)
             setAllTrue
@@ -148,6 +163,9 @@ while getopts "awWnsm:" OPT; do
             ;;
         s)
             f_rebuild_enclave=true
+            ;;
+        o)
+            f_restart_app=true
             ;;
         m)
             sgx_mode=$OPTARG
@@ -179,4 +197,8 @@ fi
 
 if [ x"$f_restart_web" = x"true" ]; then
     restart_web
+fi
+
+if [ x"$f_restart_app" = x"true" ]; then
+    restart_app
 fi

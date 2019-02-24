@@ -21,13 +21,6 @@ enclave {
 												uint32_t max_verification_length,
 												[out, count=16] uint8_t *p_ret,
                                                 [out] unsigned char *p_sk);
-        public sgx_status_t register_user(sgx_ra_context_t context,
-												[in,size=secret_size] uint8_t* p_secret,
-												uint32_t secret_size,
-												[in,count=16] uint8_t* gcm_mac,
-												uint32_t max_verification_length,
-												[out, count=16] uint8_t *p_ret,
-                                                [out] unsigned char *p_sk);
     };
 
 };

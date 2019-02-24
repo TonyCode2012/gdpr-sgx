@@ -45,12 +45,16 @@ class GDPRDemo extends React.Component {
   constructor() {
     super();
     this.state = { ...origin };
+    this.session_id = 4294967295;
 
     this.handleOnChange = this.handleOnChange.bind(this);
   }
 
+
   setupWebSocket() {
-    const serverUrl = `ws://${window.location.hostname}:8080/com.sgxtrial/websocketendpoint`
+    //const serverUrl = `ws://${window.location.hostname}:8080/com.sgxtrial/websocketendpoint`
+    const serverUrl = `ws://${window.location.hostname}:8080`
+    console.log("serverurl:",serverUrl);
     WEB_SOCKET = new WebSocket(serverUrl);
 
     WEB_SOCKET.onopen = () => {
@@ -107,7 +111,8 @@ class GDPRDemo extends React.Component {
     const allInOneMsgDef = PROTO.lookupType("Messages.AllInOneMessage");
     const allInOnePayload = {
       type,
-      [fieldName]: wrappedMsg
+      [fieldName]: wrappedMsg,
+      sessionID: this.session_id
     };
     const allInOneMsg = allInOneMsgDef.create(allInOnePayload);
 
@@ -138,6 +143,7 @@ class GDPRDemo extends React.Component {
 
     switch (type) {
       case RA_MSG0:
+        this.session_id = message.sessionID;
         msgToSent = this.assemble(RA_MSG0);
         break;
 

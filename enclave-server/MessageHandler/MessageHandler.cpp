@@ -5,9 +5,14 @@
 using namespace util;
 
 MessageHandler::MessageHandler(int port) {
+    //this->nm = NetworkManagerServer::getInstance(port);
     this->local_ec256_fix_data.g_key_flag = 1;
     mysqlConnector = new MysqlConnector();
     mysqlConnector->initDB("localhost", "root", "fishbowl", "SMS");
+
+    //this->server_http = new Server_http(io_service);
+    auto const address = boost::asio::ip::make_address("127.0.0.1");
+    this->listener = std::make_shared<Listener>(ioc, tcp::endpoint({address,port}));
 }
 
 MessageHandler::~MessageHandler() {
@@ -16,19 +21,49 @@ MessageHandler::~MessageHandler() {
 }
 
 
-/*
 int MessageHandler::init() {
-    this->nm->Init();
-    this->nm->connectCallbackHandler([this](string v, int type) {
-        return this->incomingHandler(v, type);
+    // create enclave
+    sgx_status_t ret = this->initEnclave();
+    if (SGX_SUCCESS != ret) {
+        Log("Error, call enclave_init_ra fail", log::error);
+    } else {
+        Log("Call enclave_init_ra success");
+    }
+    this->listener->connectCallbackHandler([this](unsigned char *bytes, int len) {
+        return this->handleMessages(bytes, len);
     });
+    /*
+    vector<thread> v;
+    v.reserve(threads-1);
+    for(auto i=threads-1;i>0;--i) {
+        v.emplace_back(
+                [&this->ioc]{
+                    this->ioc.run();
+                });
+    }
+    */
+    this->listener->do_accept();
+    this->ioc.run();
+    /*
+    this->server_http->connectCallbackHandler([this](unsigned char *bytes, int len) {
+        return this->handleMessages(bytes, len);
+    });
+    this->server_http->start_accept();
+    this->io_service.run();
+    */
+    /*
+    this->nm->Init();
+    this->nm->connectCallbackHandler([this](unsigned char *bytes, int len) {
+        return this->handleMessages(bytes, len);
+        //return this->incomingHandler(v, type);
+    });
+    */
 }
 
 
 void MessageHandler::start() {
-    this->nm->startService();
+    //this->nm->startService();
 }
-*/
 
 
 sgx_status_t MessageHandler::initEnclave() {
@@ -63,7 +98,7 @@ uint32_t MessageHandler::getExtendedEPID_GID(uint32_t *extended_epid_group_id) {
 }
 
 
-string MessageHandler::generateMSG0() {
+string MessageHandler::generateMSG0(sgx_ra_context_t session_id) {
     Log("Call MSG0 generate");
     string s;
 
@@ -82,19 +117,21 @@ string MessageHandler::generateMSG0() {
     Messages::AllInOneMessage aio_ret_msg;
     aio_ret_msg.set_type(Messages::Type::RA_MSG0);
     aio_ret_msg.set_allocated_msg0(msg);
+    aio_ret_msg.set_sessionid(session_id);
     if(aio_ret_msg.SerializeToString(&s)) {
         Log("Serialization successful");
     }
     else {
         Log("Serialization failed", log::error);
         s = "";
+        g_session_mapping_um[session_id] = Messages::Type::RA_MSG0;
     }
 
     return s;
 }
 
 
-string MessageHandler::generateMSG1() {
+string MessageHandler::generateMSG1(sgx_ra_context_t session_id) {
     int retGIDStatus = 0;
     int count = 0;
     sgx_ra_msg1_t sgxMsg1Obj;
@@ -102,12 +139,15 @@ string MessageHandler::generateMSG1() {
     local_ec256_fix_data.g_key_flag = 0;
 
     while (1) {
-        retGIDStatus = sgx_ra_get_msg1(this->enclave->getContext(),
+        //retGIDStatus = sgx_ra_get_msg1(this->enclave->getContext(),
+        retGIDStatus = sgx_ra_get_msg1(session_id,
                                        this->enclave->getID(),
                                        sgx_ra_get_ga,
                                        &sgxMsg1Obj,
                                        &local_ec256_fix_data);
         
+        Log("\t gax:%s",ByteArrayToString(sgxMsg1Obj.g_a.gx, 32));
+        Log("\t gay:%s",ByteArrayToString(sgxMsg1Obj.g_a.gy, 32));
 
         if (retGIDStatus == SGX_SUCCESS) {
             break;
@@ -144,8 +184,10 @@ string MessageHandler::generateMSG1() {
         Messages::AllInOneMessage aio_ret_msg;
         aio_ret_msg.set_type(Messages::Type::RA_MSG1);
         aio_ret_msg.set_allocated_msg1(msg);
+        aio_ret_msg.set_sessionid(session_id);
         if(aio_ret_msg.SerializeToString(&s)) {
             Log("Serialization successful");
+            g_session_mapping_um[session_id] = Messages::Type::RA_MSG2;
         }
         else {
             Log("Serialization failed", log::error);
@@ -175,8 +217,19 @@ void MessageHandler::assembleMSG2(Messages::MessageMSG2 msg, sgx_ra_msg2_t **pp_
         pub_key_gx[i] = msg.publickeygx(i);
         pub_key_gy[i] = msg.publickeygy(i);
     }
-    //Log("\tpub key gx:%s",ByteArrayToString(pub_key_gx,32));
-    //Log("\tpub key gy:%s",ByteArrayToString(pub_key_gy,32));
+    /*
+    Log("\tsp public key:");
+    for(int i=0;i<32;i++) {
+        printf("%u,",pub_key_gx[i]);
+    }
+    printf("\n");
+    for(int i=0;i<32;i++) {
+        printf("%u,",pub_key_gy[i]);
+    }
+    printf("\n");
+    */
+    Log("\tpub key gx:%s",ByteArrayToString(pub_key_gx,32));
+    Log("\tpub key gy:%s",ByteArrayToString(pub_key_gy,32));
 
     for (int i=0; i<16; i++) {
         spid.id[i] = msg.spid(i);
@@ -228,7 +281,7 @@ void MessageHandler::assembleMSG2(Messages::MessageMSG2 msg, sgx_ra_msg2_t **pp_
 }
 
 
-string MessageHandler::handleMSG2(Messages::MessageMSG2 msg) {
+string MessageHandler::handleMSG2(sgx_ra_context_t session_id, Messages::MessageMSG2 msg) {
     Log("Received MSG2");
 
     uint32_t size = msg.size();
@@ -244,7 +297,8 @@ string MessageHandler::handleMSG2(Messages::MessageMSG2 msg) {
 
     int timeout = 0;
     do {
-        ret = sgx_ra_proc_msg2(this->enclave->getContext(),
+        //ret = sgx_ra_proc_msg2(this->enclave->getContext(),
+        ret = sgx_ra_proc_msg2(session_id,
                                this->enclave->getID(),
                                sgx_ra_proc_msg2_trusted,
                                sgx_ra_get_msg3_trusted,
@@ -252,7 +306,8 @@ string MessageHandler::handleMSG2(Messages::MessageMSG2 msg) {
                                size,
                                &p_msg3,
                                &msg3_size);
-    } while (SGX_ERROR_BUSY == ret && ++timeout < busy_retry_time);
+    } while (SGX_SUCCESS != ret && ++timeout < busy_retry_time);
+    //} while (SGX_ERROR_BUSY == ret && ++timeout < busy_retry_time);
     //SafeFree(p_msg2);
 
     if (SGX_SUCCESS != (sgx_status_t)ret) {
@@ -288,8 +343,10 @@ string MessageHandler::handleMSG2(Messages::MessageMSG2 msg) {
         Messages::AllInOneMessage aio_ret_msg;
         aio_ret_msg.set_type(Messages::Type::RA_MSG3);
         aio_ret_msg.set_allocated_msg3(msg3);
+        aio_ret_msg.set_sessionid(session_id);
         if(aio_ret_msg.SerializeToString(&s)) {
             Log("Serialization successful");
+            g_session_mapping_um[session_id] = Messages::Type::RA_ATT_RESULT;
         }
         else {
             Log("Serialization failed", log::error);
@@ -372,7 +429,7 @@ void MessageHandler::assembleAttestationMSG(Messages::AttestationMessage msg, ra
 }
 
 
-string MessageHandler::handleAttestationResult(Messages::AttestationMessage msg) {
+string MessageHandler::handleAttestationResult(sgx_ra_context_t session_id, Messages::AttestationMessage msg) {
     Log("Received Attestation result, start to sssemble");
 
     ra_samp_response_header_t *p_att_result_msg_full = NULL;
@@ -385,7 +442,8 @@ string MessageHandler::handleAttestationResult(Messages::AttestationMessage msg)
     sgx_status_t ret;
     ret = verify_att_result_mac(this->enclave->getID(),
                                 &status,
-                                this->enclave->getContext(),
+                                //this->enclave->getContext(),
+                                session_id,
                                 (uint8_t*)&p_att_result_msg_body->platform_info_blob,
                                 sizeof(ias_platform_info_blob_t),
                                 (uint8_t*)&p_att_result_msg_body->mac,
@@ -403,7 +461,8 @@ string MessageHandler::handleAttestationResult(Messages::AttestationMessage msg)
     } else {
         ret = verify_secret_data(this->enclave->getID(),
                                  &status,
-                                 this->enclave->getContext(),
+                                 //this->enclave->getContext(),
+                                 session_id,
                                  p_att_result_msg_body->secret.payload,
                                  p_att_result_msg_body->secret.payload_size,
                                  p_att_result_msg_body->secret.payload_tag,
@@ -440,8 +499,10 @@ string MessageHandler::handleAttestationResult(Messages::AttestationMessage msg)
             Messages::AllInOneMessage aio_ret_msg;
             aio_ret_msg.set_type(Messages::Type::RA_APP_ATT_OK);
             aio_ret_msg.set_allocated_initmsg(msg);
+            aio_ret_msg.set_sessionid(session_id);
             if(aio_ret_msg.SerializeToString(&s)) {
                 Log("Serialization successful");
+                g_session_mapping_um[session_id] = Messages::Type::PHONE_REG;
             }
             else {
                 Log("Serialization failed", log::error);
@@ -456,7 +517,7 @@ string MessageHandler::handleAttestationResult(Messages::AttestationMessage msg)
     return "";
 }
 
-string MessageHandler::handleRegisterMSG(Messages::RegisterMessage msg) {
+string MessageHandler::handleRegisterMSG(sgx_ra_context_t session_id, Messages::RegisterMessage msg) {
     string result;
     uint8_t *p_cipher = new uint8_t[PHONE_SIZE];
     uint8_t *p_mac = new uint8_t[CIPHER_MAC_SIZE];
@@ -476,7 +537,8 @@ string MessageHandler::handleRegisterMSG(Messages::RegisterMessage msg) {
     sgx_status_t status;
     sgx_status_t ret = register_user(this->enclave->getID(),
                                      &status,
-                                     this->enclave->getContext(),
+                                     //this->enclave->getContext(),
+                                     session_id,
                                      p_cipher,
                                      PHONE_SIZE,
                                      p_mac,
@@ -492,7 +554,7 @@ string MessageHandler::handleRegisterMSG(Messages::RegisterMessage msg) {
     printf("\n");
 
 
-    if(!putSealedPhone(p_user_id, p_sealed_phone, sealed_data_len)){
+    if(!putSealedPhone(session_id, p_user_id, p_sealed_phone, sealed_data_len)){
         goto cleanup;
     }
     
@@ -518,8 +580,10 @@ string MessageHandler::handleRegisterMSG(Messages::RegisterMessage msg) {
         Messages::AllInOneMessage aio_ret_msg;
         aio_ret_msg.set_type(Messages::Type::PHONE_RES);
         aio_ret_msg.set_allocated_resmsg(msg);
+        aio_ret_msg.set_sessionid(session_id);
         if(aio_ret_msg.SerializeToString(&result)) {
             Log("Serialization successful");
+            g_session_mapping_um[session_id] = Messages::Type::SMS_SEND;
         }
         else {
             Log("Serialization failed", log::error);
@@ -532,7 +596,7 @@ cleanup:
     return result;
 }
 
-bool MessageHandler::putSealedPhone(uint8_t *userID, uint8_t *p_sealed_phone, uint32_t sealed_phone_len) {
+bool MessageHandler::putSealedPhone(sgx_ra_context_t session_id, uint8_t *userID, uint8_t *p_sealed_phone, uint32_t sealed_phone_len) {
     bool ret = true;
     string userID_str = ByteArrayToString(userID, USER_ID_SIZE);
     string sealed_phone_str = ByteArrayToString(p_sealed_phone, sealed_phone_len);
@@ -548,7 +612,7 @@ bool MessageHandler::putSealedPhone(uint8_t *userID, uint8_t *p_sealed_phone, ui
     return ret;
 }
 
-bool MessageHandler::getPhoneByUserID(uint8_t *userID, uint8_t *p_unsealed_phone) {
+bool MessageHandler::getPhoneByUserID(sgx_ra_context_t session_id, uint8_t *userID, uint8_t *p_unsealed_phone) {
     bool ret_b = true;
     sgx_status_t ret;
     sgx_status_t status;
@@ -562,7 +626,8 @@ bool MessageHandler::getPhoneByUserID(uint8_t *userID, uint8_t *p_unsealed_phone
         uint8_t *unsealed_data = new uint8_t[32];
         ret = unseal_phone(this->enclave->getID(),
                            &status,
-                           this->enclave->getContext(),
+                           //this->enclave->getContext(),
+                           session_id,
                            sealed_data,
                            sealed_data_len,
                            unsealed_data,
@@ -585,7 +650,7 @@ bool MessageHandler::getPhoneByUserID(uint8_t *userID, uint8_t *p_unsealed_phone
     return ret_b;
 }
 
-string MessageHandler::handleSMS(Messages::SMSMessage msg, unsigned char *p_data, int *p_size) {
+string MessageHandler::handleSMS(sgx_ra_context_t session_id, Messages::SMSMessage msg) {
     string result;
     uint8_t *p_user_id = new uint8_t[USER_ID_SIZE];
     uint8_t *p_unsealed_phone = new uint8_t[32];
@@ -600,19 +665,20 @@ string MessageHandler::handleSMS(Messages::SMSMessage msg, unsigned char *p_data
         sms_data[i] = msg.sms(i);
     }
 
+
     Messages::SMSResponseMessage *smsresMsg = new Messages::SMSResponseMessage();
     smsresMsg->set_type(Messages::Type::SMS_RES);
 
-    if(getPhoneByUserID(p_user_id, p_unsealed_phone)) {
+    if(getPhoneByUserID(session_id, p_user_id, p_unsealed_phone)) {
         /*
         Log("========== get phone successfully! ==========");
         for(int i=0; i<PHONE_SIZE; i++) {
             printf("%u,",p_unsealed_phone[i]);
         }
         printf("\n");
-        */
         memcpy(p_data, ByteArrayToStringNoFill(p_unsealed_phone, PHONE_SIZE).c_str(), PHONE_SIZE);
         memcpy(p_data+PHONE_SIZE, ByteArrayToStringNoFill(sms_data,sms_size).c_str(), sms_size);
+        */
 
         smsresMsg->set_statuscode(200);
 
@@ -621,12 +687,46 @@ string MessageHandler::handleSMS(Messages::SMSMessage msg, unsigned char *p_data
         //Log("========== get phone failed!", log::error);
     }
 
+    // send short message
+    char *filepath = new char[FILENAME_MAX];
+    getcwd(filepath,FILENAME_MAX);
+    string strpath(filepath);
+    //Log("current path:%s",strpath);
+    string cmd_str;
+    cmd_str.append("java ")
+        .append("-jar ")
+        .append(strpath)
+        .append("/../")
+        .append(SENDMESSAGE_PROGRAM)
+        .append(" ")
+        .append(ByteArrayToStringNoFill(p_unsealed_phone,11))
+        .append(" ")
+        .append(ByteArrayToStringNoFill(sms_data,sms_size));
+
+    pid_t s_status = system(cmd_str.c_str());
+    if(-1 == s_status) {
+        Log("Send short message failed!",log::error);
+    } else {
+        if(WIFEXITED(s_status)) {
+            if(0 == WIFEXITED(s_status)) {
+                Log("Send short message successfully!");
+            } else {
+                smsresMsg->set_statuscode(401);
+                Log("Send short message failed!(Inner error)",log::error);
+            }
+        } else {
+            smsresMsg->set_statuscode(402);
+            Log("Send short message failed!(Inner error,exit status:%d)", WIFEXITED(s_status), log::error);
+        }
+    }
+
+
     Messages::AllInOneMessage aio_ret_msg;
     aio_ret_msg.set_type(Messages::Type::SMS_RES);
     aio_ret_msg.set_allocated_smsresmsg(smsresMsg);
+    aio_ret_msg.set_sessionid(session_id);
     if(aio_ret_msg.SerializeToString(&result)) {
         Log("Serialization successful");
-        *p_size = 2;
     }
     else {
         Log("Serialization failed", log::error);
@@ -636,10 +736,15 @@ string MessageHandler::handleSMS(Messages::SMSMessage msg, unsigned char *p_data
     return result;
 }
 
-string MessageHandler::handleMSG0(Messages::MessageMSG0 msg) {
+string MessageHandler::handleMSG0(sgx_ra_context_t session_id, Messages::MessageMSG0 msg) {
     Log("MSG0 response received");
 
     if (msg.status() == TYPE_OK) {
+
+        auto ret = this->generateMSG1(session_id);
+
+        return ret;
+        /*
         sgx_status_t ret = this->initEnclave();
 
         if (SGX_SUCCESS != ret || this->getEnclaveStatus()) {
@@ -648,10 +753,11 @@ string MessageHandler::handleMSG0(Messages::MessageMSG0 msg) {
             Log("Call enclave_init_ra success");
             Log("Sending msg1 to remote attestation service provider. Expecting msg2 back");
 
-            auto ret = this->generateMSG1();
+            auto ret = this->generateMSG1(session_id);
 
             return ret;
         }
+        */
 
     } else {
         Log("MSG0 response status was not OK", log::error);
@@ -661,9 +767,9 @@ string MessageHandler::handleMSG0(Messages::MessageMSG0 msg) {
 }
 
 
-string MessageHandler::handleVerification() {
+string MessageHandler::handleVerification(sgx_ra_context_t session_id) {
     Log("Verification request received");
-    return this->generateMSG0();
+    return this->generateMSG0(session_id);
 }
 
 
@@ -680,62 +786,104 @@ string MessageHandler::createInitMsg(int type, string msg) {
 }
 */
 
+sgx_ra_context_t MessageHandler::getAddSession(Messages::AllInOneMessage aio_msg, 
+        handler_status_t *p_handler_status, 
+        sgx_status_t *p_sgx_status) {
 
-string MessageHandler::handleMessages(unsigned char* bytes, int len, unsigned char *p_data, int *p_size) {
-    string res;
+    sgx_ra_context_t session_id;
+    *p_handler_status = MSG_SUCCESS;
+
+    if(aio_msg.sessionid() == UINT_MAX) {
+
+        session_id = this->enclave->createSession(p_sgx_status);
+
+        if(SGX_SUCCESS != *p_sgx_status) return 0;
+
+        Log("Create new session successfully! Session id:%d",session_id);
+        //g_session_mapping_um[session_id] = Messages::Type::RA_MSG0;
+
+    } else {
+        session_id = aio_msg.sessionid();
+
+        if(g_session_mapping_um[session_id] != aio_msg.type()) {
+
+            *p_handler_status = MSG_TYPE_NOT_MATCH;
+            Log("Message type mismatch!",log::error);
+        }
+    }
+
+    return session_id;
+}
+
+
+vector<string> MessageHandler::handleMessages(unsigned char* bytes, int len) {
+    vector<string> res;
+    string s;
     bool ret;
 
     Messages::AllInOneMessage aio_msg;
-    Log("\tdata len:%d",len);
     //ret = aio_msg.ParseFromString(v);
     ret = aio_msg.ParseFromArray(bytes, len);
     if (! ret) {
         Log("Parse message failed!", log::error);
-        fflush(stdout);
+        //fflush(stdout);
         return res;
     }
     Log("type is:%d", aio_msg.type());
+    
+    // check session
+    handler_status_t handler_status;
+    sgx_status_t sgx_status;
+    sgx_ra_context_t session_id = getAddSession(aio_msg, &handler_status, &sgx_status);
+    if(SGX_SUCCESS != sgx_status) {
+        Log("SGX create session failed! Error code:%d", sgx_status, log::error);
+        return res;
+    }  
+    if( MSG_SUCCESS != handler_status) {
+        Log("Messages handler failed! Error code:%d", handler_status, log::error);
+        return res;
+    }
 
     switch (aio_msg.type()) {
     case Messages::Type::RA_VERIFICATION: {	//Verification request
         Log("========== Generate Msg0 ==========");
         Messages::InitialMessage init_msg = aio_msg.initmsg();
-        res = this->handleVerification();
+        s = this->handleVerification(session_id);
         Log("========== Generate Msg0 ok ==========");
     }
     break;
     case Messages::Type::RA_MSG0: {		//Reply to MSG0
         Log("========== Generate Msg1 ==========");
         Messages::MessageMSG0 msg0 = aio_msg.msg0();
-        res = this->handleMSG0(msg0);
+        s = this->handleMSG0(session_id,msg0);
         Log("========== Generate Msg1 ok ==========");
     }
     break;
     case Messages::Type::RA_MSG2: {		//MSG2
         Log("========== Generate Msg3 ==========");
         Messages::MessageMSG2 msg2 = aio_msg.msg2();
-        res = this->handleMSG2(msg2);
+        s = this->handleMSG2(session_id,msg2);
         Log("========== Generate Msg3 ok ==========");
     }
     break;
     case Messages::Type::RA_ATT_RESULT: {	//Reply to MSG3
         Log("========== Generate att msg ==========");
         Messages::AttestationMessage att_msg = aio_msg.attestmsg();
-        res = this->handleAttestationResult(att_msg);
+        s = this->handleAttestationResult(session_id,att_msg);
         Log("========== Generate att msg ok ==========");
     }
     break;
     case Messages::Type::PHONE_REG: {
         Log("========== Generate user ID ==========");
         Messages::RegisterMessage reg_msg = aio_msg.regmsg();
-        res = this->handleRegisterMSG(reg_msg);
+        s = this->handleRegisterMSG(session_id,reg_msg);
         Log("========== Generate user ID ok ==========");
     }
     break;
     case Messages::Type::SMS_SEND: {
         Log("========== send short message ==========");
         Messages::SMSMessage sms_msg = aio_msg.smsmsg();
-        res = this->handleSMS(sms_msg, p_data, p_size);
+        s = this->handleSMS(session_id,sms_msg);
         Log("========== send short message end ==========");
     }
     break;
@@ -743,7 +891,9 @@ string MessageHandler::handleMessages(unsigned char* bytes, int len, unsigned ch
         Log("Unknown type", log::error);
         break;
     }
-    fflush(stdout);
+    //fflush(stdout);
+
+    res.push_back(s);
 
     return res;
 }
