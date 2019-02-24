@@ -11,6 +11,8 @@
 #include <sys/types.h> 
 #include <unordered_map> 
 #include <boost/asio.hpp>
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/json_parser.hpp>
 
 #include "Enclave.h"
 //#include "NetworkManagerServer.h"

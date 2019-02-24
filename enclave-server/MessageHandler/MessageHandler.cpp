@@ -676,33 +676,51 @@ string MessageHandler::handleSMS(sgx_ra_context_t session_id, Messages::SMSMessa
             printf("%u,",p_unsealed_phone[i]);
         }
         printf("\n");
-        memcpy(p_data, ByteArrayToStringNoFill(p_unsealed_phone, PHONE_SIZE).c_str(), PHONE_SIZE);
-        memcpy(p_data+PHONE_SIZE, ByteArrayToStringNoFill(sms_data,sms_size).c_str(), sms_size);
         */
 
         smsresMsg->set_statuscode(200);
 
+        // send short message
+        char *filepath = new char[FILENAME_MAX];
+        getcwd(filepath,FILENAME_MAX);
+        string strpath(filepath);
+        string cmd_str;
+        cmd_str.append("java ")
+            .append("-jar ")
+            .append(strpath)
+            .append("/../")
+            .append(SENDMESSAGE_PROGRAM)
+            .append(" ")
+            .append(ByteArrayToStringNoFill(p_unsealed_phone,11))
+            .append(" ")
+            .append(ByteArrayToStringNoFill(sms_data,sms_size));
+    
+        string sms_res;
+        char *buffer = new char[256];
+        FILE *pp;
+        if((pp = popen(cmd_str.c_str(),"r")) == NULL) {
+            Log("use popen function failed!",log::error);
+        }
+        else {
+            while(fgets(buffer,sizeof(buffer),pp)) {
+                sms_res.append(buffer);
+            }
+        }
+        pclose(pp);
+        sms_res = sms_res.substr(0,sms_res.length()-1);
+        istringstream iss(sms_res);
+        boost::property_tree::ptree item;
+        boost::property_tree::json_parser::read_json(iss,item);
+        int sms_status_code = item.get<int>("result");
+        if(sms_status_code != 0) {
+            smsresMsg->set_statuscode(sms_status_code);
+            Log("Send short message failed! Error code:%d", sms_status_code, log::error);
+        }
+
     } else {
         smsresMsg->set_statuscode(400);
-        //Log("========== get phone failed!", log::error);
     }
-
-    // send short message
-    char *filepath = new char[FILENAME_MAX];
-    getcwd(filepath,FILENAME_MAX);
-    string strpath(filepath);
-    //Log("current path:%s",strpath);
-    string cmd_str;
-    cmd_str.append("java ")
-        .append("-jar ")
-        .append(strpath)
-        .append("/../")
-        .append(SENDMESSAGE_PROGRAM)
-        .append(" ")
-        .append(ByteArrayToStringNoFill(p_unsealed_phone,11))
-        .append(" ")
-        .append(ByteArrayToStringNoFill(sms_data,sms_size));
-
+    /*
     pid_t s_status = system(cmd_str.c_str());
     if(-1 == s_status) {
         Log("Send short message failed!",log::error);
@@ -719,6 +737,7 @@ string MessageHandler::handleSMS(sgx_ra_context_t session_id, Messages::SMSMessa
             Log("Send short message failed!(Inner error,exit status:%d)", WIFEXITED(s_status), log::error);
         }
     }
+    */
 
 
     Messages::AllInOneMessage aio_ret_msg;
@@ -800,7 +819,6 @@ sgx_ra_context_t MessageHandler::getAddSession(Messages::AllInOneMessage aio_msg
         if(SGX_SUCCESS != *p_sgx_status) return 0;
 
         Log("Create new session successfully! Session id:%d",session_id);
-        //g_session_mapping_um[session_id] = Messages::Type::RA_MSG0;
 
     } else {
         session_id = aio_msg.sessionid();
