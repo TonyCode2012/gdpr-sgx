@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <limits.h>
 #include <unistd.h>
-#include <vector> 
+#include <deque> 
 
 #include "LogBase.h"
 #include "UtilityFunctions.h"
@@ -25,16 +25,10 @@ class Enclave {
 public:
     static Enclave* getInstance();
 
-    //sgx_enclave_id_t getLocalEnclaveId();
-    //sgx_ra_context_t getLocalEnclaveContext();
-    //sgx_status_t getLocalEnclaveStatus();
-    //void setLocalEnclaveId(sgx_enclave_id_t enclave_id);
-    //void setLocalEnclaveContext(sgx_ra_context_t context);
-    //void setLocalEnclaveStatus(sgx_status_t status);
-
     virtual ~Enclave();
     sgx_status_t createEnclave();
     sgx_ra_context_t createSession(sgx_status_t *status);
+    sgx_status_t closeSession(sgx_ra_context_t session_id);
     sgx_enclave_id_t getID();
     sgx_status_t getStatus();
     sgx_ra_context_t getContext();
@@ -46,7 +40,7 @@ private:
     sgx_enclave_id_t enclave_id;
     sgx_status_t status;
     //sgx_ra_context_t context;
-    std::vector<sgx_ra_context_t> g_session_v;
+    std::deque<sgx_ra_context_t> g_session_dq;
 };
 
 #endif

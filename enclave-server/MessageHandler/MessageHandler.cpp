@@ -124,7 +124,7 @@ string MessageHandler::generateMSG0(sgx_ra_context_t session_id) {
     else {
         Log("Serialization failed", log::error);
         s = "";
-        g_session_mapping_um[session_id] = Messages::Type::RA_MSG0;
+        g_session_mapping_um[session_id]->msg_type = Messages::Type::RA_MSG0;
     }
 
     return s;
@@ -187,7 +187,7 @@ string MessageHandler::generateMSG1(sgx_ra_context_t session_id) {
         aio_ret_msg.set_sessionid(session_id);
         if(aio_ret_msg.SerializeToString(&s)) {
             Log("Serialization successful");
-            g_session_mapping_um[session_id] = Messages::Type::RA_MSG2;
+            g_session_mapping_um[session_id]->msg_type = Messages::Type::RA_MSG2;
         }
         else {
             Log("Serialization failed", log::error);
@@ -346,7 +346,7 @@ string MessageHandler::handleMSG2(sgx_ra_context_t session_id, Messages::Message
         aio_ret_msg.set_sessionid(session_id);
         if(aio_ret_msg.SerializeToString(&s)) {
             Log("Serialization successful");
-            g_session_mapping_um[session_id] = Messages::Type::RA_ATT_RESULT;
+            g_session_mapping_um[session_id]->msg_type = Messages::Type::RA_ATT_RESULT;
         }
         else {
             Log("Serialization failed", log::error);
@@ -442,7 +442,6 @@ string MessageHandler::handleAttestationResult(sgx_ra_context_t session_id, Mess
     sgx_status_t ret;
     ret = verify_att_result_mac(this->enclave->getID(),
                                 &status,
-                                //this->enclave->getContext(),
                                 session_id,
                                 (uint8_t*)&p_att_result_msg_body->platform_info_blob,
                                 sizeof(ias_platform_info_blob_t),
@@ -461,7 +460,6 @@ string MessageHandler::handleAttestationResult(sgx_ra_context_t session_id, Mess
     } else {
         ret = verify_secret_data(this->enclave->getID(),
                                  &status,
-                                 //this->enclave->getContext(),
                                  session_id,
                                  p_att_result_msg_body->secret.payload,
                                  p_att_result_msg_body->secret.payload_size,
@@ -502,7 +500,7 @@ string MessageHandler::handleAttestationResult(sgx_ra_context_t session_id, Mess
             aio_ret_msg.set_sessionid(session_id);
             if(aio_ret_msg.SerializeToString(&s)) {
                 Log("Serialization successful");
-                g_session_mapping_um[session_id] = Messages::Type::PHONE_REG;
+                g_session_mapping_um[session_id]->msg_type = Messages::Type::PHONE_REG;
             }
             else {
                 Log("Serialization failed", log::error);
@@ -517,15 +515,58 @@ string MessageHandler::handleAttestationResult(sgx_ra_context_t session_id, Mess
     return "";
 }
 
+handler_status_t MessageHandler::sendSMS(uint8_t *p_phone, int phone_size, string sms) {
+
+    handler_status_t status = MSG_SUCCESS;
+
+    char *filepath = new char[FILENAME_MAX];
+    getcwd(filepath,FILENAME_MAX);
+    string path_str(filepath);
+    string cmd_str;
+    cmd_str.append("java ")
+        .append("-jar ")
+        .append(path_str)
+        .append("/../")
+        .append(SENDMESSAGE_PROGRAM)
+        .append(" ")
+        .append(ByteArrayToStringNoFill(p_phone,phone_size))
+        .append(" ")
+        .append(sms);
+
+    string sms_res;
+    char *buffer = new char[256];
+    FILE *pp;
+    if((pp = popen(cmd_str.c_str(),"r")) == NULL) {
+        Log("use popen function failed!",log::error);
+    }
+    else {
+        while(fgets(buffer,sizeof(buffer),pp)) {
+            sms_res.append(buffer);
+        }
+    }
+    pclose(pp);
+    sms_res = sms_res.substr(0,sms_res.length()-1);
+    istringstream iss(sms_res);
+    boost::property_tree::ptree item;
+    boost::property_tree::json_parser::read_json(iss,item);
+    int sms_status_code = item.get<int>("result");
+    if(sms_status_code != 0) {
+        status = MSG_PINCODE_SEND_FAILED;
+        Log("Send short message failed! Error code:%d", sms_status_code, log::error);
+    }
+
+    return status;
+}
+
 string MessageHandler::handleRegisterMSG(sgx_ra_context_t session_id, Messages::RegisterMessage msg) {
     string result;
     uint8_t *p_cipher = new uint8_t[PHONE_SIZE];
     uint8_t *p_mac = new uint8_t[CIPHER_MAC_SIZE];
-    uint8_t *p_user_id = new uint8_t[USER_ID_SIZE];
-    uint8_t *p_sealed_phone = new uint8_t[CIPHER_SIZE];
-    uint8_t *p_unsealed_phone = new uint8_t[32];
-    uint32_t sealed_data_len;
-    
+    uint8_t *p_decrypted_phone = new uint8_t[PHONE_SIZE];
+
+    sgx_status_t ret = SGX_SUCCESS;
+    sgx_status_t status;
+
     for(int i=0;i<PHONE_SIZE;i++) {
         p_cipher[i] = msg.cipherphone(i);
     }
@@ -534,18 +575,91 @@ string MessageHandler::handleRegisterMSG(sgx_ra_context_t session_id, Messages::
         p_mac[i] = msg.mac(i);
     }
 
+    memcpy(&(g_session_mapping_um[session_id]->cipher_phone),p_cipher,PHONE_SIZE);
+    memcpy(&(g_session_mapping_um[session_id]->cipher_phone_mac),p_mac,CIPHER_MAC_SIZE);
+
+    //usleep(5000000);
+
+    ret = decrypt_phone(this->enclave->getID(),
+                        &status,
+                        session_id,
+                        p_cipher,
+                        PHONE_SIZE,
+                        p_mac,
+                        p_decrypted_phone);
+    
+    Messages::PinCodeToMessage *pincodebackmsg = new Messages::PinCodeToMessage();
+    pincodebackmsg->set_type(Messages::Type::PIN_CODE_TO);
+    pincodebackmsg->set_status(200);
+
+    if(SGX_SUCCESS != ret) {
+        Log("Decrypt phone number failed! Error code:%lx", ret, log::error);
+        pincodebackmsg->set_status(ret);
+    }
+    else if(SGX_SUCCESS != status) {
+        Log("Decrypt phone number failed(Inner failed)! Error code:%lx", status, log::error);
+        pincodebackmsg->set_status(ret);
+    }
+    else {
+        string pincode = RandomNum(PIN_CODE_SIZE);
+        //for test
+        Log("pin code:%s",pincode);
+        memcpy(&(g_session_mapping_um[session_id]->pin_code),pincode.c_str(),PIN_CODE_SIZE);
+        /*
+        handler_status_t handler_ret = sendSMS(p_decrypted_phone, PHONE_SIZE, pincode);
+        if(MSG_SUCCESS == handler_ret) {
+            memcpy(&(g_session_mapping_um[session_id]->pin_code),pincode.c_str(),PIN_CODE_SIZE);
+        }
+        else {
+            pincodebackmsg->set_status(handler_ret);
+        }
+        */
+    }
+
+    Messages::AllInOneMessage aio_ret_msg;
+    aio_ret_msg.set_type(Messages::Type::PIN_CODE_TO);
+    aio_ret_msg.set_allocated_pincodetomsg(pincodebackmsg);
+    aio_ret_msg.set_sessionid(session_id);
+    if(aio_ret_msg.SerializeToString(&result)) {
+        Log("Serialization successful");
+        g_session_mapping_um[session_id]->msg_type = Messages::Type::SMS_SEND;
+    }
+    else {
+        Log("Serialization failed", log::error);
+    }
+
+    return result;
+}
+
+string MessageHandler::handlePinCodeBack(sgx_ra_context_t session_id, Messages::PinCodeBackMessage msg) {
+    string result;
+    uint8_t *p_cipher = g_session_mapping_um[session_id]->cipher_phone;
+    uint8_t *p_mac = g_session_mapping_um[session_id]->cipher_phone_mac;
+    uint8_t *p_pincode = g_session_mapping_um[session_id]->pin_code;
+    uint8_t *p_user_id = new uint8_t[USER_ID_SIZE];
+    uint8_t *p_sealed_phone = new uint8_t[CIPHER_SIZE];
+    uint32_t sealed_data_len;
+
+    sgx_status_t ret = SGX_SUCCESS;
     sgx_status_t status;
-    sgx_status_t ret = register_user(this->enclave->getID(),
-                                     &status,
-                                     //this->enclave->getContext(),
-                                     session_id,
-                                     p_cipher,
-                                     PHONE_SIZE,
-                                     p_mac,
-                                     MAX_VERIFICATION_RESULT,
-                                     p_user_id,
-                                     p_sealed_phone,
-                                     &sealed_data_len);
+
+    for(int i=0;i<PIN_CODE_SIZE;i++) {
+        if(p_pincode[i] != msg.pincode(i)) {
+            Log("Pin code mismatch!", log::error);
+            return "";
+        }
+    }
+
+    ret = register_user(this->enclave->getID(),
+                        &status,
+                        session_id,
+                        p_cipher,
+                        PHONE_SIZE,
+                        p_mac,
+                        MAX_VERIFICATION_RESULT,
+                        p_user_id,
+                        p_sealed_phone,
+                        &sealed_data_len);
 
     Log("========== sealed phone:%d ===========",sealed_data_len);
     for(int i=0; i<sealed_data_len; i++) {
@@ -572,18 +686,18 @@ string MessageHandler::handleRegisterMSG(sgx_ra_context_t session_id, Messages::
         string userID = ByteArrayToString(p_user_id, USER_ID_SIZE);
         Log("user id:%s",userID);
         Messages::ResponseMessage *msg = new Messages::ResponseMessage();
-        msg->set_type(Messages::Type::PHONE_RES);
+        msg->set_type(Messages::Type::PHONE_REG_RES);
         for(int i=0; i<USER_ID_SIZE; i++) {
             msg->add_userid(p_user_id[i]);
         }
         msg->set_size(USER_ID_SIZE);
         Messages::AllInOneMessage aio_ret_msg;
-        aio_ret_msg.set_type(Messages::Type::PHONE_RES);
+        aio_ret_msg.set_type(Messages::Type::PHONE_REG_RES);
         aio_ret_msg.set_allocated_resmsg(msg);
         aio_ret_msg.set_sessionid(session_id);
         if(aio_ret_msg.SerializeToString(&result)) {
             Log("Serialization successful");
-            g_session_mapping_um[session_id] = Messages::Type::SMS_SEND;
+            g_session_mapping_um[session_id]->msg_type = Messages::Type::SMS_SEND;
         }
         else {
             Log("Serialization failed", log::error);
@@ -626,7 +740,6 @@ bool MessageHandler::getPhoneByUserID(sgx_ra_context_t session_id, uint8_t *user
         uint8_t *unsealed_data = new uint8_t[32];
         ret = unseal_phone(this->enclave->getID(),
                            &status,
-                           //this->enclave->getContext(),
                            session_id,
                            sealed_data,
                            sealed_data_len,
@@ -653,7 +766,7 @@ bool MessageHandler::getPhoneByUserID(sgx_ra_context_t session_id, uint8_t *user
 string MessageHandler::handleSMS(sgx_ra_context_t session_id, Messages::SMSMessage msg) {
     string result;
     uint8_t *p_user_id = new uint8_t[USER_ID_SIZE];
-    uint8_t *p_unsealed_phone = new uint8_t[32];
+    uint8_t *p_unsealed_phone = new uint8_t[PHONE_SIZE];
     uint32_t sms_size = msg.size();
     uint8_t *sms_data = new uint8_t[sms_size];
 
@@ -680,64 +793,15 @@ string MessageHandler::handleSMS(sgx_ra_context_t session_id, Messages::SMSMessa
 
         smsresMsg->set_statuscode(200);
 
-        // send short message
-        char *filepath = new char[FILENAME_MAX];
-        getcwd(filepath,FILENAME_MAX);
-        string strpath(filepath);
-        string cmd_str;
-        cmd_str.append("java ")
-            .append("-jar ")
-            .append(strpath)
-            .append("/../")
-            .append(SENDMESSAGE_PROGRAM)
-            .append(" ")
-            .append(ByteArrayToStringNoFill(p_unsealed_phone,11))
-            .append(" ")
-            .append(ByteArrayToStringNoFill(sms_data,sms_size));
-    
-        string sms_res;
-        char *buffer = new char[256];
-        FILE *pp;
-        if((pp = popen(cmd_str.c_str(),"r")) == NULL) {
-            Log("use popen function failed!",log::error);
-        }
-        else {
-            while(fgets(buffer,sizeof(buffer),pp)) {
-                sms_res.append(buffer);
-            }
-        }
-        pclose(pp);
-        sms_res = sms_res.substr(0,sms_res.length()-1);
-        istringstream iss(sms_res);
-        boost::property_tree::ptree item;
-        boost::property_tree::json_parser::read_json(iss,item);
-        int sms_status_code = item.get<int>("result");
-        if(sms_status_code != 0) {
-            smsresMsg->set_statuscode(sms_status_code);
-            Log("Send short message failed! Error code:%d", sms_status_code, log::error);
+        handler_status_t handle_ret = sendSMS(p_unsealed_phone,PHONE_SIZE,ByteArrayToStringNoFill(sms_data,sms_size));
+        if(MSG_SUCCESS != handle_ret) {
+            smsresMsg->set_statuscode(handle_ret);
+            Log("Send short message failed!", log::error);
         }
 
     } else {
         smsresMsg->set_statuscode(400);
     }
-    /*
-    pid_t s_status = system(cmd_str.c_str());
-    if(-1 == s_status) {
-        Log("Send short message failed!",log::error);
-    } else {
-        if(WIFEXITED(s_status)) {
-            if(0 == WIFEXITED(s_status)) {
-                Log("Send short message successfully!");
-            } else {
-                smsresMsg->set_statuscode(401);
-                Log("Send short message failed!(Inner error)",log::error);
-            }
-        } else {
-            smsresMsg->set_statuscode(402);
-            Log("Send short message failed!(Inner error,exit status:%d)", WIFEXITED(s_status), log::error);
-        }
-    }
-    */
 
 
     Messages::AllInOneMessage aio_ret_msg;
@@ -818,12 +882,14 @@ sgx_ra_context_t MessageHandler::getAddSession(Messages::AllInOneMessage aio_msg
 
         if(SGX_SUCCESS != *p_sgx_status) return 0;
 
+        g_session_mapping_um[session_id] = new SessionData();
+
         Log("Create new session successfully! Session id:%d",session_id);
 
     } else {
         session_id = aio_msg.sessionid();
 
-        if(g_session_mapping_um[session_id] != aio_msg.type()) {
+        if(g_session_mapping_um[session_id]->msg_type != aio_msg.type()) {
 
             *p_handler_status = MSG_TYPE_NOT_MATCH;
             Log("Message type mismatch!",log::error);
@@ -892,10 +958,17 @@ vector<string> MessageHandler::handleMessages(unsigned char* bytes, int len) {
     }
     break;
     case Messages::Type::PHONE_REG: {
-        Log("========== Generate user ID ==========");
+        Log("========== Register user ==========");
         Messages::RegisterMessage reg_msg = aio_msg.regmsg();
         s = this->handleRegisterMSG(session_id,reg_msg);
-        Log("========== Generate user ID ok ==========");
+        Log("========== Register user ok ==========");
+    }
+    break;
+    case Messages::Type::PIN_CODE_BACK: {
+        Log("========== Verify pin code ==========");
+        Messages::PinCodeBackMessage reg_msg = aio_msg.pincodebackmsg();
+        s = this->handlePinCodeBack(session_id,reg_msg);
+        Log("========== Verify pin code ok ==========");
     }
     break;
     case Messages::Type::SMS_SEND: {

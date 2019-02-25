@@ -7,6 +7,8 @@
 #include <iomanip>
 #include <fstream>
 #include <vector>
+#include <ctime>
+#include <time.h>
 // #include <jsoncpp/json/json.h>
 #include <boost/archive/iterators/base64_from_binary.hpp>
 #include <boost/archive/iterators/insert_linebreaks.hpp>
@@ -16,6 +18,7 @@
 #include <boost/archive/iterators/binary_from_base64.hpp>
 #include <boost/archive/iterators/remove_whitespace.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/random.hpp>
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_generators.hpp>
 //#include <boost/integer/integer_log2.hpp>
@@ -61,6 +64,8 @@ int RemoveFile(string filePath);
 string Base64encode(const string val);
 string Base64decode(const string val);
 string Base64encodeUint8(uint8_t *val, uint32_t len);
+
+string RandomNum(int len);
 
 #endif
 

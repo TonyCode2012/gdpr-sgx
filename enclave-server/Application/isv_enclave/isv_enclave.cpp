@@ -402,3 +402,41 @@ sgx_status_t unseal_phone(sgx_ra_context_t context,
 
     return ret;
 }
+
+sgx_status_t decrypt_phone(sgx_ra_context_t session_id,
+        uint8_t *p_encrypted_phone, 
+        uint32_t phone_size,
+        uint8_t *p_mac,
+        uint8_t *p_decrypted_phone) {
+
+    sgx_status_t ret = SGX_SUCCESS;
+    sgx_ec_key_128bit_t sk_key;
+
+    int retry = 3;
+    do {
+        ret = sgx_ra_get_keys(session_id, SGX_RA_KEY_SK, &sk_key);
+        if (SGX_SUCCESS != ret) {
+            break;
+        }
+    
+        uint8_t *decrypted = (uint8_t*) malloc(sizeof(uint8_t) * phone_size);
+        uint8_t aes_gcm_iv[12] = {0};
+    
+        ret = sgx_rijndael128GCM_decrypt(&sk_key,
+                                         p_encrypted_phone,
+                                         phone_size,
+                                         decrypted,
+                                         &aes_gcm_iv[0],
+                                         12,
+                                         NULL,
+                                         0,
+                                         (const sgx_aes_gcm_128bit_tag_t *) (p_mac));
+    
+        if (SGX_SUCCESS == ret) {
+            memcpy(p_decrypted_phone, decrypted, phone_size);
+        }
+
+    } while(SGX_SUCCESS != ret && --retry > 0);
+
+    return ret;
+}

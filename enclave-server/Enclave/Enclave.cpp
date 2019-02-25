@@ -18,33 +18,11 @@ Enclave* Enclave::getInstance() {
     return instance;
 }
 
-//sgx_enclave_id_t Enclave::getLocalEnclaveId(){
-//    return this->enclave_id;
-//}
-//
-//sgx_ra_context_t Enclave::getLocalEnclaveContext(){
-//    return this->context;
-//}
-//
-//sgx_status_t Enclave::getLocalEnclaveStatus(){
-//    return this->status;
-//}
-
-//void Enclave::setLocalEnclaveId(sgx_enclave_id_t enclave_id){
-//    this->enclave_id = enclave_id;
-//}
-//void Enclave::setLocalEnclaveContext(sgx_ra_context_t context){
-//    this->context = context;
-//}
-//void Enclave::setLocalEnclaveStatus(sgx_status_t status){
-//    this->status = status;
-//}
-
-
 Enclave::~Enclave() {
     int ret = -1;
 
-    for(auto context: g_session_v) {
+    /*
+    for(auto context: g_session_dq) {
         if (INT_MAX != context) {
             int ret_save = -1;
             ret = enclave_ra_close(enclave_id, &status, context);
@@ -60,10 +38,10 @@ Enclave::~Enclave() {
             Log("Call enclave_ra_close success");
         }
     }
+    */
 
     sgx_destroy_enclave(enclave_id);
 }
-
 
 
 sgx_status_t Enclave::createEnclave() {
@@ -119,8 +97,18 @@ sgx_ra_context_t Enclave::createSession(sgx_status_t *status) {
         return 0;
     }
 
-    g_session_v.push_back(tmp_context);
+    g_session_dq.push_back(tmp_context);
     return tmp_context;
+}
+
+sgx_status_t Enclave::closeSession(sgx_ra_context_t session_id) {
+    sgx_status_t ret = enclave_ra_close(enclave_id, &status, session_id);
+
+    if (SGX_SUCCESS != ret || status) {
+        Log("Error, call enclave_ra_close fail", log::error);
+    }
+
+    return ret;
 }
 
 

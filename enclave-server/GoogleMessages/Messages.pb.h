@@ -42,6 +42,8 @@ class MessageMSG2;
 class MessageMSG3;
 class AttestationMessage;
 class RegisterMessage;
+class PinCodeToMessage;
+class PinCodeBackMessage;
 class ResponseMessage;
 class SMSMessage;
 class SMSResponseMessage;
@@ -56,9 +58,11 @@ enum Type {
   RA_VERIFICATION = 5,
   RA_APP_ATT_OK = 6,
   PHONE_REG = 7,
-  PHONE_RES = 8,
-  SMS_SEND = 9,
-  SMS_RES = 10
+  PIN_CODE_TO = 8,
+  PIN_CODE_BACK = 9,
+  PHONE_REG_RES = 10,
+  SMS_SEND = 11,
+  SMS_RES = 12
 };
 bool Type_IsValid(int value);
 const Type Type_MIN = RA_MSG0;
@@ -1237,6 +1241,208 @@ class RegisterMessage : public ::google::protobuf::Message {
 };
 // -------------------------------------------------------------------
 
+class PinCodeToMessage : public ::google::protobuf::Message {
+ public:
+  PinCodeToMessage();
+  virtual ~PinCodeToMessage();
+
+  PinCodeToMessage(const PinCodeToMessage& from);
+
+  inline PinCodeToMessage& operator=(const PinCodeToMessage& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const PinCodeToMessage& default_instance();
+
+  void Swap(PinCodeToMessage* other);
+
+  // implements Message ----------------------------------------------
+
+  PinCodeToMessage* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const PinCodeToMessage& from);
+  void MergeFrom(const PinCodeToMessage& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required .Messages.Type type = 1;
+  inline bool has_type() const;
+  inline void clear_type();
+  static const int kTypeFieldNumber = 1;
+  inline ::Messages::Type type() const;
+  inline void set_type(::Messages::Type value);
+
+  // required uint32 status = 2;
+  inline bool has_status() const;
+  inline void clear_status();
+  static const int kStatusFieldNumber = 2;
+  inline ::google::protobuf::uint32 status() const;
+  inline void set_status(::google::protobuf::uint32 value);
+
+  // optional uint32 size = 3;
+  inline bool has_size() const;
+  inline void clear_size();
+  static const int kSizeFieldNumber = 3;
+  inline ::google::protobuf::uint32 size() const;
+  inline void set_size(::google::protobuf::uint32 value);
+
+  // @@protoc_insertion_point(class_scope:Messages.PinCodeToMessage)
+ private:
+  inline void set_has_type();
+  inline void clear_has_type();
+  inline void set_has_status();
+  inline void clear_has_status();
+  inline void set_has_size();
+  inline void clear_has_size();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  int type_;
+  ::google::protobuf::uint32 status_;
+  ::google::protobuf::uint32 size_;
+  friend void  protobuf_AddDesc_Messages_2eproto();
+  friend void protobuf_AssignDesc_Messages_2eproto();
+  friend void protobuf_ShutdownFile_Messages_2eproto();
+
+  void InitAsDefaultInstance();
+  static PinCodeToMessage* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class PinCodeBackMessage : public ::google::protobuf::Message {
+ public:
+  PinCodeBackMessage();
+  virtual ~PinCodeBackMessage();
+
+  PinCodeBackMessage(const PinCodeBackMessage& from);
+
+  inline PinCodeBackMessage& operator=(const PinCodeBackMessage& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const PinCodeBackMessage& default_instance();
+
+  void Swap(PinCodeBackMessage* other);
+
+  // implements Message ----------------------------------------------
+
+  PinCodeBackMessage* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const PinCodeBackMessage& from);
+  void MergeFrom(const PinCodeBackMessage& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required .Messages.Type type = 1;
+  inline bool has_type() const;
+  inline void clear_type();
+  static const int kTypeFieldNumber = 1;
+  inline ::Messages::Type type() const;
+  inline void set_type(::Messages::Type value);
+
+  // repeated uint32 pinCode = 2 [packed = true];
+  inline int pincode_size() const;
+  inline void clear_pincode();
+  static const int kPinCodeFieldNumber = 2;
+  inline ::google::protobuf::uint32 pincode(int index) const;
+  inline void set_pincode(int index, ::google::protobuf::uint32 value);
+  inline void add_pincode(::google::protobuf::uint32 value);
+  inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
+      pincode() const;
+  inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
+      mutable_pincode();
+
+  // optional uint32 size = 3;
+  inline bool has_size() const;
+  inline void clear_size();
+  static const int kSizeFieldNumber = 3;
+  inline ::google::protobuf::uint32 size() const;
+  inline void set_size(::google::protobuf::uint32 value);
+
+  // @@protoc_insertion_point(class_scope:Messages.PinCodeBackMessage)
+ private:
+  inline void set_has_type();
+  inline void clear_has_type();
+  inline void set_has_size();
+  inline void clear_has_size();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  ::google::protobuf::RepeatedField< ::google::protobuf::uint32 > pincode_;
+  mutable int _pincode_cached_byte_size_;
+  int type_;
+  ::google::protobuf::uint32 size_;
+  friend void  protobuf_AddDesc_Messages_2eproto();
+  friend void protobuf_AssignDesc_Messages_2eproto();
+  friend void protobuf_ShutdownFile_Messages_2eproto();
+
+  void InitAsDefaultInstance();
+  static PinCodeBackMessage* default_instance_;
+};
+// -------------------------------------------------------------------
+
 class ResponseMessage : public ::google::protobuf::Message {
  public:
   ResponseMessage();
@@ -1688,37 +1894,55 @@ class AllInOneMessage : public ::google::protobuf::Message {
   inline ::Messages::RegisterMessage* release_regmsg();
   inline void set_allocated_regmsg(::Messages::RegisterMessage* regmsg);
 
-  // optional .Messages.ResponseMessage resMsg = 10;
+  // optional .Messages.PinCodeToMessage pincodetoMsg = 10;
+  inline bool has_pincodetomsg() const;
+  inline void clear_pincodetomsg();
+  static const int kPincodetoMsgFieldNumber = 10;
+  inline const ::Messages::PinCodeToMessage& pincodetomsg() const;
+  inline ::Messages::PinCodeToMessage* mutable_pincodetomsg();
+  inline ::Messages::PinCodeToMessage* release_pincodetomsg();
+  inline void set_allocated_pincodetomsg(::Messages::PinCodeToMessage* pincodetomsg);
+
+  // optional .Messages.PinCodeBackMessage pincodebackMsg = 11;
+  inline bool has_pincodebackmsg() const;
+  inline void clear_pincodebackmsg();
+  static const int kPincodebackMsgFieldNumber = 11;
+  inline const ::Messages::PinCodeBackMessage& pincodebackmsg() const;
+  inline ::Messages::PinCodeBackMessage* mutable_pincodebackmsg();
+  inline ::Messages::PinCodeBackMessage* release_pincodebackmsg();
+  inline void set_allocated_pincodebackmsg(::Messages::PinCodeBackMessage* pincodebackmsg);
+
+  // optional .Messages.ResponseMessage resMsg = 12;
   inline bool has_resmsg() const;
   inline void clear_resmsg();
-  static const int kResMsgFieldNumber = 10;
+  static const int kResMsgFieldNumber = 12;
   inline const ::Messages::ResponseMessage& resmsg() const;
   inline ::Messages::ResponseMessage* mutable_resmsg();
   inline ::Messages::ResponseMessage* release_resmsg();
   inline void set_allocated_resmsg(::Messages::ResponseMessage* resmsg);
 
-  // optional .Messages.SMSMessage smsMsg = 11;
+  // optional .Messages.SMSMessage smsMsg = 13;
   inline bool has_smsmsg() const;
   inline void clear_smsmsg();
-  static const int kSmsMsgFieldNumber = 11;
+  static const int kSmsMsgFieldNumber = 13;
   inline const ::Messages::SMSMessage& smsmsg() const;
   inline ::Messages::SMSMessage* mutable_smsmsg();
   inline ::Messages::SMSMessage* release_smsmsg();
   inline void set_allocated_smsmsg(::Messages::SMSMessage* smsmsg);
 
-  // optional .Messages.SMSResponseMessage smsresMsg = 12;
+  // optional .Messages.SMSResponseMessage smsresMsg = 14;
   inline bool has_smsresmsg() const;
   inline void clear_smsresmsg();
-  static const int kSmsresMsgFieldNumber = 12;
+  static const int kSmsresMsgFieldNumber = 14;
   inline const ::Messages::SMSResponseMessage& smsresmsg() const;
   inline ::Messages::SMSResponseMessage* mutable_smsresmsg();
   inline ::Messages::SMSResponseMessage* release_smsresmsg();
   inline void set_allocated_smsresmsg(::Messages::SMSResponseMessage* smsresmsg);
 
-  // required uint32 sessionID = 13;
+  // required uint32 sessionID = 15;
   inline bool has_sessionid() const;
   inline void clear_sessionid();
-  static const int kSessionIDFieldNumber = 13;
+  static const int kSessionIDFieldNumber = 15;
   inline ::google::protobuf::uint32 sessionid() const;
   inline void set_sessionid(::google::protobuf::uint32 value);
 
@@ -1742,6 +1966,10 @@ class AllInOneMessage : public ::google::protobuf::Message {
   inline void clear_has_attestmsg();
   inline void set_has_regmsg();
   inline void clear_has_regmsg();
+  inline void set_has_pincodetomsg();
+  inline void clear_has_pincodetomsg();
+  inline void set_has_pincodebackmsg();
+  inline void clear_has_pincodebackmsg();
   inline void set_has_resmsg();
   inline void clear_has_resmsg();
   inline void set_has_smsmsg();
@@ -1761,10 +1989,12 @@ class AllInOneMessage : public ::google::protobuf::Message {
   ::Messages::MessageMSG1* msg1_;
   ::Messages::MessageMSG2* msg2_;
   ::Messages::MessageMSG3* msg3_;
+  ::Messages::AttestationMessage* attestmsg_;
   int type_;
   ::google::protobuf::uint32 sessionid_;
-  ::Messages::AttestationMessage* attestmsg_;
   ::Messages::RegisterMessage* regmsg_;
+  ::Messages::PinCodeToMessage* pincodetomsg_;
+  ::Messages::PinCodeBackMessage* pincodebackmsg_;
   ::Messages::ResponseMessage* resmsg_;
   ::Messages::SMSMessage* smsmsg_;
   ::Messages::SMSResponseMessage* smsresmsg_;
@@ -3182,6 +3412,166 @@ inline void RegisterMessage::set_size(::google::protobuf::uint32 value) {
 
 // -------------------------------------------------------------------
 
+// PinCodeToMessage
+
+// required .Messages.Type type = 1;
+inline bool PinCodeToMessage::has_type() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void PinCodeToMessage::set_has_type() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void PinCodeToMessage::clear_has_type() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void PinCodeToMessage::clear_type() {
+  type_ = 0;
+  clear_has_type();
+}
+inline ::Messages::Type PinCodeToMessage::type() const {
+  // @@protoc_insertion_point(field_get:Messages.PinCodeToMessage.type)
+  return static_cast< ::Messages::Type >(type_);
+}
+inline void PinCodeToMessage::set_type(::Messages::Type value) {
+  assert(::Messages::Type_IsValid(value));
+  set_has_type();
+  type_ = value;
+  // @@protoc_insertion_point(field_set:Messages.PinCodeToMessage.type)
+}
+
+// required uint32 status = 2;
+inline bool PinCodeToMessage::has_status() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void PinCodeToMessage::set_has_status() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void PinCodeToMessage::clear_has_status() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void PinCodeToMessage::clear_status() {
+  status_ = 0u;
+  clear_has_status();
+}
+inline ::google::protobuf::uint32 PinCodeToMessage::status() const {
+  // @@protoc_insertion_point(field_get:Messages.PinCodeToMessage.status)
+  return status_;
+}
+inline void PinCodeToMessage::set_status(::google::protobuf::uint32 value) {
+  set_has_status();
+  status_ = value;
+  // @@protoc_insertion_point(field_set:Messages.PinCodeToMessage.status)
+}
+
+// optional uint32 size = 3;
+inline bool PinCodeToMessage::has_size() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void PinCodeToMessage::set_has_size() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void PinCodeToMessage::clear_has_size() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void PinCodeToMessage::clear_size() {
+  size_ = 0u;
+  clear_has_size();
+}
+inline ::google::protobuf::uint32 PinCodeToMessage::size() const {
+  // @@protoc_insertion_point(field_get:Messages.PinCodeToMessage.size)
+  return size_;
+}
+inline void PinCodeToMessage::set_size(::google::protobuf::uint32 value) {
+  set_has_size();
+  size_ = value;
+  // @@protoc_insertion_point(field_set:Messages.PinCodeToMessage.size)
+}
+
+// -------------------------------------------------------------------
+
+// PinCodeBackMessage
+
+// required .Messages.Type type = 1;
+inline bool PinCodeBackMessage::has_type() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void PinCodeBackMessage::set_has_type() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void PinCodeBackMessage::clear_has_type() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void PinCodeBackMessage::clear_type() {
+  type_ = 0;
+  clear_has_type();
+}
+inline ::Messages::Type PinCodeBackMessage::type() const {
+  // @@protoc_insertion_point(field_get:Messages.PinCodeBackMessage.type)
+  return static_cast< ::Messages::Type >(type_);
+}
+inline void PinCodeBackMessage::set_type(::Messages::Type value) {
+  assert(::Messages::Type_IsValid(value));
+  set_has_type();
+  type_ = value;
+  // @@protoc_insertion_point(field_set:Messages.PinCodeBackMessage.type)
+}
+
+// repeated uint32 pinCode = 2 [packed = true];
+inline int PinCodeBackMessage::pincode_size() const {
+  return pincode_.size();
+}
+inline void PinCodeBackMessage::clear_pincode() {
+  pincode_.Clear();
+}
+inline ::google::protobuf::uint32 PinCodeBackMessage::pincode(int index) const {
+  // @@protoc_insertion_point(field_get:Messages.PinCodeBackMessage.pinCode)
+  return pincode_.Get(index);
+}
+inline void PinCodeBackMessage::set_pincode(int index, ::google::protobuf::uint32 value) {
+  pincode_.Set(index, value);
+  // @@protoc_insertion_point(field_set:Messages.PinCodeBackMessage.pinCode)
+}
+inline void PinCodeBackMessage::add_pincode(::google::protobuf::uint32 value) {
+  pincode_.Add(value);
+  // @@protoc_insertion_point(field_add:Messages.PinCodeBackMessage.pinCode)
+}
+inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
+PinCodeBackMessage::pincode() const {
+  // @@protoc_insertion_point(field_list:Messages.PinCodeBackMessage.pinCode)
+  return pincode_;
+}
+inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
+PinCodeBackMessage::mutable_pincode() {
+  // @@protoc_insertion_point(field_mutable_list:Messages.PinCodeBackMessage.pinCode)
+  return &pincode_;
+}
+
+// optional uint32 size = 3;
+inline bool PinCodeBackMessage::has_size() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void PinCodeBackMessage::set_has_size() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void PinCodeBackMessage::clear_has_size() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void PinCodeBackMessage::clear_size() {
+  size_ = 0u;
+  clear_has_size();
+}
+inline ::google::protobuf::uint32 PinCodeBackMessage::size() const {
+  // @@protoc_insertion_point(field_get:Messages.PinCodeBackMessage.size)
+  return size_;
+}
+inline void PinCodeBackMessage::set_size(::google::protobuf::uint32 value) {
+  set_has_size();
+  size_ = value;
+  // @@protoc_insertion_point(field_set:Messages.PinCodeBackMessage.size)
+}
+
+// -------------------------------------------------------------------
+
 // ResponseMessage
 
 // required .Messages.Type type = 1;
@@ -3810,15 +4200,97 @@ inline void AllInOneMessage::set_allocated_regmsg(::Messages::RegisterMessage* r
   // @@protoc_insertion_point(field_set_allocated:Messages.AllInOneMessage.regMsg)
 }
 
-// optional .Messages.ResponseMessage resMsg = 10;
-inline bool AllInOneMessage::has_resmsg() const {
+// optional .Messages.PinCodeToMessage pincodetoMsg = 10;
+inline bool AllInOneMessage::has_pincodetomsg() const {
   return (_has_bits_[0] & 0x00000200u) != 0;
 }
-inline void AllInOneMessage::set_has_resmsg() {
+inline void AllInOneMessage::set_has_pincodetomsg() {
   _has_bits_[0] |= 0x00000200u;
 }
-inline void AllInOneMessage::clear_has_resmsg() {
+inline void AllInOneMessage::clear_has_pincodetomsg() {
   _has_bits_[0] &= ~0x00000200u;
+}
+inline void AllInOneMessage::clear_pincodetomsg() {
+  if (pincodetomsg_ != NULL) pincodetomsg_->::Messages::PinCodeToMessage::Clear();
+  clear_has_pincodetomsg();
+}
+inline const ::Messages::PinCodeToMessage& AllInOneMessage::pincodetomsg() const {
+  // @@protoc_insertion_point(field_get:Messages.AllInOneMessage.pincodetoMsg)
+  return pincodetomsg_ != NULL ? *pincodetomsg_ : *default_instance_->pincodetomsg_;
+}
+inline ::Messages::PinCodeToMessage* AllInOneMessage::mutable_pincodetomsg() {
+  set_has_pincodetomsg();
+  if (pincodetomsg_ == NULL) pincodetomsg_ = new ::Messages::PinCodeToMessage;
+  // @@protoc_insertion_point(field_mutable:Messages.AllInOneMessage.pincodetoMsg)
+  return pincodetomsg_;
+}
+inline ::Messages::PinCodeToMessage* AllInOneMessage::release_pincodetomsg() {
+  clear_has_pincodetomsg();
+  ::Messages::PinCodeToMessage* temp = pincodetomsg_;
+  pincodetomsg_ = NULL;
+  return temp;
+}
+inline void AllInOneMessage::set_allocated_pincodetomsg(::Messages::PinCodeToMessage* pincodetomsg) {
+  delete pincodetomsg_;
+  pincodetomsg_ = pincodetomsg;
+  if (pincodetomsg) {
+    set_has_pincodetomsg();
+  } else {
+    clear_has_pincodetomsg();
+  }
+  // @@protoc_insertion_point(field_set_allocated:Messages.AllInOneMessage.pincodetoMsg)
+}
+
+// optional .Messages.PinCodeBackMessage pincodebackMsg = 11;
+inline bool AllInOneMessage::has_pincodebackmsg() const {
+  return (_has_bits_[0] & 0x00000400u) != 0;
+}
+inline void AllInOneMessage::set_has_pincodebackmsg() {
+  _has_bits_[0] |= 0x00000400u;
+}
+inline void AllInOneMessage::clear_has_pincodebackmsg() {
+  _has_bits_[0] &= ~0x00000400u;
+}
+inline void AllInOneMessage::clear_pincodebackmsg() {
+  if (pincodebackmsg_ != NULL) pincodebackmsg_->::Messages::PinCodeBackMessage::Clear();
+  clear_has_pincodebackmsg();
+}
+inline const ::Messages::PinCodeBackMessage& AllInOneMessage::pincodebackmsg() const {
+  // @@protoc_insertion_point(field_get:Messages.AllInOneMessage.pincodebackMsg)
+  return pincodebackmsg_ != NULL ? *pincodebackmsg_ : *default_instance_->pincodebackmsg_;
+}
+inline ::Messages::PinCodeBackMessage* AllInOneMessage::mutable_pincodebackmsg() {
+  set_has_pincodebackmsg();
+  if (pincodebackmsg_ == NULL) pincodebackmsg_ = new ::Messages::PinCodeBackMessage;
+  // @@protoc_insertion_point(field_mutable:Messages.AllInOneMessage.pincodebackMsg)
+  return pincodebackmsg_;
+}
+inline ::Messages::PinCodeBackMessage* AllInOneMessage::release_pincodebackmsg() {
+  clear_has_pincodebackmsg();
+  ::Messages::PinCodeBackMessage* temp = pincodebackmsg_;
+  pincodebackmsg_ = NULL;
+  return temp;
+}
+inline void AllInOneMessage::set_allocated_pincodebackmsg(::Messages::PinCodeBackMessage* pincodebackmsg) {
+  delete pincodebackmsg_;
+  pincodebackmsg_ = pincodebackmsg;
+  if (pincodebackmsg) {
+    set_has_pincodebackmsg();
+  } else {
+    clear_has_pincodebackmsg();
+  }
+  // @@protoc_insertion_point(field_set_allocated:Messages.AllInOneMessage.pincodebackMsg)
+}
+
+// optional .Messages.ResponseMessage resMsg = 12;
+inline bool AllInOneMessage::has_resmsg() const {
+  return (_has_bits_[0] & 0x00000800u) != 0;
+}
+inline void AllInOneMessage::set_has_resmsg() {
+  _has_bits_[0] |= 0x00000800u;
+}
+inline void AllInOneMessage::clear_has_resmsg() {
+  _has_bits_[0] &= ~0x00000800u;
 }
 inline void AllInOneMessage::clear_resmsg() {
   if (resmsg_ != NULL) resmsg_->::Messages::ResponseMessage::Clear();
@@ -3851,15 +4323,15 @@ inline void AllInOneMessage::set_allocated_resmsg(::Messages::ResponseMessage* r
   // @@protoc_insertion_point(field_set_allocated:Messages.AllInOneMessage.resMsg)
 }
 
-// optional .Messages.SMSMessage smsMsg = 11;
+// optional .Messages.SMSMessage smsMsg = 13;
 inline bool AllInOneMessage::has_smsmsg() const {
-  return (_has_bits_[0] & 0x00000400u) != 0;
+  return (_has_bits_[0] & 0x00001000u) != 0;
 }
 inline void AllInOneMessage::set_has_smsmsg() {
-  _has_bits_[0] |= 0x00000400u;
+  _has_bits_[0] |= 0x00001000u;
 }
 inline void AllInOneMessage::clear_has_smsmsg() {
-  _has_bits_[0] &= ~0x00000400u;
+  _has_bits_[0] &= ~0x00001000u;
 }
 inline void AllInOneMessage::clear_smsmsg() {
   if (smsmsg_ != NULL) smsmsg_->::Messages::SMSMessage::Clear();
@@ -3892,15 +4364,15 @@ inline void AllInOneMessage::set_allocated_smsmsg(::Messages::SMSMessage* smsmsg
   // @@protoc_insertion_point(field_set_allocated:Messages.AllInOneMessage.smsMsg)
 }
 
-// optional .Messages.SMSResponseMessage smsresMsg = 12;
+// optional .Messages.SMSResponseMessage smsresMsg = 14;
 inline bool AllInOneMessage::has_smsresmsg() const {
-  return (_has_bits_[0] & 0x00000800u) != 0;
+  return (_has_bits_[0] & 0x00002000u) != 0;
 }
 inline void AllInOneMessage::set_has_smsresmsg() {
-  _has_bits_[0] |= 0x00000800u;
+  _has_bits_[0] |= 0x00002000u;
 }
 inline void AllInOneMessage::clear_has_smsresmsg() {
-  _has_bits_[0] &= ~0x00000800u;
+  _has_bits_[0] &= ~0x00002000u;
 }
 inline void AllInOneMessage::clear_smsresmsg() {
   if (smsresmsg_ != NULL) smsresmsg_->::Messages::SMSResponseMessage::Clear();
@@ -3933,15 +4405,15 @@ inline void AllInOneMessage::set_allocated_smsresmsg(::Messages::SMSResponseMess
   // @@protoc_insertion_point(field_set_allocated:Messages.AllInOneMessage.smsresMsg)
 }
 
-// required uint32 sessionID = 13;
+// required uint32 sessionID = 15;
 inline bool AllInOneMessage::has_sessionid() const {
-  return (_has_bits_[0] & 0x00001000u) != 0;
+  return (_has_bits_[0] & 0x00004000u) != 0;
 }
 inline void AllInOneMessage::set_has_sessionid() {
-  _has_bits_[0] |= 0x00001000u;
+  _has_bits_[0] |= 0x00004000u;
 }
 inline void AllInOneMessage::clear_has_sessionid() {
-  _has_bits_[0] &= ~0x00001000u;
+  _has_bits_[0] &= ~0x00004000u;
 }
 inline void AllInOneMessage::clear_sessionid() {
   sessionid_ = 0u;

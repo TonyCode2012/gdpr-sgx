@@ -33,6 +33,11 @@ enclave {
                                            uint32_t sealed_phone_len,
                                            [out,count=32] uint8_t *p_unsealed_phone,
                                            [out] uint32_t *p_unsealed_phone_len);
+        public sgx_status_t decrypt_phone(sgx_ra_context_t session_id,
+                                   [in,size=phone_size] uint8_t *p_encrypted_phone, 
+                                   uint32_t phone_size,
+                                   [in,count=16] uint8_t *p_mac,
+                                   [out,size=phone_size] uint8_t *p_decrypted_phone);
     };
 
 };

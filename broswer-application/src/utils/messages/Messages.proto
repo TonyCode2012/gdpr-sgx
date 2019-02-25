@@ -9,9 +9,11 @@ enum Type {
     RA_VERIFICATION = 5;
     RA_APP_ATT_OK = 6;
     PHONE_REG = 7;
-    PHONE_RES = 8;
-    SMS_SEND = 9;
-    SMS_RES = 10;
+    PIN_CODE_TO = 8;
+    PIN_CODE_BACK = 9;
+    PHONE_REG_RES = 10;
+    SMS_SEND = 11;
+    SMS_RES = 12;
 }
 
 message SecretMessage {
@@ -90,6 +92,18 @@ message RegisterMessage {
     optional uint32 size = 3;
 }
 
+message PinCodeToMessage {
+    required Type type = 1;
+    required uint32 status = 2;
+    optional uint32 size = 3;
+}
+
+message PinCodeBackMessage {
+    required Type type = 1;
+    repeated uint32 pinCode = 2 [packed=true];
+    optional uint32 size = 3;
+}
+
 message ResponseMessage {
     required Type type = 1;
     repeated uint32 userID = 2 [packed=true];
@@ -119,8 +133,10 @@ message AllInOneMessage {
     optional MessageMSG3 msg3 = 7;
     optional AttestationMessage attestMsg = 8;
     optional RegisterMessage regMsg = 9;
-    optional ResponseMessage resMsg = 10;
-    optional SMSMessage smsMsg = 11;
-    optional SMSResponseMessage smsresMsg = 12;
-    required uint32 sessionID = 13 ;
+    optional PinCodeToMessage pincodetoMsg = 10;
+    optional PinCodeBackMessage pincodebackMsg = 11;
+    optional ResponseMessage resMsg = 12;
+    optional SMSMessage smsMsg = 13;
+    optional SMSResponseMessage smsresMsg = 14;
+    required uint32 sessionID = 15;
 }

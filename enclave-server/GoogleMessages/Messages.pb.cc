@@ -44,6 +44,12 @@ const ::google::protobuf::internal::GeneratedMessageReflection*
 const ::google::protobuf::Descriptor* RegisterMessage_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   RegisterMessage_reflection_ = NULL;
+const ::google::protobuf::Descriptor* PinCodeToMessage_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  PinCodeToMessage_reflection_ = NULL;
+const ::google::protobuf::Descriptor* PinCodeBackMessage_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  PinCodeBackMessage_reflection_ = NULL;
 const ::google::protobuf::Descriptor* ResponseMessage_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   ResponseMessage_reflection_ = NULL;
@@ -229,7 +235,41 @@ void protobuf_AssignDesc_Messages_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(RegisterMessage));
-  ResponseMessage_descriptor_ = file->message_type(8);
+  PinCodeToMessage_descriptor_ = file->message_type(8);
+  static const int PinCodeToMessage_offsets_[3] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PinCodeToMessage, type_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PinCodeToMessage, status_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PinCodeToMessage, size_),
+  };
+  PinCodeToMessage_reflection_ =
+    new ::google::protobuf::internal::GeneratedMessageReflection(
+      PinCodeToMessage_descriptor_,
+      PinCodeToMessage::default_instance_,
+      PinCodeToMessage_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PinCodeToMessage, _has_bits_[0]),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PinCodeToMessage, _unknown_fields_),
+      -1,
+      ::google::protobuf::DescriptorPool::generated_pool(),
+      ::google::protobuf::MessageFactory::generated_factory(),
+      sizeof(PinCodeToMessage));
+  PinCodeBackMessage_descriptor_ = file->message_type(9);
+  static const int PinCodeBackMessage_offsets_[3] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PinCodeBackMessage, type_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PinCodeBackMessage, pincode_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PinCodeBackMessage, size_),
+  };
+  PinCodeBackMessage_reflection_ =
+    new ::google::protobuf::internal::GeneratedMessageReflection(
+      PinCodeBackMessage_descriptor_,
+      PinCodeBackMessage::default_instance_,
+      PinCodeBackMessage_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PinCodeBackMessage, _has_bits_[0]),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PinCodeBackMessage, _unknown_fields_),
+      -1,
+      ::google::protobuf::DescriptorPool::generated_pool(),
+      ::google::protobuf::MessageFactory::generated_factory(),
+      sizeof(PinCodeBackMessage));
+  ResponseMessage_descriptor_ = file->message_type(10);
   static const int ResponseMessage_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ResponseMessage, type_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ResponseMessage, userid_),
@@ -246,7 +286,7 @@ void protobuf_AssignDesc_Messages_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(ResponseMessage));
-  SMSMessage_descriptor_ = file->message_type(9);
+  SMSMessage_descriptor_ = file->message_type(11);
   static const int SMSMessage_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SMSMessage, type_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SMSMessage, userid_),
@@ -264,7 +304,7 @@ void protobuf_AssignDesc_Messages_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(SMSMessage));
-  SMSResponseMessage_descriptor_ = file->message_type(10);
+  SMSResponseMessage_descriptor_ = file->message_type(12);
   static const int SMSResponseMessage_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SMSResponseMessage, type_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SMSResponseMessage, statuscode_),
@@ -281,8 +321,8 @@ void protobuf_AssignDesc_Messages_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(SMSResponseMessage));
-  AllInOneMessage_descriptor_ = file->message_type(11);
-  static const int AllInOneMessage_offsets_[13] = {
+  AllInOneMessage_descriptor_ = file->message_type(13);
+  static const int AllInOneMessage_offsets_[15] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AllInOneMessage, type_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AllInOneMessage, secretmsg_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AllInOneMessage, initmsg_),
@@ -292,6 +332,8 @@ void protobuf_AssignDesc_Messages_2eproto() {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AllInOneMessage, msg3_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AllInOneMessage, attestmsg_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AllInOneMessage, regmsg_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AllInOneMessage, pincodetomsg_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AllInOneMessage, pincodebackmsg_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AllInOneMessage, resmsg_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AllInOneMessage, smsmsg_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AllInOneMessage, smsresmsg_),
@@ -338,6 +380,10 @@ void protobuf_RegisterTypes(const ::std::string&) {
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
     RegisterMessage_descriptor_, &RegisterMessage::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+    PinCodeToMessage_descriptor_, &PinCodeToMessage::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+    PinCodeBackMessage_descriptor_, &PinCodeBackMessage::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
     ResponseMessage_descriptor_, &ResponseMessage::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
     SMSMessage_descriptor_, &SMSMessage::default_instance());
@@ -366,6 +412,10 @@ void protobuf_ShutdownFile_Messages_2eproto() {
   delete AttestationMessage_reflection_;
   delete RegisterMessage::default_instance_;
   delete RegisterMessage_reflection_;
+  delete PinCodeToMessage::default_instance_;
+  delete PinCodeToMessage_reflection_;
+  delete PinCodeBackMessage::default_instance_;
+  delete PinCodeBackMessage_reflection_;
   delete ResponseMessage::default_instance_;
   delete ResponseMessage_reflection_;
   delete SMSMessage::default_instance_;
@@ -415,31 +465,39 @@ void protobuf_AddDesc_Messages_2eproto() {
     "(\rB\002\020\001\022\023\n\007payload\030\020 \003(\rB\002\020\001\"g\n\017RegisterM"
     "essage\022\034\n\004type\030\001 \002(\0162\016.Messages.Type\022\027\n\013"
     "cipherPhone\030\002 \003(\rB\002\020\001\022\017\n\003mac\030\004 \003(\rB\002\020\001\022\014"
-    "\n\004size\030\003 \001(\r\"Q\n\017ResponseMessage\022\034\n\004type\030"
-    "\001 \002(\0162\016.Messages.Type\022\022\n\006userID\030\002 \003(\rB\002\020"
-    "\001\022\014\n\004size\030\003 \001(\r\"]\n\nSMSMessage\022\034\n\004type\030\001 "
-    "\002(\0162\016.Messages.Type\022\022\n\006userID\030\002 \003(\rB\002\020\001\022"
-    "\017\n\003sms\030\003 \003(\rB\002\020\001\022\014\n\004size\030\004 \001(\r\"T\n\022SMSRes"
-    "ponseMessage\022\034\n\004type\030\001 \002(\0162\016.Messages.Ty"
-    "pe\022\022\n\nstatusCode\030\002 \002(\r\022\014\n\004size\030\003 \001(\r\"\213\004\n"
-    "\017AllInOneMessage\022\034\n\004type\030\001 \002(\0162\016.Message"
-    "s.Type\022*\n\tsecretMsg\030\002 \001(\0132\027.Messages.Sec"
-    "retMessage\022)\n\007initMsg\030\003 \001(\0132\030.Messages.I"
-    "nitialMessage\022#\n\004msg0\030\004 \001(\0132\025.Messages.M"
-    "essageMSG0\022#\n\004msg1\030\005 \001(\0132\025.Messages.Mess"
-    "ageMSG1\022#\n\004msg2\030\006 \001(\0132\025.Messages.Message"
-    "MSG2\022#\n\004msg3\030\007 \001(\0132\025.Messages.MessageMSG"
-    "3\022/\n\tattestMsg\030\010 \001(\0132\034.Messages.Attestat"
-    "ionMessage\022)\n\006regMsg\030\t \001(\0132\031.Messages.Re"
-    "gisterMessage\022)\n\006resMsg\030\n \001(\0132\031.Messages"
-    ".ResponseMessage\022$\n\006smsMsg\030\013 \001(\0132\024.Messa"
-    "ges.SMSMessage\022/\n\tsmsresMsg\030\014 \001(\0132\034.Mess"
-    "ages.SMSResponseMessage\022\021\n\tsessionID\030\r \002"
-    "(\r*\256\001\n\004Type\022\013\n\007RA_MSG0\020\000\022\013\n\007RA_MSG1\020\001\022\013\n"
-    "\007RA_MSG2\020\002\022\013\n\007RA_MSG3\020\003\022\021\n\rRA_ATT_RESULT"
-    "\020\004\022\023\n\017RA_VERIFICATION\020\005\022\021\n\rRA_APP_ATT_OK"
-    "\020\006\022\r\n\tPHONE_REG\020\007\022\r\n\tPHONE_RES\020\010\022\014\n\010SMS_"
-    "SEND\020\t\022\013\n\007SMS_RES\020\n", 2259);
+    "\n\004size\030\003 \001(\r\"N\n\020PinCodeToMessage\022\034\n\004type"
+    "\030\001 \002(\0162\016.Messages.Type\022\016\n\006status\030\002 \002(\r\022\014"
+    "\n\004size\030\003 \001(\r\"U\n\022PinCodeBackMessage\022\034\n\004ty"
+    "pe\030\001 \002(\0162\016.Messages.Type\022\023\n\007pinCode\030\002 \003("
+    "\rB\002\020\001\022\014\n\004size\030\003 \001(\r\"Q\n\017ResponseMessage\022\034"
+    "\n\004type\030\001 \002(\0162\016.Messages.Type\022\022\n\006userID\030\002"
+    " \003(\rB\002\020\001\022\014\n\004size\030\003 \001(\r\"]\n\nSMSMessage\022\034\n\004"
+    "type\030\001 \002(\0162\016.Messages.Type\022\022\n\006userID\030\002 \003"
+    "(\rB\002\020\001\022\017\n\003sms\030\003 \003(\rB\002\020\001\022\014\n\004size\030\004 \001(\r\"T\n"
+    "\022SMSResponseMessage\022\034\n\004type\030\001 \002(\0162\016.Mess"
+    "ages.Type\022\022\n\nstatusCode\030\002 \002(\r\022\014\n\004size\030\003 "
+    "\001(\r\"\363\004\n\017AllInOneMessage\022\034\n\004type\030\001 \002(\0162\016."
+    "Messages.Type\022*\n\tsecretMsg\030\002 \001(\0132\027.Messa"
+    "ges.SecretMessage\022)\n\007initMsg\030\003 \001(\0132\030.Mes"
+    "sages.InitialMessage\022#\n\004msg0\030\004 \001(\0132\025.Mes"
+    "sages.MessageMSG0\022#\n\004msg1\030\005 \001(\0132\025.Messag"
+    "es.MessageMSG1\022#\n\004msg2\030\006 \001(\0132\025.Messages."
+    "MessageMSG2\022#\n\004msg3\030\007 \001(\0132\025.Messages.Mes"
+    "sageMSG3\022/\n\tattestMsg\030\010 \001(\0132\034.Messages.A"
+    "ttestationMessage\022)\n\006regMsg\030\t \001(\0132\031.Mess"
+    "ages.RegisterMessage\0220\n\014pincodetoMsg\030\n \001"
+    "(\0132\032.Messages.PinCodeToMessage\0224\n\016pincod"
+    "ebackMsg\030\013 \001(\0132\034.Messages.PinCodeBackMes"
+    "sage\022)\n\006resMsg\030\014 \001(\0132\031.Messages.Response"
+    "Message\022$\n\006smsMsg\030\r \001(\0132\024.Messages.SMSMe"
+    "ssage\022/\n\tsmsresMsg\030\016 \001(\0132\034.Messages.SMSR"
+    "esponseMessage\022\021\n\tsessionID\030\017 \002(\r*\326\001\n\004Ty"
+    "pe\022\013\n\007RA_MSG0\020\000\022\013\n\007RA_MSG1\020\001\022\013\n\007RA_MSG2\020"
+    "\002\022\013\n\007RA_MSG3\020\003\022\021\n\rRA_ATT_RESULT\020\004\022\023\n\017RA_"
+    "VERIFICATION\020\005\022\021\n\rRA_APP_ATT_OK\020\006\022\r\n\tPHO"
+    "NE_REG\020\007\022\017\n\013PIN_CODE_TO\020\010\022\021\n\rPIN_CODE_BA"
+    "CK\020\t\022\021\n\rPHONE_REG_RES\020\n\022\014\n\010SMS_SEND\020\013\022\013\n"
+    "\007SMS_RES\020\014", 2570);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "Messages.proto", &protobuf_RegisterTypes);
   SecretMessage::default_instance_ = new SecretMessage();
@@ -450,6 +508,8 @@ void protobuf_AddDesc_Messages_2eproto() {
   MessageMSG3::default_instance_ = new MessageMSG3();
   AttestationMessage::default_instance_ = new AttestationMessage();
   RegisterMessage::default_instance_ = new RegisterMessage();
+  PinCodeToMessage::default_instance_ = new PinCodeToMessage();
+  PinCodeBackMessage::default_instance_ = new PinCodeBackMessage();
   ResponseMessage::default_instance_ = new ResponseMessage();
   SMSMessage::default_instance_ = new SMSMessage();
   SMSResponseMessage::default_instance_ = new SMSResponseMessage();
@@ -462,6 +522,8 @@ void protobuf_AddDesc_Messages_2eproto() {
   MessageMSG3::default_instance_->InitAsDefaultInstance();
   AttestationMessage::default_instance_->InitAsDefaultInstance();
   RegisterMessage::default_instance_->InitAsDefaultInstance();
+  PinCodeToMessage::default_instance_->InitAsDefaultInstance();
+  PinCodeBackMessage::default_instance_->InitAsDefaultInstance();
   ResponseMessage::default_instance_->InitAsDefaultInstance();
   SMSMessage::default_instance_->InitAsDefaultInstance();
   SMSResponseMessage::default_instance_->InitAsDefaultInstance();
@@ -492,6 +554,8 @@ bool Type_IsValid(int value) {
     case 8:
     case 9:
     case 10:
+    case 11:
+    case 12:
       return true;
     default:
       return false;
@@ -4717,6 +4781,669 @@ void RegisterMessage::Swap(RegisterMessage* other) {
 // ===================================================================
 
 #ifndef _MSC_VER
+const int PinCodeToMessage::kTypeFieldNumber;
+const int PinCodeToMessage::kStatusFieldNumber;
+const int PinCodeToMessage::kSizeFieldNumber;
+#endif  // !_MSC_VER
+
+PinCodeToMessage::PinCodeToMessage()
+  : ::google::protobuf::Message() {
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:Messages.PinCodeToMessage)
+}
+
+void PinCodeToMessage::InitAsDefaultInstance() {
+}
+
+PinCodeToMessage::PinCodeToMessage(const PinCodeToMessage& from)
+  : ::google::protobuf::Message() {
+  SharedCtor();
+  MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:Messages.PinCodeToMessage)
+}
+
+void PinCodeToMessage::SharedCtor() {
+  _cached_size_ = 0;
+  type_ = 0;
+  status_ = 0u;
+  size_ = 0u;
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+}
+
+PinCodeToMessage::~PinCodeToMessage() {
+  // @@protoc_insertion_point(destructor:Messages.PinCodeToMessage)
+  SharedDtor();
+}
+
+void PinCodeToMessage::SharedDtor() {
+  if (this != default_instance_) {
+  }
+}
+
+void PinCodeToMessage::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* PinCodeToMessage::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return PinCodeToMessage_descriptor_;
+}
+
+const PinCodeToMessage& PinCodeToMessage::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_Messages_2eproto();
+  return *default_instance_;
+}
+
+PinCodeToMessage* PinCodeToMessage::default_instance_ = NULL;
+
+PinCodeToMessage* PinCodeToMessage::New() const {
+  return new PinCodeToMessage;
+}
+
+void PinCodeToMessage::Clear() {
+#define OFFSET_OF_FIELD_(f) (reinterpret_cast<char*>(      \
+  &reinterpret_cast<PinCodeToMessage*>(16)->f) - \
+   reinterpret_cast<char*>(16))
+
+#define ZR_(first, last) do {                              \
+    size_t f = OFFSET_OF_FIELD_(first);                    \
+    size_t n = OFFSET_OF_FIELD_(last) - f + sizeof(last);  \
+    ::memset(&first, 0, n);                                \
+  } while (0)
+
+  ZR_(type_, size_);
+
+#undef OFFSET_OF_FIELD_
+#undef ZR_
+
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  mutable_unknown_fields()->Clear();
+}
+
+bool PinCodeToMessage::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:Messages.PinCodeToMessage)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // required .Messages.Type type = 1;
+      case 1: {
+        if (tag == 8) {
+          int value;
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
+                 input, &value)));
+          if (::Messages::Type_IsValid(value)) {
+            set_type(static_cast< ::Messages::Type >(value));
+          } else {
+            mutable_unknown_fields()->AddVarint(1, value);
+          }
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(16)) goto parse_status;
+        break;
+      }
+
+      // required uint32 status = 2;
+      case 2: {
+        if (tag == 16) {
+         parse_status:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &status_)));
+          set_has_status();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(24)) goto parse_size;
+        break;
+      }
+
+      // optional uint32 size = 3;
+      case 3: {
+        if (tag == 24) {
+         parse_size:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &size_)));
+          set_has_size();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectAtEnd()) goto success;
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:Messages.PinCodeToMessage)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:Messages.PinCodeToMessage)
+  return false;
+#undef DO_
+}
+
+void PinCodeToMessage::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:Messages.PinCodeToMessage)
+  // required .Messages.Type type = 1;
+  if (has_type()) {
+    ::google::protobuf::internal::WireFormatLite::WriteEnum(
+      1, this->type(), output);
+  }
+
+  // required uint32 status = 2;
+  if (has_status()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(2, this->status(), output);
+  }
+
+  // optional uint32 size = 3;
+  if (has_size()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(3, this->size(), output);
+  }
+
+  if (!unknown_fields().empty()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+  // @@protoc_insertion_point(serialize_end:Messages.PinCodeToMessage)
+}
+
+::google::protobuf::uint8* PinCodeToMessage::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:Messages.PinCodeToMessage)
+  // required .Messages.Type type = 1;
+  if (has_type()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
+      1, this->type(), target);
+  }
+
+  // required uint32 status = 2;
+  if (has_status()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(2, this->status(), target);
+  }
+
+  // optional uint32 size = 3;
+  if (has_size()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(3, this->size(), target);
+  }
+
+  if (!unknown_fields().empty()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:Messages.PinCodeToMessage)
+  return target;
+}
+
+int PinCodeToMessage::ByteSize() const {
+  int total_size = 0;
+
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    // required .Messages.Type type = 1;
+    if (has_type()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::EnumSize(this->type());
+    }
+
+    // required uint32 status = 2;
+    if (has_status()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->status());
+    }
+
+    // optional uint32 size = 3;
+    if (has_size()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->size());
+    }
+
+  }
+  if (!unknown_fields().empty()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void PinCodeToMessage::MergeFrom(const ::google::protobuf::Message& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  const PinCodeToMessage* source =
+    ::google::protobuf::internal::dynamic_cast_if_available<const PinCodeToMessage*>(
+      &from);
+  if (source == NULL) {
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+    MergeFrom(*source);
+  }
+}
+
+void PinCodeToMessage::MergeFrom(const PinCodeToMessage& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (from.has_type()) {
+      set_type(from.type());
+    }
+    if (from.has_status()) {
+      set_status(from.status());
+    }
+    if (from.has_size()) {
+      set_size(from.size());
+    }
+  }
+  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+}
+
+void PinCodeToMessage::CopyFrom(const ::google::protobuf::Message& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void PinCodeToMessage::CopyFrom(const PinCodeToMessage& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool PinCodeToMessage::IsInitialized() const {
+  if ((_has_bits_[0] & 0x00000003) != 0x00000003) return false;
+
+  return true;
+}
+
+void PinCodeToMessage::Swap(PinCodeToMessage* other) {
+  if (other != this) {
+    std::swap(type_, other->type_);
+    std::swap(status_, other->status_);
+    std::swap(size_, other->size_);
+    std::swap(_has_bits_[0], other->_has_bits_[0]);
+    _unknown_fields_.Swap(&other->_unknown_fields_);
+    std::swap(_cached_size_, other->_cached_size_);
+  }
+}
+
+::google::protobuf::Metadata PinCodeToMessage::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = PinCodeToMessage_descriptor_;
+  metadata.reflection = PinCodeToMessage_reflection_;
+  return metadata;
+}
+
+
+// ===================================================================
+
+#ifndef _MSC_VER
+const int PinCodeBackMessage::kTypeFieldNumber;
+const int PinCodeBackMessage::kPinCodeFieldNumber;
+const int PinCodeBackMessage::kSizeFieldNumber;
+#endif  // !_MSC_VER
+
+PinCodeBackMessage::PinCodeBackMessage()
+  : ::google::protobuf::Message() {
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:Messages.PinCodeBackMessage)
+}
+
+void PinCodeBackMessage::InitAsDefaultInstance() {
+}
+
+PinCodeBackMessage::PinCodeBackMessage(const PinCodeBackMessage& from)
+  : ::google::protobuf::Message() {
+  SharedCtor();
+  MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:Messages.PinCodeBackMessage)
+}
+
+void PinCodeBackMessage::SharedCtor() {
+  _cached_size_ = 0;
+  type_ = 0;
+  size_ = 0u;
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+}
+
+PinCodeBackMessage::~PinCodeBackMessage() {
+  // @@protoc_insertion_point(destructor:Messages.PinCodeBackMessage)
+  SharedDtor();
+}
+
+void PinCodeBackMessage::SharedDtor() {
+  if (this != default_instance_) {
+  }
+}
+
+void PinCodeBackMessage::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* PinCodeBackMessage::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return PinCodeBackMessage_descriptor_;
+}
+
+const PinCodeBackMessage& PinCodeBackMessage::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_Messages_2eproto();
+  return *default_instance_;
+}
+
+PinCodeBackMessage* PinCodeBackMessage::default_instance_ = NULL;
+
+PinCodeBackMessage* PinCodeBackMessage::New() const {
+  return new PinCodeBackMessage;
+}
+
+void PinCodeBackMessage::Clear() {
+#define OFFSET_OF_FIELD_(f) (reinterpret_cast<char*>(      \
+  &reinterpret_cast<PinCodeBackMessage*>(16)->f) - \
+   reinterpret_cast<char*>(16))
+
+#define ZR_(first, last) do {                              \
+    size_t f = OFFSET_OF_FIELD_(first);                    \
+    size_t n = OFFSET_OF_FIELD_(last) - f + sizeof(last);  \
+    ::memset(&first, 0, n);                                \
+  } while (0)
+
+  ZR_(type_, size_);
+
+#undef OFFSET_OF_FIELD_
+#undef ZR_
+
+  pincode_.Clear();
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  mutable_unknown_fields()->Clear();
+}
+
+bool PinCodeBackMessage::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:Messages.PinCodeBackMessage)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // required .Messages.Type type = 1;
+      case 1: {
+        if (tag == 8) {
+          int value;
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
+                 input, &value)));
+          if (::Messages::Type_IsValid(value)) {
+            set_type(static_cast< ::Messages::Type >(value));
+          } else {
+            mutable_unknown_fields()->AddVarint(1, value);
+          }
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(18)) goto parse_pinCode;
+        break;
+      }
+
+      // repeated uint32 pinCode = 2 [packed = true];
+      case 2: {
+        if (tag == 18) {
+         parse_pinCode:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPackedPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, this->mutable_pincode())));
+        } else if (tag == 16) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadRepeatedPrimitiveNoInline<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 1, 18, input, this->mutable_pincode())));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(24)) goto parse_size;
+        break;
+      }
+
+      // optional uint32 size = 3;
+      case 3: {
+        if (tag == 24) {
+         parse_size:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &size_)));
+          set_has_size();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectAtEnd()) goto success;
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:Messages.PinCodeBackMessage)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:Messages.PinCodeBackMessage)
+  return false;
+#undef DO_
+}
+
+void PinCodeBackMessage::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:Messages.PinCodeBackMessage)
+  // required .Messages.Type type = 1;
+  if (has_type()) {
+    ::google::protobuf::internal::WireFormatLite::WriteEnum(
+      1, this->type(), output);
+  }
+
+  // repeated uint32 pinCode = 2 [packed = true];
+  if (this->pincode_size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteTag(2, ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED, output);
+    output->WriteVarint32(_pincode_cached_byte_size_);
+  }
+  for (int i = 0; i < this->pincode_size(); i++) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32NoTag(
+      this->pincode(i), output);
+  }
+
+  // optional uint32 size = 3;
+  if (has_size()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(3, this->size(), output);
+  }
+
+  if (!unknown_fields().empty()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+  // @@protoc_insertion_point(serialize_end:Messages.PinCodeBackMessage)
+}
+
+::google::protobuf::uint8* PinCodeBackMessage::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:Messages.PinCodeBackMessage)
+  // required .Messages.Type type = 1;
+  if (has_type()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
+      1, this->type(), target);
+  }
+
+  // repeated uint32 pinCode = 2 [packed = true];
+  if (this->pincode_size() > 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteTagToArray(
+      2,
+      ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED,
+      target);
+    target = ::google::protobuf::io::CodedOutputStream::WriteVarint32ToArray(
+      _pincode_cached_byte_size_, target);
+  }
+  for (int i = 0; i < this->pincode_size(); i++) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteUInt32NoTagToArray(this->pincode(i), target);
+  }
+
+  // optional uint32 size = 3;
+  if (has_size()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(3, this->size(), target);
+  }
+
+  if (!unknown_fields().empty()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:Messages.PinCodeBackMessage)
+  return target;
+}
+
+int PinCodeBackMessage::ByteSize() const {
+  int total_size = 0;
+
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    // required .Messages.Type type = 1;
+    if (has_type()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::EnumSize(this->type());
+    }
+
+    // optional uint32 size = 3;
+    if (has_size()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->size());
+    }
+
+  }
+  // repeated uint32 pinCode = 2 [packed = true];
+  {
+    int data_size = 0;
+    for (int i = 0; i < this->pincode_size(); i++) {
+      data_size += ::google::protobuf::internal::WireFormatLite::
+        UInt32Size(this->pincode(i));
+    }
+    if (data_size > 0) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::Int32Size(data_size);
+    }
+    GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+    _pincode_cached_byte_size_ = data_size;
+    GOOGLE_SAFE_CONCURRENT_WRITES_END();
+    total_size += data_size;
+  }
+
+  if (!unknown_fields().empty()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void PinCodeBackMessage::MergeFrom(const ::google::protobuf::Message& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  const PinCodeBackMessage* source =
+    ::google::protobuf::internal::dynamic_cast_if_available<const PinCodeBackMessage*>(
+      &from);
+  if (source == NULL) {
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+    MergeFrom(*source);
+  }
+}
+
+void PinCodeBackMessage::MergeFrom(const PinCodeBackMessage& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  pincode_.MergeFrom(from.pincode_);
+  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (from.has_type()) {
+      set_type(from.type());
+    }
+    if (from.has_size()) {
+      set_size(from.size());
+    }
+  }
+  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+}
+
+void PinCodeBackMessage::CopyFrom(const ::google::protobuf::Message& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void PinCodeBackMessage::CopyFrom(const PinCodeBackMessage& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool PinCodeBackMessage::IsInitialized() const {
+  if ((_has_bits_[0] & 0x00000001) != 0x00000001) return false;
+
+  return true;
+}
+
+void PinCodeBackMessage::Swap(PinCodeBackMessage* other) {
+  if (other != this) {
+    std::swap(type_, other->type_);
+    pincode_.Swap(&other->pincode_);
+    std::swap(size_, other->size_);
+    std::swap(_has_bits_[0], other->_has_bits_[0]);
+    _unknown_fields_.Swap(&other->_unknown_fields_);
+    std::swap(_cached_size_, other->_cached_size_);
+  }
+}
+
+::google::protobuf::Metadata PinCodeBackMessage::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = PinCodeBackMessage_descriptor_;
+  metadata.reflection = PinCodeBackMessage_reflection_;
+  return metadata;
+}
+
+
+// ===================================================================
+
+#ifndef _MSC_VER
 const int ResponseMessage::kTypeFieldNumber;
 const int ResponseMessage::kUserIDFieldNumber;
 const int ResponseMessage::kSizeFieldNumber;
@@ -5796,6 +6523,8 @@ const int AllInOneMessage::kMsg2FieldNumber;
 const int AllInOneMessage::kMsg3FieldNumber;
 const int AllInOneMessage::kAttestMsgFieldNumber;
 const int AllInOneMessage::kRegMsgFieldNumber;
+const int AllInOneMessage::kPincodetoMsgFieldNumber;
+const int AllInOneMessage::kPincodebackMsgFieldNumber;
 const int AllInOneMessage::kResMsgFieldNumber;
 const int AllInOneMessage::kSmsMsgFieldNumber;
 const int AllInOneMessage::kSmsresMsgFieldNumber;
@@ -5817,6 +6546,8 @@ void AllInOneMessage::InitAsDefaultInstance() {
   msg3_ = const_cast< ::Messages::MessageMSG3*>(&::Messages::MessageMSG3::default_instance());
   attestmsg_ = const_cast< ::Messages::AttestationMessage*>(&::Messages::AttestationMessage::default_instance());
   regmsg_ = const_cast< ::Messages::RegisterMessage*>(&::Messages::RegisterMessage::default_instance());
+  pincodetomsg_ = const_cast< ::Messages::PinCodeToMessage*>(&::Messages::PinCodeToMessage::default_instance());
+  pincodebackmsg_ = const_cast< ::Messages::PinCodeBackMessage*>(&::Messages::PinCodeBackMessage::default_instance());
   resmsg_ = const_cast< ::Messages::ResponseMessage*>(&::Messages::ResponseMessage::default_instance());
   smsmsg_ = const_cast< ::Messages::SMSMessage*>(&::Messages::SMSMessage::default_instance());
   smsresmsg_ = const_cast< ::Messages::SMSResponseMessage*>(&::Messages::SMSResponseMessage::default_instance());
@@ -5840,6 +6571,8 @@ void AllInOneMessage::SharedCtor() {
   msg3_ = NULL;
   attestmsg_ = NULL;
   regmsg_ = NULL;
+  pincodetomsg_ = NULL;
+  pincodebackmsg_ = NULL;
   resmsg_ = NULL;
   smsmsg_ = NULL;
   smsresmsg_ = NULL;
@@ -5862,6 +6595,8 @@ void AllInOneMessage::SharedDtor() {
     delete msg3_;
     delete attestmsg_;
     delete regmsg_;
+    delete pincodetomsg_;
+    delete pincodebackmsg_;
     delete resmsg_;
     delete smsmsg_;
     delete smsresmsg_;
@@ -5914,9 +6649,15 @@ void AllInOneMessage::Clear() {
       if (attestmsg_ != NULL) attestmsg_->::Messages::AttestationMessage::Clear();
     }
   }
-  if (_has_bits_[8 / 32] & 7936) {
+  if (_has_bits_[8 / 32] & 32512) {
     if (has_regmsg()) {
       if (regmsg_ != NULL) regmsg_->::Messages::RegisterMessage::Clear();
+    }
+    if (has_pincodetomsg()) {
+      if (pincodetomsg_ != NULL) pincodetomsg_->::Messages::PinCodeToMessage::Clear();
+    }
+    if (has_pincodebackmsg()) {
+      if (pincodebackmsg_ != NULL) pincodebackmsg_->::Messages::PinCodeBackMessage::Clear();
     }
     if (has_resmsg()) {
       if (resmsg_ != NULL) resmsg_->::Messages::ResponseMessage::Clear();
@@ -6062,52 +6803,78 @@ bool AllInOneMessage::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(82)) goto parse_resMsg;
+        if (input->ExpectTag(82)) goto parse_pincodetoMsg;
         break;
       }
 
-      // optional .Messages.ResponseMessage resMsg = 10;
+      // optional .Messages.PinCodeToMessage pincodetoMsg = 10;
       case 10: {
         if (tag == 82) {
+         parse_pincodetoMsg:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_pincodetomsg()));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(90)) goto parse_pincodebackMsg;
+        break;
+      }
+
+      // optional .Messages.PinCodeBackMessage pincodebackMsg = 11;
+      case 11: {
+        if (tag == 90) {
+         parse_pincodebackMsg:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_pincodebackmsg()));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(98)) goto parse_resMsg;
+        break;
+      }
+
+      // optional .Messages.ResponseMessage resMsg = 12;
+      case 12: {
+        if (tag == 98) {
          parse_resMsg:
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_resmsg()));
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(90)) goto parse_smsMsg;
+        if (input->ExpectTag(106)) goto parse_smsMsg;
         break;
       }
 
-      // optional .Messages.SMSMessage smsMsg = 11;
-      case 11: {
-        if (tag == 90) {
+      // optional .Messages.SMSMessage smsMsg = 13;
+      case 13: {
+        if (tag == 106) {
          parse_smsMsg:
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_smsmsg()));
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(98)) goto parse_smsresMsg;
+        if (input->ExpectTag(114)) goto parse_smsresMsg;
         break;
       }
 
-      // optional .Messages.SMSResponseMessage smsresMsg = 12;
-      case 12: {
-        if (tag == 98) {
+      // optional .Messages.SMSResponseMessage smsresMsg = 14;
+      case 14: {
+        if (tag == 114) {
          parse_smsresMsg:
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_smsresmsg()));
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(104)) goto parse_sessionID;
+        if (input->ExpectTag(120)) goto parse_sessionID;
         break;
       }
 
-      // required uint32 sessionID = 13;
-      case 13: {
-        if (tag == 104) {
+      // required uint32 sessionID = 15;
+      case 15: {
+        if (tag == 120) {
          parse_sessionID:
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
@@ -6199,27 +6966,39 @@ void AllInOneMessage::SerializeWithCachedSizes(
       9, this->regmsg(), output);
   }
 
-  // optional .Messages.ResponseMessage resMsg = 10;
+  // optional .Messages.PinCodeToMessage pincodetoMsg = 10;
+  if (has_pincodetomsg()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      10, this->pincodetomsg(), output);
+  }
+
+  // optional .Messages.PinCodeBackMessage pincodebackMsg = 11;
+  if (has_pincodebackmsg()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      11, this->pincodebackmsg(), output);
+  }
+
+  // optional .Messages.ResponseMessage resMsg = 12;
   if (has_resmsg()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      10, this->resmsg(), output);
+      12, this->resmsg(), output);
   }
 
-  // optional .Messages.SMSMessage smsMsg = 11;
+  // optional .Messages.SMSMessage smsMsg = 13;
   if (has_smsmsg()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      11, this->smsmsg(), output);
+      13, this->smsmsg(), output);
   }
 
-  // optional .Messages.SMSResponseMessage smsresMsg = 12;
+  // optional .Messages.SMSResponseMessage smsresMsg = 14;
   if (has_smsresmsg()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      12, this->smsresmsg(), output);
+      14, this->smsresmsg(), output);
   }
 
-  // required uint32 sessionID = 13;
+  // required uint32 sessionID = 15;
   if (has_sessionid()) {
-    ::google::protobuf::internal::WireFormatLite::WriteUInt32(13, this->sessionid(), output);
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(15, this->sessionid(), output);
   }
 
   if (!unknown_fields().empty()) {
@@ -6294,30 +7073,44 @@ void AllInOneMessage::SerializeWithCachedSizes(
         9, this->regmsg(), target);
   }
 
-  // optional .Messages.ResponseMessage resMsg = 10;
+  // optional .Messages.PinCodeToMessage pincodetoMsg = 10;
+  if (has_pincodetomsg()) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteMessageNoVirtualToArray(
+        10, this->pincodetomsg(), target);
+  }
+
+  // optional .Messages.PinCodeBackMessage pincodebackMsg = 11;
+  if (has_pincodebackmsg()) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteMessageNoVirtualToArray(
+        11, this->pincodebackmsg(), target);
+  }
+
+  // optional .Messages.ResponseMessage resMsg = 12;
   if (has_resmsg()) {
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
-        10, this->resmsg(), target);
+        12, this->resmsg(), target);
   }
 
-  // optional .Messages.SMSMessage smsMsg = 11;
+  // optional .Messages.SMSMessage smsMsg = 13;
   if (has_smsmsg()) {
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
-        11, this->smsmsg(), target);
+        13, this->smsmsg(), target);
   }
 
-  // optional .Messages.SMSResponseMessage smsresMsg = 12;
+  // optional .Messages.SMSResponseMessage smsresMsg = 14;
   if (has_smsresmsg()) {
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
-        12, this->smsresmsg(), target);
+        14, this->smsresmsg(), target);
   }
 
-  // required uint32 sessionID = 13;
+  // required uint32 sessionID = 15;
   if (has_sessionid()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(13, this->sessionid(), target);
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(15, this->sessionid(), target);
   }
 
   if (!unknown_fields().empty()) {
@@ -6396,28 +7189,42 @@ int AllInOneMessage::ByteSize() const {
           this->regmsg());
     }
 
-    // optional .Messages.ResponseMessage resMsg = 10;
+    // optional .Messages.PinCodeToMessage pincodetoMsg = 10;
+    if (has_pincodetomsg()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          this->pincodetomsg());
+    }
+
+    // optional .Messages.PinCodeBackMessage pincodebackMsg = 11;
+    if (has_pincodebackmsg()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          this->pincodebackmsg());
+    }
+
+    // optional .Messages.ResponseMessage resMsg = 12;
     if (has_resmsg()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
           this->resmsg());
     }
 
-    // optional .Messages.SMSMessage smsMsg = 11;
+    // optional .Messages.SMSMessage smsMsg = 13;
     if (has_smsmsg()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
           this->smsmsg());
     }
 
-    // optional .Messages.SMSResponseMessage smsresMsg = 12;
+    // optional .Messages.SMSResponseMessage smsresMsg = 14;
     if (has_smsresmsg()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
           this->smsresmsg());
     }
 
-    // required uint32 sessionID = 13;
+    // required uint32 sessionID = 15;
     if (has_sessionid()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::UInt32Size(
@@ -6480,6 +7287,12 @@ void AllInOneMessage::MergeFrom(const AllInOneMessage& from) {
     if (from.has_regmsg()) {
       mutable_regmsg()->::Messages::RegisterMessage::MergeFrom(from.regmsg());
     }
+    if (from.has_pincodetomsg()) {
+      mutable_pincodetomsg()->::Messages::PinCodeToMessage::MergeFrom(from.pincodetomsg());
+    }
+    if (from.has_pincodebackmsg()) {
+      mutable_pincodebackmsg()->::Messages::PinCodeBackMessage::MergeFrom(from.pincodebackmsg());
+    }
     if (from.has_resmsg()) {
       mutable_resmsg()->::Messages::ResponseMessage::MergeFrom(from.resmsg());
     }
@@ -6509,7 +7322,7 @@ void AllInOneMessage::CopyFrom(const AllInOneMessage& from) {
 }
 
 bool AllInOneMessage::IsInitialized() const {
-  if ((_has_bits_[0] & 0x00001001) != 0x00001001) return false;
+  if ((_has_bits_[0] & 0x00004001) != 0x00004001) return false;
 
   if (has_secretmsg()) {
     if (!this->secretmsg().IsInitialized()) return false;
@@ -6535,6 +7348,12 @@ bool AllInOneMessage::IsInitialized() const {
   if (has_regmsg()) {
     if (!this->regmsg().IsInitialized()) return false;
   }
+  if (has_pincodetomsg()) {
+    if (!this->pincodetomsg().IsInitialized()) return false;
+  }
+  if (has_pincodebackmsg()) {
+    if (!this->pincodebackmsg().IsInitialized()) return false;
+  }
   if (has_resmsg()) {
     if (!this->resmsg().IsInitialized()) return false;
   }
@@ -6558,6 +7377,8 @@ void AllInOneMessage::Swap(AllInOneMessage* other) {
     std::swap(msg3_, other->msg3_);
     std::swap(attestmsg_, other->attestmsg_);
     std::swap(regmsg_, other->regmsg_);
+    std::swap(pincodetomsg_, other->pincodetomsg_);
+    std::swap(pincodebackmsg_, other->pincodebackmsg_);
     std::swap(resmsg_, other->resmsg_);
     std::swap(smsmsg_, other->smsmsg_);
     std::swap(smsresmsg_, other->smsresmsg_);

@@ -288,3 +288,26 @@ string Base64decode(const string val) {
 string Base64encodeUint8(uint8_t *val, uint32_t len) {
     return base64_encode(val, len);
 }
+
+string RandomNum(int len) {
+    srand(time(NULL));
+    string res;
+    for(int i=0;i<len;i++) {
+        res.append(to_string(rand()%10));
+    }
+    return res;
+    /*
+    const long rangeMin = pow(10,len) - 1;
+    const long rangeMax = pow(10,len-1); 
+    typedef boost::uniform_int<> NumberDistribution; 
+    typedef boost::mt19937 RandomNumberGenerator; 
+    typedef boost::variate_generator<RandomNumberGenerator&, NumberDistribution> Generator; 
+    
+    NumberDistribution distribution(rangeMin, rangeMax); 
+    RandomNumberGenerator generator; 
+    Generator numberGenerator(generator, distribution); 
+    generator.seed(std::time(0)); // seed with the current time 
+    
+    return to_string(numberGenerator()); 
+    */
+}

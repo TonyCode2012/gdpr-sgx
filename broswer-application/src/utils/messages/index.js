@@ -15,7 +15,7 @@ import {
   RA_VERIFICATION,
   RA_APP_ATT_OK,
   PHONE_REG,
-  PHONE_RES,
+  PHONE_REG_RES,
   SMS_SEND
 } from "../../metadata/messageTypes";
 
@@ -66,7 +66,7 @@ const registry = {
     fieldName: "regMsg",
     getPayload: regMsg
   },
-  [PHONE_RES]: {
+  [PHONE_REG_RES]: {
     defName: "ResponseMessage",
     fieldName: "resMsg",
     getPayload: resMsg

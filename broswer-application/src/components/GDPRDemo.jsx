@@ -14,7 +14,7 @@ import {
   RA_ATT_RESULT,
   RA_APP_ATT_OK,
   PHONE_REG,
-  PHONE_RES,
+  PHONE_REG_RES,
   SMS_SEND,
   SMS_RES
 } from "../metadata/messageTypes";
@@ -166,7 +166,7 @@ class GDPRDemo extends React.Component {
         msgToSent = this.assemble(PHONE_REG, phone);
         break;
 
-      case PHONE_RES:
+      case PHONE_REG_RES:
         const { userID } = message.resMsg;
         this.setState({
           alert: buf2hexString(userID),
