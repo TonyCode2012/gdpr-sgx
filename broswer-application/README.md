@@ -7,12 +7,7 @@ In the project directory, run `npm i` to setup the app.
 ### `npm start`
 
 Run the app in the development mode.<br>
+
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-Register and login server will be running on [http://localhost:3001](http://localhost:3001).
-
-### `npm run client`
-
-Suggested. Run only the broswer app. 
 For personal users, visit [http://localhost:3000/demo/personal](http://localhost:3000/demo/personal) to register with phone number.
 For business users, visit [http://localhost:3000/demo/business](http://localhost:3000/demo/business) to send sms messages with legal user ID.
