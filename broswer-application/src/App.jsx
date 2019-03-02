@@ -2,9 +2,9 @@ import React from "react";
 import { Col } from "reactstrap";
 import { BrowserRouter, Route } from "react-router-dom";
 
-import Home from "./views/home/Home";
-import Demo from "./components/GDPRDemo";
-import Header from "./views/header/Header";
+import Home from "./pages/home/Home";
+import Demo from "./pages/demo/GDPRDemo";
+import Header from "./components/header/Header";
 import Footer from "./components/footer/Footer";
 
 const App = () => {

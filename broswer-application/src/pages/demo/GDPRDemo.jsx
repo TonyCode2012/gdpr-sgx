@@ -1,10 +1,10 @@
 import React from "react";
-import { Row, Col, Input, Alert } from "reactstrap";
 import protobuf from "protobufjs";
+import { Row, Col, Input, Alert } from "reactstrap";
 
-import registry from "../utils/messages";
-import proto from "../utils/messages/Messages.proto";
-import { buf2hexString } from "../utils/hexHelpers";
+import registry from "../../utils/messages";
+import proto from "../../utils/messages/Messages.proto";
+import { buf2hexString } from "../../utils/hexHelpers";
 import {
   RA_VERIFICATION,
   RA_MSG0,
@@ -17,7 +17,7 @@ import {
   PHONE_REG_RES,
   SMS_SEND,
   SMS_RES
-} from "../metadata/messageTypes";
+} from "../../metadata/messageTypes";
 
 let PROTO, WEB_SOCKET;
 
@@ -50,11 +50,8 @@ class GDPRDemo extends React.Component {
     this.handleOnChange = this.handleOnChange.bind(this);
   }
 
-
   setupWebSocket() {
-    //const serverUrl = `ws://${window.location.hostname}:8080/com.sgxtrial/websocketendpoint`
-    const serverUrl = `ws://${window.location.hostname}:8080`
-    console.log("serverurl:",serverUrl);
+    const serverUrl = `ws://${window.location.hostname}:8080`;
     WEB_SOCKET = new WebSocket(serverUrl);
 
     WEB_SOCKET.onopen = () => {
