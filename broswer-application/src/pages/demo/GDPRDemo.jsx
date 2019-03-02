@@ -14,6 +14,8 @@ import {
   RA_ATT_RESULT,
   RA_APP_ATT_OK,
   PHONE_REG,
+  PIN_CODE_TO,
+  PIN_CODE_BACK,
   PHONE_REG_RES,
   SMS_SEND,
   SMS_RES
@@ -35,6 +37,7 @@ protobuf
 
 const origin = {
   phone: "",
+  pinCode: "",
   userID: "",
   content: "",
   alert: "",
@@ -48,6 +51,7 @@ class GDPRDemo extends React.Component {
     this.session_id = 4294967295;
 
     this.handleOnChange = this.handleOnChange.bind(this);
+    this.handleRegister = this.handleRegister.bind(this);
   }
 
   setupWebSocket() {
@@ -163,6 +167,16 @@ class GDPRDemo extends React.Component {
         msgToSent = this.assemble(PHONE_REG, phone);
         break;
 
+      case PIN_CODE_TO:
+        const { status } = message.status;
+        if (status !== 200) {
+          this.setState({
+            alert: "Unknown error occured, please refresh the page and try again",
+            alertType: "warning"
+          });
+        }
+        break;
+
       case PHONE_REG_RES:
         const { userID } = message.resMsg;
         this.setState({
@@ -201,26 +215,46 @@ class GDPRDemo extends React.Component {
   }
 
   renderPersonal() {
-    const { phone, alert, alertType } = this.state;
+    const { phone, pinCode, alert, alertType } = this.state;
 
     return (
       <Col xs={12} md={{ size: 8, offset: 2 }} className="base-margin-top">
         <Alert color={alertType} isOpen={!!alert}>
-          Registration success! <br />
-          User ID is: {alert}
+         {alert}
         </Alert>
         <Row className="base-margin-bottom">
           <Col xs={12} md={{ size: 10, offset: 1 }}>
             <Input
               name="phone"
               value={phone}
-              placeholder="phone"
+              placeholder="Phone Number"
               onChange={this.handleOnChange}
             />
           </Col>
         </Row>
+        <Row className="base-margin-bottom">
+          <Col >
+            <Input
+              name="pinCode"
+              value={pinCode}
+              placeholder="Pin Code"
+              onChange={this.handleOnChange}
+            />
+          </Col>
+          <button
+            disabled={!phone}
+            onClick={this.setupWebSocket.bind(this)}
+          >
+            Get Pin Code
+          </button>
+        </Row>
         <Col className="text-center">
-          <button onClick={this.setupWebSocket.bind(this)}>Register</button>
+          <button 
+            disabled={!phone || !pinCode}
+            onClick={this.handleRegister}
+          >
+            Register
+          </button>
         </Col>
       </Col>
     );
@@ -256,6 +290,13 @@ class GDPRDemo extends React.Component {
         </Col>
       </Col>
     );
+  }
+
+  handleRegister() {
+    const { pinCode } = this.state;
+    const msgToSent = this.assemble(PIN_CODE_BACK, {pinCode});
+    WEB_SOCKET.send(msgToSent);
+    console.log("======== Message sent ========\n\n\n\n\n");
   }
 
   handleOnChange(event) {

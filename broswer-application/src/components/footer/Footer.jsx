@@ -5,7 +5,7 @@ class Footer extends React.Component {
     return (
       <footer id="footer">
         <a href="mailto:yudayan@cisco.com">Get in touch</a>
-        <div class="copyright">&copy; Untitled.</div>
+        <div className="copyright">&copy; Untitled.</div>
       </footer>
     );
   }

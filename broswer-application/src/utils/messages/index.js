@@ -5,6 +5,7 @@ import attMsg from "./attMsg";
 import regMsg from "./regMsg";
 import resMsg from "./resMsg";
 import smsMsg from "./smsMsg";
+import pinCodeBackMsg from "./pinCodeBackMsg"
 
 import {
   RA_MSG0,
@@ -15,6 +16,7 @@ import {
   RA_VERIFICATION,
   RA_APP_ATT_OK,
   PHONE_REG,
+  PIN_CODE_BACK,
   PHONE_REG_RES,
   SMS_SEND
 } from "../../metadata/messageTypes";
@@ -65,6 +67,11 @@ const registry = {
     defName: "RegisterMessage",
     fieldName: "regMsg",
     getPayload: regMsg
+  },
+  [PIN_CODE_BACK]: {
+    defName: "PinCodeBackMessage",
+    fieldName: "pincodebackMsg",
+    getPayload: pinCodeBackMsg
   },
   [PHONE_REG_RES]: {
     defName: "ResponseMessage",
