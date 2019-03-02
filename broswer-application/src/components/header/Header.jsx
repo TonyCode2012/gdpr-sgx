@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { Row, Col } from "reactstrap";
 import Link from "../../components/links/Link";
@@ -15,10 +14,6 @@ class Header extends Component {
     this.state = { ...origin };
 
     this.goToHomePage = this.goToHomePage.bind(this);
-  }
-
-  componentDidMount() {
-    this.props.dispatch({ type: "saga_verify_auth" });
   }
 
   goToHomePage() {
@@ -52,15 +47,4 @@ class Header extends Component {
   }
 }
 
-const mapStateToProps = state => state.header;
-
-const mapDispatchToProps = dispatch => ({
-  dispatch: action => dispatch(action)
-});
-
-export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(Header)
-);
+export default withRouter(Header);

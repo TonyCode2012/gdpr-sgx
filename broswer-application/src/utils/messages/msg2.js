@@ -16,7 +16,7 @@ import {
 } from "../hexHelpers";
 
 const aesCmac = require("node-aes-cmac").aesCmac;
-const EC = require('elliptic').ec;
+// const EC = require('elliptic').ec;
 // const ec = new EC('p256');
 const bigInt = require("big-integer");
 const findKeys = require("../keys/findKeys");
@@ -42,7 +42,10 @@ const getMsg2 = ecPublicKey => {
     // MY_PRIVATE_KEY,
     MY_PUBLIC_KEY,
     SHORT_KEY
-  } = findKeys({ X, Y });
+  } = findKeys({
+    X,
+    Y
+  });
 
   /**
    * @desc get signature: sign publck keys with my private key

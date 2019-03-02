@@ -1,19 +1,15 @@
 import React from "react";
 import { Row, Col } from "reactstrap";
-import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 
 import Link from "../../components/links/Link";
-import ECDHKeyChange from "../../components/ECDHKeyChange";
 
 import PersonalUser from "../../static/images/personal-user.jpg";
 import BusinessUser from "../../static/images/business-user.jpg";
 
 class Home extends React.Component {
   render() {
-    return this.props.authenticated ? (
-      <ECDHKeyChange />
-    ) : (
+    return (
       <div id="app-home">
         <div id="banner">
           <Col
@@ -102,17 +98,4 @@ class Home extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({
-  authenticated: state.header.authentication.authenticated
-});
-
-const mapDispatchToProps = dispatch => ({
-  dispatch: action => dispatch(action)
-});
-
-export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(Home)
-);
+export default withRouter(Home);
