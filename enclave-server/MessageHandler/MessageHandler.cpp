@@ -22,42 +22,28 @@ MessageHandler::~MessageHandler() {
 
 
 int MessageHandler::init() {
-    // create enclave
+    // initial enclave
     sgx_status_t ret = this->initEnclave();
     if (SGX_SUCCESS != ret) {
         Log("Error, call enclave_init_ra fail", log::error);
     } else {
         Log("Call enclave_init_ra success");
     }
+
+    // set webserver related
     this->listener->connectCallbackHandler([this](unsigned char *bytes, int len) {
         return this->handleMessages(bytes, len);
     });
-    /*
     vector<thread> v;
     v.reserve(threads-1);
-    for(auto i=threads-1;i>0;--i) {
+    for(int i=threads-1;i>0;--i) {
         v.emplace_back(
-                [&this->ioc]{
+                [this]{
                     this->ioc.run();
                 });
     }
-    */
-    this->listener->do_accept();
+    this->listener->run();
     this->ioc.run();
-    /*
-    this->server_http->connectCallbackHandler([this](unsigned char *bytes, int len) {
-        return this->handleMessages(bytes, len);
-    });
-    this->server_http->start_accept();
-    this->io_service.run();
-    */
-    /*
-    this->nm->Init();
-    this->nm->connectCallbackHandler([this](unsigned char *bytes, int len) {
-        return this->handleMessages(bytes, len);
-        //return this->incomingHandler(v, type);
-    });
-    */
 }
 
 
@@ -67,13 +53,8 @@ void MessageHandler::start() {
 
 
 sgx_status_t MessageHandler::initEnclave() {
-    //Log("========== STATUS IS ==========");
-    //Log("\tmy flag is:%d",this->my_flag);
     this->enclave = Enclave::getInstance();
     sgx_status_t ret = this->enclave->createEnclave();
-    if(this->my_flag == 0) {
-        this->my_flag = 1;
-    } 
     return ret;
 }
 
@@ -139,7 +120,6 @@ string MessageHandler::generateMSG1(sgx_ra_context_t session_id) {
     local_ec256_fix_data.g_key_flag = 0;
 
     while (1) {
-        //retGIDStatus = sgx_ra_get_msg1(this->enclave->getContext(),
         retGIDStatus = sgx_ra_get_msg1(session_id,
                                        this->enclave->getID(),
                                        sgx_ra_get_ga,
@@ -297,7 +277,6 @@ string MessageHandler::handleMSG2(sgx_ra_context_t session_id, Messages::Message
 
     int timeout = 0;
     do {
-        //ret = sgx_ra_proc_msg2(this->enclave->getContext(),
         ret = sgx_ra_proc_msg2(session_id,
                                this->enclave->getID(),
                                sgx_ra_proc_msg2_trusted,
@@ -577,8 +556,6 @@ string MessageHandler::handleRegisterMSG(sgx_ra_context_t session_id, Messages::
 
     memcpy(&(g_session_mapping_um[session_id]->cipher_phone),p_cipher,PHONE_SIZE);
     memcpy(&(g_session_mapping_um[session_id]->cipher_phone_mac),p_mac,CIPHER_MAC_SIZE);
-
-    //usleep(5000000);
 
     ret = decrypt_phone(this->enclave->getID(),
                         &status,

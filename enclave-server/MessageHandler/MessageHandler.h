@@ -57,24 +57,19 @@ public:
     MessageHandler(int port = Settings::rh_port);
     virtual ~MessageHandler();
 
-    sgx_ra_msg3_t* getMSG3();
     int init();
     void start();
-    //vector<string> incomingHandler(string v, int type);
-
-    sgx_status_t initEnclave();
-    uint32_t getExtendedEPID_GID(uint32_t *extended_epid_group_id);
-    sgx_status_t getEnclaveStatus();
-
     vector<string> handleMessages(unsigned char *bytes, int len);
-    //string createInitMsg(int type, string msg);
-    uint32_t my_flag = 0;
-    sgx_ec256_fix_data_t local_ec256_fix_data;
+    //vector<string> incomingHandler(string v, int type);
 
 protected:
     Enclave *enclave = NULL;
 
 private:
+    sgx_status_t initEnclave();
+    uint32_t getExtendedEPID_GID(uint32_t *extended_epid_group_id);
+    sgx_status_t getEnclaveStatus();
+
     string handleAttestationResult(sgx_ra_context_t session_id, Messages::AttestationMessage msg);
     string handleMSG0(sgx_ra_context_t session_id, Messages::MessageMSG0 msg);
     string handleMSG2(sgx_ra_context_t session_id, Messages::MessageMSG2 msg);
@@ -83,6 +78,7 @@ private:
     string handlePinCodeBack(sgx_ra_context_t session_id, Messages::PinCodeBackMessage msg);
     string handleSMS(sgx_ra_context_t session_id, Messages::SMSMessage msg);
 
+    sgx_ra_msg3_t* getMSG3();
     string generateMSG0(sgx_ra_context_t session_id);
     string generateMSG1(sgx_ra_context_t session_id);
     void assembleMSG2(Messages::MessageMSG2 msg, sgx_ra_msg2_t **pp_msg2);
@@ -93,15 +89,20 @@ private:
     sgx_ra_context_t getAddSession(Messages::AllInOneMessage aio_msg, handler_status_t *p_handler_status, sgx_status_t *p_sgx_status);
     handler_status_t sendSMS(uint8_t *p_phone, int phone_size, string sms);
 
+    //string createInitMsg(int type, string msg);
+    sgx_ec256_fix_data_t local_ec256_fix_data;
+
     const int busy_retry_time = 10;
     MysqlConnector *mysqlConnector = NULL;
+
+    // web server related
     //NetworkManagerServer *nm = NULL;
     //Server_http *server_http = NULL;
     unordered_map<sgx_ra_context_t, SessionData*> g_session_mapping_um;
     shared_ptr<Listener> listener = NULL;
     int threads = 3;
     boost::asio::io_context ioc{threads};
-    boost::asio::io_service io_service;
+    //boost::asio::io_service io_service;
 
 };
 

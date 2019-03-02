@@ -77,13 +77,37 @@ function install_sdk_deps()
     cd -
 }
 
+function install_web_deps()
+{
+    local boost_url="https://dl.bintray.com/boostorg/release/1.69.0/source/boost_1_69_0.tar.gz"
+    local boost_pkg=`basename $boost_url`
+    local boost_dir=${boost_pkg%%\.*}
+    cd $basedir/..
+    wget $boost_url
+    tar -xvf $boost_pkg
+    cd $boost_dir
+    sudo apt --purge remove libboost-dev
+    sudo apt --purge remove libboost-all-dev
+    sudo rm -rf /usr/lib/libboost_*
+    sudo rm -rf /usr/include/boost
+    ./bootstrap.sh
+    sudo ./b2 install -j4
+    sudo echo '/usr/local/lib' > /etc/ld.so.conf.d/boost.conf
+    sudo ldconfig
+    cd $basedir
+    cat /usr/local/include/boost/version.hpp | grep "BOOST_LIB_VERSION"
+}
+
 ############### MAIN BODY ###############
 
+HOSTNAME=`hostname`
 basedir=`dirname $0`
 basedir=`cd $basedir; pwd`
 sdkdir=$basedir/../linux-sgx
 sourcedir=$basedir/../sources
 sourcedir=`cd $sourcedir;pwd`
+#boostdir=$basedir/../
+#boostdir=`cd $boostdir;pwd`
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -105,6 +129,10 @@ while getopts "rs" OPT; do
             ;;
         s)
             install_sdk_deps
+            installed="yes"
+            ;;
+        b)
+            install_web_deps
             installed="yes"
             ;;
         ?)
