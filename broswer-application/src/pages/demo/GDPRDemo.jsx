@@ -171,7 +171,8 @@ class GDPRDemo extends React.Component {
         const { status } = message.pincodetoMsg.status;
         if (status !== 200) {
           this.setState({
-            alert: "Unknown error occured, please refresh the page and try again",
+            alert:
+              "Unknown error occured, please refresh the page and try again",
             alertType: "warning"
           });
         }
@@ -180,7 +181,7 @@ class GDPRDemo extends React.Component {
       case PHONE_REG_RES:
         const { userID } = message.resMsg;
         this.setState({
-          alert: buf2hexString(userID),
+          alert: `Register Succeed. User ID is ${buf2hexString(userID)}`,
           alertType: "success"
         });
         break;
@@ -220,10 +221,10 @@ class GDPRDemo extends React.Component {
     return (
       <Col xs={12} md={{ size: 8, offset: 2 }} className="base-margin-top">
         <Alert color={alertType} isOpen={!!alert}>
-         {alert}
+          {alert}
         </Alert>
         <Row className="base-margin-bottom">
-          <Col xs={12} md={{ size: 10, offset: 1 }}>
+          <Col xs={12}>
             <Input
               name="phone"
               value={phone}
@@ -233,7 +234,7 @@ class GDPRDemo extends React.Component {
           </Col>
         </Row>
         <Row className="base-margin-bottom">
-          <Col >
+          <Col>
             <Input
               name="pinCode"
               value={pinCode}
@@ -241,18 +242,12 @@ class GDPRDemo extends React.Component {
               onChange={this.handleOnChange}
             />
           </Col>
-          <button
-            disabled={!phone}
-            onClick={this.setupWebSocket.bind(this)}
-          >
+          <button disabled={!phone} onClick={this.setupWebSocket.bind(this)}>
             Get Pin Code
           </button>
         </Row>
         <Col className="text-center">
-          <button 
-            disabled={!phone || !pinCode}
-            onClick={this.handleRegister}
-          >
+          <button disabled={!phone || !pinCode} onClick={this.handleRegister}>
             Register
           </button>
         </Col>
@@ -294,7 +289,7 @@ class GDPRDemo extends React.Component {
 
   handleRegister() {
     const { pinCode } = this.state;
-    const msgToSent = this.assemble(PIN_CODE_BACK, {pinCode});
+    const msgToSent = this.assemble(PIN_CODE_BACK, { pinCode });
     WEB_SOCKET.send(msgToSent);
     console.log("======== Message sent ========\n\n\n\n\n");
   }
