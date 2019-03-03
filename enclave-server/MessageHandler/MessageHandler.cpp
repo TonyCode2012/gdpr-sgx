@@ -581,7 +581,9 @@ string MessageHandler::handleRegisterMSG(sgx_ra_context_t session_id, Messages::
         string pincode = RandomNum(PIN_CODE_SIZE);
         //for test
         Log("pin code:%s",pincode);
-        memcpy(&(g_session_mapping_um[session_id]->pin_code),pincode.c_str(),PIN_CODE_SIZE);
+        HexStringToByteArray(pincode,g_session_mapping_um[session_id]->pin_code);
+        //memcpy(g_session_mapping_um[session_id]->pin_code,pincode.c_str(),PIN_CODE_SIZE);
+        Log("pincode copied:%s",ByteArrayToStringNoFill(g_session_mapping_um[session_id]->pin_code,6));
         /*
         handler_status_t handler_ret = sendSMS(p_decrypted_phone, PHONE_SIZE, pincode);
         if(MSG_SUCCESS == handler_ret) {
@@ -599,7 +601,7 @@ string MessageHandler::handleRegisterMSG(sgx_ra_context_t session_id, Messages::
     aio_ret_msg.set_sessionid(session_id);
     if(aio_ret_msg.SerializeToString(&result)) {
         Log("Serialization successful");
-        g_session_mapping_um[session_id]->msg_type = Messages::Type::SMS_SEND;
+        g_session_mapping_um[session_id]->msg_type = Messages::Type::PIN_CODE_BACK;
     }
     else {
         Log("Serialization failed", log::error);
@@ -613,6 +615,7 @@ string MessageHandler::handlePinCodeBack(sgx_ra_context_t session_id, Messages::
     uint8_t *p_cipher = g_session_mapping_um[session_id]->cipher_phone;
     uint8_t *p_mac = g_session_mapping_um[session_id]->cipher_phone_mac;
     uint8_t *p_pincode = g_session_mapping_um[session_id]->pin_code;
+    uint8_t *msg_pincode = new uint8_t[PIN_CODE_SIZE];
     uint8_t *p_user_id = new uint8_t[USER_ID_SIZE];
     uint8_t *p_sealed_phone = new uint8_t[CIPHER_SIZE];
     uint32_t sealed_data_len;
@@ -620,11 +623,16 @@ string MessageHandler::handlePinCodeBack(sgx_ra_context_t session_id, Messages::
     sgx_status_t ret = SGX_SUCCESS;
     sgx_status_t status;
 
+    string str1 = ByteArrayToStringNoFill(g_session_mapping_um[session_id]->pin_code,6);
     for(int i=0;i<PIN_CODE_SIZE;i++) {
-        if(p_pincode[i] != msg.pincode(i)) {
-            Log("Pin code mismatch!", log::error);
-            return "";
-        }
+        msg_pincode[i] = msg.pincode(i);
+    }
+    string str2 = ByteArrayToStringNoFill(msg_pincode,6);
+
+    str1 = str1.substr(0,PIN_CODE_SIZE);
+    if(str1.compare(str2)) {
+        Log("Pin code mismatch!",log::error);
+        return result;
     }
 
     ret = register_user(this->enclave->getID(),

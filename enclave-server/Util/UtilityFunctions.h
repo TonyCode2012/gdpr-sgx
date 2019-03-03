@@ -51,7 +51,7 @@ string GetRandomString();
 
 string ByteArrayToString(const uint8_t *arr, int size);
 string ByteArrayToStringNoFill(const uint8_t *arr, int size);
-int StringToByteArray(string str, uint8_t **arr);
+int StringToByteArray(string str, uint8_t *arr);
 string ByteArrayToNoHexString(const uint8_t *arr, int size);
 string UIntToString(uint32_t *arr, int size);
 int HexStringToByteArray(string str, uint8_t *arr);

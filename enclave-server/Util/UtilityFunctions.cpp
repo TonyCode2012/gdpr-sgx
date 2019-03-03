@@ -56,11 +56,11 @@ int HexStringToByteArray(string str, uint8_t *arr) {
 }
 
 
-int StringToByteArray(string str, uint8_t **arr) {
+int StringToByteArray(string str, uint8_t *arr) {
     vector<uint8_t> vec(str.begin(), str.end());
 
-    *arr = (uint8_t*) malloc(sizeof(uint8_t) * vec.size());
-    copy(vec.begin(), vec.end(), *arr);
+    //*arr = (uint8_t*) malloc(sizeof(uint8_t) * vec.size());
+    copy(vec.begin(), vec.end(), arr);
 
     return vec.size();
 }
@@ -293,7 +293,9 @@ string RandomNum(int len) {
     srand(time(NULL));
     string res;
     for(int i=0;i<len;i++) {
-        res.append(to_string(rand()%10));
+        int bit;
+        while((bit=rand()%10) == 0);
+        res.append(to_string(bit));
     }
     return res;
     /*

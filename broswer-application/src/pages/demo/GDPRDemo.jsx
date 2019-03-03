@@ -168,7 +168,7 @@ class GDPRDemo extends React.Component {
         break;
 
       case PIN_CODE_TO:
-        const { status } = message.status;
+        const { status } = message.pincodetoMsg.status;
         if (status !== 200) {
           this.setState({
             alert: "Unknown error occured, please refresh the page and try again",
