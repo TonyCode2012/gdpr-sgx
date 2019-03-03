@@ -6,6 +6,7 @@ cat << EOF
         options:
                 -s: install sdk dependencies
                 -r: install remote attestation dependencies
+                -b: install boost
 EOF
 }
 
@@ -121,7 +122,7 @@ compilerpkg=$sourcedir/`ls $sourcedir | grep "compiler" | grep "2.6.1"`
 
 installed="no"
 
-while getopts "rs" OPT; do
+while getopts "rsb" OPT; do
     case $OPT in
         r)
             install_attest_deps
