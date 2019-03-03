@@ -55,6 +55,7 @@ int StringToByteArray(string str, uint8_t *arr);
 string ByteArrayToNoHexString(const uint8_t *arr, int size);
 string UIntToString(uint32_t *arr, int size);
 int HexStringToByteArray(string str, uint8_t *arr);
+int DecStringToByteArray(string str, uint8_t *arr);
 
 int ReadFileToBuffer(string filePath, uint8_t **content);
 int ReadFileToBuffer(string filePath, char **content);

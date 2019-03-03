@@ -39,6 +39,20 @@ string ByteArrayToStringNoFill(const uint8_t *arr, int size) {
     return convert.str();
 }
 
+int DecStringToByteArray(string str, uint8_t *arr) {
+    vector<uint8_t> bytes;
+
+    const char* p_cstr = str.c_str();
+    for (unsigned int i=0; i<str.length(); i++) {
+        char byte = (char) strtol(&p_cstr[i], NULL, 10);
+        bytes.push_back((unsigned char)byte);
+    }
+
+    //*arr = (uint8_t*) malloc(sizeof(uint8_t) * bytes.size());
+    copy(bytes.begin(), bytes.end(), arr);
+
+    return bytes.size();
+}
 
 int HexStringToByteArray(string str, uint8_t *arr) {
     vector<uint8_t> bytes;

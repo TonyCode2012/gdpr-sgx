@@ -41,7 +41,8 @@ const origin = {
   userID: "",
   content: "",
   alert: "",
-  alertType: ""
+  alertType: "",
+  timer: 0
 };
 
 class GDPRDemo extends React.Component {
@@ -52,6 +53,7 @@ class GDPRDemo extends React.Component {
 
     this.handleOnChange = this.handleOnChange.bind(this);
     this.handleRegister = this.handleRegister.bind(this);
+    this.handleGetPinCode = this.handleGetPinCode.bind(this);
   }
 
   setupWebSocket() {
@@ -169,7 +171,12 @@ class GDPRDemo extends React.Component {
 
       case PIN_CODE_TO:
         const { status } = message.pincodetoMsg;
-        if (status !== 200) {
+        if (status === 200) {
+          this.setState({
+            alert: "Pin code sent out successfully.",
+            alertType: "success"
+          });
+        } else {
           this.setState({
             alert:
               "Unknown error occured, please refresh the page and try again",
@@ -216,7 +223,7 @@ class GDPRDemo extends React.Component {
   }
 
   renderPersonal() {
-    const { phone, pinCode, alert, alertType } = this.state;
+    const { phone, pinCode, alert, alertType, timer } = this.state;
 
     return (
       <Col xs={12} md={{ size: 8, offset: 2 }} className="base-margin-top">
@@ -242,8 +249,8 @@ class GDPRDemo extends React.Component {
               onChange={this.handleOnChange}
             />
           </Col>
-          <button disabled={!phone} onClick={this.setupWebSocket.bind(this)}>
-            Get Pin Code
+          <button disabled={!phone || !!timer} onClick={this.handleGetPinCode}>
+            Get Pin Code {!!timer && `(${timer})`}
           </button>
         </Row>
         <Col className="text-center">
@@ -285,6 +292,21 @@ class GDPRDemo extends React.Component {
         </Col>
       </Col>
     );
+  }
+
+  handleGetPinCode() {
+    this.setupWebSocket();
+
+    this.setState({ timer: 60 }, () => {
+      const countDown = setInterval(() => {
+        const { timer } = this.state;
+        if (timer > 0) {
+          this.setState({ timer: timer - 1 });
+        } else {
+          clearInterval(countDown);
+        }
+      }, 1000);
+    });
   }
 
   handleRegister() {
