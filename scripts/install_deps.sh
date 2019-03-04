@@ -84,8 +84,14 @@ function install_web_deps()
     local boost_pkg=`basename $boost_url`
     local boost_dir=${boost_pkg%%\.*}
     cd $basedir/..
+    rm -rf $boost_dir
+    rm -rf $boost_pkg
     wget $boost_url
     tar -xvf $boost_pkg
+    if [ $? -ne 0 ]; then
+        verbose ERROR "Extract boost package failed!"
+        return
+    fi
     cd $boost_dir
     sudo apt --purge remove libboost-dev
     sudo apt --purge remove libboost-all-dev
