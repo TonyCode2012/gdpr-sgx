@@ -34,16 +34,19 @@ int MessageHandler::start() {
     this->server->connectCallbackHandler([this](unsigned char *bytes, int len) {
         return this->handleMessages(bytes, len);
     });
+    // Create and launch a listening port
+    this->server->run();
+
+    // Run the I/O service on the requested number of threads
+    boost::asio::io_context *pioc = &this->ioc;
     vector<thread> v;
     v.reserve(threads-1);
-    boost::asio::io_context *pioc = &this->ioc;
     for(int i=threads-1;i>0;--i) {
         v.emplace_back(
                 [pioc]{
                     pioc->run();
                 });
     }
-    this->server->run();
     pioc->run();
 }
 
