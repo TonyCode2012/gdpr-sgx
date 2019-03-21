@@ -16,7 +16,7 @@ import {
   PHONE_REG,
   PIN_CODE_TO,
   PIN_CODE_BACK,
-  PHONE_REG_RES,
+  PHONE_REG_END,
   SMS_SEND,
   SMS_RES
 } from "../../metadata/messageTypes";
@@ -143,34 +143,79 @@ class GDPRDemo extends React.Component {
     console.log("Message Received:", message);
 
     let msgToSent;
+    let status;
 
     switch (type) {
       case RA_MSG0:
         this.session_id = message.sessionID;
         msgToSent = this.assemble(RA_MSG0);
+        status = message.msg0.status;
+        if (status === 200) {
+          this.setState({
+            alertType: "success"
+          });
+        } else {
+          this.setState({
+            alert: "Unknown error occured(msg0), please refresh the page and try again",
+            alertType: "warning"
+          });
+        }
         break;
 
       case RA_MSG1:
         const { msg1 } = message;
-        const { GaX, GaY } = msg1;
-        const ecPublicKey = {
-          X: GaX,
-          Y: GaY
-        };
-        msgToSent = this.assemble(RA_MSG2, ecPublicKey);
+        status = message.msg1.status;
+        if (status === 200) {
+          const { GaX, GaY } = msg1;
+          const ecPublicKey = {
+            X: GaX,
+            Y: GaY
+          };
+          msgToSent = this.assemble(RA_MSG2, ecPublicKey);
+          this.setState({
+            alertType: "success"
+          });
+        } else {
+          this.setState({
+            alert: "Unknown error occured(msg1), please refresh the page and try again",
+            alertType: "warning"
+          });
+        }
         break;
 
       case RA_MSG3:
-        msgToSent = this.assemble(RA_ATT_RESULT);
+        status = message.msg3.status;
+        if (status === 200) {
+          msgToSent = this.assemble(RA_ATT_RESULT);
+          this.setState({
+            alertType: "success"
+          });
+        } else {
+          this.setState({
+            alert: "Unknown error occured(msg3), please refresh the page and try again",
+            alertType: "warning"
+          });
+        }
         break;
 
       case RA_APP_ATT_OK:
         const { phone } = this.state;
-        msgToSent = this.assemble(PHONE_REG, phone);
+        status = message.initMsg.status;
+        if (status === 200) {
+          msgToSent = this.assemble(PHONE_REG, phone);
+          this.setState({
+            alertType: "success"
+          });
+        } else {
+          this.setState({
+            alert: "Unknown error occured(attmsg), please refresh the page and try again",
+            alertType: "warning"
+          });
+        }
         break;
 
       case PIN_CODE_TO:
-        const { status } = message.pincodetoMsg;
+        status = message.pincodetoMsg.status;
         if (status === 200) {
           this.setState({
             alert: "Pin code sent out successfully.",
@@ -185,17 +230,25 @@ class GDPRDemo extends React.Component {
         }
         break;
 
-      case PHONE_REG_RES:
+      case PHONE_REG_END:
         const { userID } = message.resMsg;
-        this.setState({
-          alert: `Register Succeed. User ID is ${buf2hexString(userID)}`,
-          alertType: "success"
-        });
+        status = message.resMsg.status;
+        if (status === 200) {
+          this.setState({
+            alert: `Register Succeed. User ID is ${buf2hexString(userID)}`,
+            alertType: "success"
+          });
+        } else {
+          this.setState({
+            alert: "Unknown error occured, please refresh the page and try again",
+            alertType: "warning"
+          });
+        }
         break;
 
       case SMS_RES:
-        const { statusCode } = message.smsresMsg;
-        if (statusCode === 200) {
+        status = message.smsresMsg.status;
+        if (status === 200) {
           this.setState({
             alert: "Message sent successfully!",
             alertType: "success"

@@ -102,6 +102,7 @@ sgx_ra_context_t Enclave::createSession(sgx_status_t *status) {
 }
 
 sgx_status_t Enclave::closeSession(sgx_ra_context_t session_id) {
+    sgx_status_t status;
     sgx_status_t ret = enclave_ra_close(enclave_id, &status, session_id);
 
     if (SGX_SUCCESS != ret || status) {

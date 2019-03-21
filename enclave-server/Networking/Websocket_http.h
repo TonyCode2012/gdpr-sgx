@@ -79,13 +79,13 @@ private:
 //------------------------------------------------------------------------------
 
 // Accepts incoming connections and launches the Session_https
-class Listener : public std::enable_shared_from_this<Listener>
+class Server_http : public std::enable_shared_from_this<Server_http>
 {
     tcp::acceptor acceptor_;
     tcp::socket socket_;
 
 public:
-    Listener(
+    Server_http(
         boost::asio::io_context& ioc,
         tcp::endpoint endpoint);
     /*

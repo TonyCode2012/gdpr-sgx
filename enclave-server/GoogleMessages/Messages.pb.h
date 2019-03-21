@@ -60,9 +60,10 @@ enum Type {
   PHONE_REG = 7,
   PIN_CODE_TO = 8,
   PIN_CODE_BACK = 9,
-  PHONE_REG_RES = 10,
-  SMS_SEND = 11,
-  SMS_RES = 12
+  PHONE_REG_END = 10,
+  SESSION_CLOSE = 11,
+  SMS_SEND = 12,
+  SMS_RES = 13
 };
 bool Type_IsValid(int value);
 const Type Type_MIN = RA_MSG0;
@@ -148,12 +149,21 @@ class SecretMessage : public ::google::protobuf::Message {
   inline ::google::protobuf::uint32 size() const;
   inline void set_size(::google::protobuf::uint32 value);
 
+  // optional uint32 status = 3;
+  inline bool has_status() const;
+  inline void clear_status();
+  static const int kStatusFieldNumber = 3;
+  inline ::google::protobuf::uint32 status() const;
+  inline void set_status(::google::protobuf::uint32 value);
+
   // @@protoc_insertion_point(class_scope:Messages.SecretMessage)
  private:
   inline void set_has_type();
   inline void clear_has_type();
   inline void set_has_size();
   inline void clear_has_size();
+  inline void set_has_status();
+  inline void clear_has_status();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -161,6 +171,7 @@ class SecretMessage : public ::google::protobuf::Message {
   mutable int _cached_size_;
   int type_;
   ::google::protobuf::uint32 size_;
+  ::google::protobuf::uint32 status_;
   friend void  protobuf_AddDesc_Messages_2eproto();
   friend void protobuf_AssignDesc_Messages_2eproto();
   friend void protobuf_ShutdownFile_Messages_2eproto();
@@ -237,12 +248,21 @@ class InitialMessage : public ::google::protobuf::Message {
   inline ::google::protobuf::uint32 size() const;
   inline void set_size(::google::protobuf::uint32 value);
 
+  // optional uint32 status = 3;
+  inline bool has_status() const;
+  inline void clear_status();
+  static const int kStatusFieldNumber = 3;
+  inline ::google::protobuf::uint32 status() const;
+  inline void set_status(::google::protobuf::uint32 value);
+
   // @@protoc_insertion_point(class_scope:Messages.InitialMessage)
  private:
   inline void set_has_type();
   inline void clear_has_type();
   inline void set_has_size();
   inline void clear_has_size();
+  inline void set_has_status();
+  inline void clear_has_status();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -250,6 +270,7 @@ class InitialMessage : public ::google::protobuf::Message {
   mutable int _cached_size_;
   int type_;
   ::google::protobuf::uint32 size_;
+  ::google::protobuf::uint32 status_;
   friend void  protobuf_AddDesc_Messages_2eproto();
   friend void protobuf_AssignDesc_Messages_2eproto();
   friend void protobuf_ShutdownFile_Messages_2eproto();
@@ -454,10 +475,19 @@ class MessageMSG1 : public ::google::protobuf::Message {
   inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
       mutable_gid();
 
+  // required uint32 status = 5;
+  inline bool has_status() const;
+  inline void clear_status();
+  static const int kStatusFieldNumber = 5;
+  inline ::google::protobuf::uint32 status() const;
+  inline void set_status(::google::protobuf::uint32 value);
+
   // @@protoc_insertion_point(class_scope:Messages.MessageMSG1)
  private:
   inline void set_has_type();
   inline void clear_has_type();
+  inline void set_has_status();
+  inline void clear_has_status();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -467,9 +497,10 @@ class MessageMSG1 : public ::google::protobuf::Message {
   mutable int _gax_cached_byte_size_;
   ::google::protobuf::RepeatedField< ::google::protobuf::uint32 > gay_;
   mutable int _gay_cached_byte_size_;
+  int type_;
+  ::google::protobuf::uint32 status_;
   ::google::protobuf::RepeatedField< ::google::protobuf::uint32 > gid_;
   mutable int _gid_cached_byte_size_;
-  int type_;
   friend void  protobuf_AddDesc_Messages_2eproto();
   friend void protobuf_AssignDesc_Messages_2eproto();
   friend void protobuf_ShutdownFile_Messages_2eproto();
@@ -823,12 +854,21 @@ class MessageMSG3 : public ::google::protobuf::Message {
   inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
       mutable_quote();
 
+  // required uint32 status = 8;
+  inline bool has_status() const;
+  inline void clear_status();
+  static const int kStatusFieldNumber = 8;
+  inline ::google::protobuf::uint32 status() const;
+  inline void set_status(::google::protobuf::uint32 value);
+
   // @@protoc_insertion_point(class_scope:Messages.MessageMSG3)
  private:
   inline void set_has_type();
   inline void clear_has_type();
   inline void set_has_size();
   inline void clear_has_size();
+  inline void set_has_status();
+  inline void clear_has_status();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -846,6 +886,7 @@ class MessageMSG3 : public ::google::protobuf::Message {
   mutable int _secproperty_cached_byte_size_;
   ::google::protobuf::RepeatedField< ::google::protobuf::uint32 > quote_;
   mutable int _quote_cached_byte_size_;
+  ::google::protobuf::uint32 status_;
   friend void  protobuf_AddDesc_Messages_2eproto();
   friend void protobuf_AssignDesc_Messages_2eproto();
   friend void protobuf_ShutdownFile_Messages_2eproto();
@@ -1301,36 +1342,36 @@ class PinCodeToMessage : public ::google::protobuf::Message {
   inline ::Messages::Type type() const;
   inline void set_type(::Messages::Type value);
 
-  // required uint32 status = 2;
-  inline bool has_status() const;
-  inline void clear_status();
-  static const int kStatusFieldNumber = 2;
-  inline ::google::protobuf::uint32 status() const;
-  inline void set_status(::google::protobuf::uint32 value);
-
-  // optional uint32 size = 3;
+  // optional uint32 size = 2;
   inline bool has_size() const;
   inline void clear_size();
-  static const int kSizeFieldNumber = 3;
+  static const int kSizeFieldNumber = 2;
   inline ::google::protobuf::uint32 size() const;
   inline void set_size(::google::protobuf::uint32 value);
+
+  // required uint32 status = 3;
+  inline bool has_status() const;
+  inline void clear_status();
+  static const int kStatusFieldNumber = 3;
+  inline ::google::protobuf::uint32 status() const;
+  inline void set_status(::google::protobuf::uint32 value);
 
   // @@protoc_insertion_point(class_scope:Messages.PinCodeToMessage)
  private:
   inline void set_has_type();
   inline void clear_has_type();
-  inline void set_has_status();
-  inline void clear_has_status();
   inline void set_has_size();
   inline void clear_has_size();
+  inline void set_has_status();
+  inline void clear_has_status();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
   ::google::protobuf::uint32 _has_bits_[1];
   mutable int _cached_size_;
   int type_;
-  ::google::protobuf::uint32 status_;
   ::google::protobuf::uint32 size_;
+  ::google::protobuf::uint32 status_;
   friend void  protobuf_AddDesc_Messages_2eproto();
   friend void protobuf_AssignDesc_Messages_2eproto();
   friend void protobuf_ShutdownFile_Messages_2eproto();
@@ -1522,12 +1563,21 @@ class ResponseMessage : public ::google::protobuf::Message {
   inline ::google::protobuf::uint32 size() const;
   inline void set_size(::google::protobuf::uint32 value);
 
+  // required uint32 status = 4;
+  inline bool has_status() const;
+  inline void clear_status();
+  static const int kStatusFieldNumber = 4;
+  inline ::google::protobuf::uint32 status() const;
+  inline void set_status(::google::protobuf::uint32 value);
+
   // @@protoc_insertion_point(class_scope:Messages.ResponseMessage)
  private:
   inline void set_has_type();
   inline void clear_has_type();
   inline void set_has_size();
   inline void clear_has_size();
+  inline void set_has_status();
+  inline void clear_has_status();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -1537,6 +1587,7 @@ class ResponseMessage : public ::google::protobuf::Message {
   mutable int _userid_cached_byte_size_;
   int type_;
   ::google::protobuf::uint32 size_;
+  ::google::protobuf::uint32 status_;
   friend void  protobuf_AddDesc_Messages_2eproto();
   friend void protobuf_AssignDesc_Messages_2eproto();
   friend void protobuf_ShutdownFile_Messages_2eproto();
@@ -1723,36 +1774,36 @@ class SMSResponseMessage : public ::google::protobuf::Message {
   inline ::Messages::Type type() const;
   inline void set_type(::Messages::Type value);
 
-  // required uint32 statusCode = 2;
-  inline bool has_statuscode() const;
-  inline void clear_statuscode();
-  static const int kStatusCodeFieldNumber = 2;
-  inline ::google::protobuf::uint32 statuscode() const;
-  inline void set_statuscode(::google::protobuf::uint32 value);
-
-  // optional uint32 size = 3;
+  // optional uint32 size = 2;
   inline bool has_size() const;
   inline void clear_size();
-  static const int kSizeFieldNumber = 3;
+  static const int kSizeFieldNumber = 2;
   inline ::google::protobuf::uint32 size() const;
   inline void set_size(::google::protobuf::uint32 value);
+
+  // required uint32 status = 3;
+  inline bool has_status() const;
+  inline void clear_status();
+  static const int kStatusFieldNumber = 3;
+  inline ::google::protobuf::uint32 status() const;
+  inline void set_status(::google::protobuf::uint32 value);
 
   // @@protoc_insertion_point(class_scope:Messages.SMSResponseMessage)
  private:
   inline void set_has_type();
   inline void clear_has_type();
-  inline void set_has_statuscode();
-  inline void clear_has_statuscode();
   inline void set_has_size();
   inline void clear_has_size();
+  inline void set_has_status();
+  inline void clear_has_status();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
   ::google::protobuf::uint32 _has_bits_[1];
   mutable int _cached_size_;
   int type_;
-  ::google::protobuf::uint32 statuscode_;
   ::google::protobuf::uint32 size_;
+  ::google::protobuf::uint32 status_;
   friend void  protobuf_AddDesc_Messages_2eproto();
   friend void protobuf_AssignDesc_Messages_2eproto();
   friend void protobuf_ShutdownFile_Messages_2eproto();
@@ -2061,6 +2112,30 @@ inline void SecretMessage::set_size(::google::protobuf::uint32 value) {
   // @@protoc_insertion_point(field_set:Messages.SecretMessage.size)
 }
 
+// optional uint32 status = 3;
+inline bool SecretMessage::has_status() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void SecretMessage::set_has_status() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void SecretMessage::clear_has_status() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void SecretMessage::clear_status() {
+  status_ = 0u;
+  clear_has_status();
+}
+inline ::google::protobuf::uint32 SecretMessage::status() const {
+  // @@protoc_insertion_point(field_get:Messages.SecretMessage.status)
+  return status_;
+}
+inline void SecretMessage::set_status(::google::protobuf::uint32 value) {
+  set_has_status();
+  status_ = value;
+  // @@protoc_insertion_point(field_set:Messages.SecretMessage.status)
+}
+
 // -------------------------------------------------------------------
 
 // InitialMessage
@@ -2112,6 +2187,30 @@ inline void InitialMessage::set_size(::google::protobuf::uint32 value) {
   set_has_size();
   size_ = value;
   // @@protoc_insertion_point(field_set:Messages.InitialMessage.size)
+}
+
+// optional uint32 status = 3;
+inline bool InitialMessage::has_status() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void InitialMessage::set_has_status() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void InitialMessage::clear_has_status() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void InitialMessage::clear_status() {
+  status_ = 0u;
+  clear_has_status();
+}
+inline ::google::protobuf::uint32 InitialMessage::status() const {
+  // @@protoc_insertion_point(field_get:Messages.InitialMessage.status)
+  return status_;
+}
+inline void InitialMessage::set_status(::google::protobuf::uint32 value) {
+  set_has_status();
+  status_ = value;
+  // @@protoc_insertion_point(field_set:Messages.InitialMessage.status)
 }
 
 // -------------------------------------------------------------------
@@ -2308,6 +2407,30 @@ inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
 MessageMSG1::mutable_gid() {
   // @@protoc_insertion_point(field_mutable_list:Messages.MessageMSG1.GID)
   return &gid_;
+}
+
+// required uint32 status = 5;
+inline bool MessageMSG1::has_status() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void MessageMSG1::set_has_status() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void MessageMSG1::clear_has_status() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void MessageMSG1::clear_status() {
+  status_ = 0u;
+  clear_has_status();
+}
+inline ::google::protobuf::uint32 MessageMSG1::status() const {
+  // @@protoc_insertion_point(field_get:Messages.MessageMSG1.status)
+  return status_;
+}
+inline void MessageMSG1::set_status(::google::protobuf::uint32 value) {
+  set_has_status();
+  status_ = value;
+  // @@protoc_insertion_point(field_set:Messages.MessageMSG1.status)
 }
 
 // -------------------------------------------------------------------
@@ -2846,6 +2969,30 @@ inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
 MessageMSG3::mutable_quote() {
   // @@protoc_insertion_point(field_mutable_list:Messages.MessageMSG3.quote)
   return &quote_;
+}
+
+// required uint32 status = 8;
+inline bool MessageMSG3::has_status() const {
+  return (_has_bits_[0] & 0x00000080u) != 0;
+}
+inline void MessageMSG3::set_has_status() {
+  _has_bits_[0] |= 0x00000080u;
+}
+inline void MessageMSG3::clear_has_status() {
+  _has_bits_[0] &= ~0x00000080u;
+}
+inline void MessageMSG3::clear_status() {
+  status_ = 0u;
+  clear_has_status();
+}
+inline ::google::protobuf::uint32 MessageMSG3::status() const {
+  // @@protoc_insertion_point(field_get:Messages.MessageMSG3.status)
+  return status_;
+}
+inline void MessageMSG3::set_status(::google::protobuf::uint32 value) {
+  set_has_status();
+  status_ = value;
+  // @@protoc_insertion_point(field_set:Messages.MessageMSG3.status)
 }
 
 // -------------------------------------------------------------------
@@ -3439,39 +3586,15 @@ inline void PinCodeToMessage::set_type(::Messages::Type value) {
   // @@protoc_insertion_point(field_set:Messages.PinCodeToMessage.type)
 }
 
-// required uint32 status = 2;
-inline bool PinCodeToMessage::has_status() const {
+// optional uint32 size = 2;
+inline bool PinCodeToMessage::has_size() const {
   return (_has_bits_[0] & 0x00000002u) != 0;
 }
-inline void PinCodeToMessage::set_has_status() {
+inline void PinCodeToMessage::set_has_size() {
   _has_bits_[0] |= 0x00000002u;
 }
-inline void PinCodeToMessage::clear_has_status() {
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline void PinCodeToMessage::clear_status() {
-  status_ = 0u;
-  clear_has_status();
-}
-inline ::google::protobuf::uint32 PinCodeToMessage::status() const {
-  // @@protoc_insertion_point(field_get:Messages.PinCodeToMessage.status)
-  return status_;
-}
-inline void PinCodeToMessage::set_status(::google::protobuf::uint32 value) {
-  set_has_status();
-  status_ = value;
-  // @@protoc_insertion_point(field_set:Messages.PinCodeToMessage.status)
-}
-
-// optional uint32 size = 3;
-inline bool PinCodeToMessage::has_size() const {
-  return (_has_bits_[0] & 0x00000004u) != 0;
-}
-inline void PinCodeToMessage::set_has_size() {
-  _has_bits_[0] |= 0x00000004u;
-}
 inline void PinCodeToMessage::clear_has_size() {
-  _has_bits_[0] &= ~0x00000004u;
+  _has_bits_[0] &= ~0x00000002u;
 }
 inline void PinCodeToMessage::clear_size() {
   size_ = 0u;
@@ -3485,6 +3608,30 @@ inline void PinCodeToMessage::set_size(::google::protobuf::uint32 value) {
   set_has_size();
   size_ = value;
   // @@protoc_insertion_point(field_set:Messages.PinCodeToMessage.size)
+}
+
+// required uint32 status = 3;
+inline bool PinCodeToMessage::has_status() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void PinCodeToMessage::set_has_status() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void PinCodeToMessage::clear_has_status() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void PinCodeToMessage::clear_status() {
+  status_ = 0u;
+  clear_has_status();
+}
+inline ::google::protobuf::uint32 PinCodeToMessage::status() const {
+  // @@protoc_insertion_point(field_get:Messages.PinCodeToMessage.status)
+  return status_;
+}
+inline void PinCodeToMessage::set_status(::google::protobuf::uint32 value) {
+  set_has_status();
+  status_ = value;
+  // @@protoc_insertion_point(field_set:Messages.PinCodeToMessage.status)
 }
 
 // -------------------------------------------------------------------
@@ -3653,6 +3800,30 @@ inline void ResponseMessage::set_size(::google::protobuf::uint32 value) {
   // @@protoc_insertion_point(field_set:Messages.ResponseMessage.size)
 }
 
+// required uint32 status = 4;
+inline bool ResponseMessage::has_status() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void ResponseMessage::set_has_status() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void ResponseMessage::clear_has_status() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void ResponseMessage::clear_status() {
+  status_ = 0u;
+  clear_has_status();
+}
+inline ::google::protobuf::uint32 ResponseMessage::status() const {
+  // @@protoc_insertion_point(field_get:Messages.ResponseMessage.status)
+  return status_;
+}
+inline void ResponseMessage::set_status(::google::protobuf::uint32 value) {
+  set_has_status();
+  status_ = value;
+  // @@protoc_insertion_point(field_set:Messages.ResponseMessage.status)
+}
+
 // -------------------------------------------------------------------
 
 // SMSMessage
@@ -3795,39 +3966,15 @@ inline void SMSResponseMessage::set_type(::Messages::Type value) {
   // @@protoc_insertion_point(field_set:Messages.SMSResponseMessage.type)
 }
 
-// required uint32 statusCode = 2;
-inline bool SMSResponseMessage::has_statuscode() const {
+// optional uint32 size = 2;
+inline bool SMSResponseMessage::has_size() const {
   return (_has_bits_[0] & 0x00000002u) != 0;
 }
-inline void SMSResponseMessage::set_has_statuscode() {
+inline void SMSResponseMessage::set_has_size() {
   _has_bits_[0] |= 0x00000002u;
 }
-inline void SMSResponseMessage::clear_has_statuscode() {
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline void SMSResponseMessage::clear_statuscode() {
-  statuscode_ = 0u;
-  clear_has_statuscode();
-}
-inline ::google::protobuf::uint32 SMSResponseMessage::statuscode() const {
-  // @@protoc_insertion_point(field_get:Messages.SMSResponseMessage.statusCode)
-  return statuscode_;
-}
-inline void SMSResponseMessage::set_statuscode(::google::protobuf::uint32 value) {
-  set_has_statuscode();
-  statuscode_ = value;
-  // @@protoc_insertion_point(field_set:Messages.SMSResponseMessage.statusCode)
-}
-
-// optional uint32 size = 3;
-inline bool SMSResponseMessage::has_size() const {
-  return (_has_bits_[0] & 0x00000004u) != 0;
-}
-inline void SMSResponseMessage::set_has_size() {
-  _has_bits_[0] |= 0x00000004u;
-}
 inline void SMSResponseMessage::clear_has_size() {
-  _has_bits_[0] &= ~0x00000004u;
+  _has_bits_[0] &= ~0x00000002u;
 }
 inline void SMSResponseMessage::clear_size() {
   size_ = 0u;
@@ -3841,6 +3988,30 @@ inline void SMSResponseMessage::set_size(::google::protobuf::uint32 value) {
   set_has_size();
   size_ = value;
   // @@protoc_insertion_point(field_set:Messages.SMSResponseMessage.size)
+}
+
+// required uint32 status = 3;
+inline bool SMSResponseMessage::has_status() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void SMSResponseMessage::set_has_status() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void SMSResponseMessage::clear_has_status() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void SMSResponseMessage::clear_status() {
+  status_ = 0u;
+  clear_has_status();
+}
+inline ::google::protobuf::uint32 SMSResponseMessage::status() const {
+  // @@protoc_insertion_point(field_get:Messages.SMSResponseMessage.status)
+  return status_;
+}
+inline void SMSResponseMessage::set_status(::google::protobuf::uint32 value) {
+  set_has_status();
+  status_ = value;
+  // @@protoc_insertion_point(field_set:Messages.SMSResponseMessage.status)
 }
 
 // -------------------------------------------------------------------

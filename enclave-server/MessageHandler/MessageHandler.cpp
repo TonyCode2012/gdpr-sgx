@@ -12,7 +12,7 @@ MessageHandler::MessageHandler(int port) {
 
     //this->server_http = new Server_http(io_service);
     auto const address = boost::asio::ip::make_address("127.0.0.1");
-    this->listener = std::make_shared<Listener>(ioc, tcp::endpoint({address,port}));
+    this->server = std::make_shared<Server_http>(ioc, tcp::endpoint({address,port}));
 }
 
 MessageHandler::~MessageHandler() {
@@ -21,7 +21,7 @@ MessageHandler::~MessageHandler() {
 }
 
 
-int MessageHandler::init() {
+int MessageHandler::start() {
     // initial enclave
     sgx_status_t ret = this->initEnclave();
     if (SGX_SUCCESS != ret) {
@@ -31,24 +31,20 @@ int MessageHandler::init() {
     }
 
     // set webserver related
-    this->listener->connectCallbackHandler([this](unsigned char *bytes, int len) {
+    this->server->connectCallbackHandler([this](unsigned char *bytes, int len) {
         return this->handleMessages(bytes, len);
     });
     vector<thread> v;
     v.reserve(threads-1);
+    boost::asio::io_context *pioc = &this->ioc;
     for(int i=threads-1;i>0;--i) {
         v.emplace_back(
-                [this]{
-                    this->ioc.run();
+                [pioc]{
+                    pioc->run();
                 });
     }
-    this->listener->run();
-    this->ioc.run();
-}
-
-
-void MessageHandler::start() {
-    //this->nm->startService();
+    this->server->run();
+    pioc->run();
 }
 
 
@@ -101,11 +97,11 @@ string MessageHandler::generateMSG0(sgx_ra_context_t session_id) {
     aio_ret_msg.set_sessionid(session_id);
     if(aio_ret_msg.SerializeToString(&s)) {
         Log("Serialization successful");
+        atomic_wr_session(session_id,Messages::Type::RA_MSG0);
     }
     else {
         Log("Serialization failed", log::error);
         s = "";
-        g_session_mapping_um[session_id]->msg_type = Messages::Type::RA_MSG0;
     }
 
     return s;
@@ -146,10 +142,10 @@ string MessageHandler::generateMSG1(sgx_ra_context_t session_id) {
     }
 
 
+    Messages::MessageMSG1 *msg = new Messages::MessageMSG1();
+    msg->set_type(Messages::Type::RA_MSG1);
+    msg->set_status(MSG_SUCCESS);
     if (SGX_SUCCESS == retGIDStatus) {
-        Messages::MessageMSG1 *msg = new Messages::MessageMSG1();
-        msg->set_type(Messages::Type::RA_MSG1);
-
         for (auto x : sgxMsg1Obj.g_a.gx)
             msg->add_gax(x);
 
@@ -159,24 +155,25 @@ string MessageHandler::generateMSG1(sgx_ra_context_t session_id) {
         for (auto x : sgxMsg1Obj.gid) {
             msg->add_gid(x);
         }
-
-        string s;
-        Messages::AllInOneMessage aio_ret_msg;
-        aio_ret_msg.set_type(Messages::Type::RA_MSG1);
-        aio_ret_msg.set_allocated_msg1(msg);
-        aio_ret_msg.set_sessionid(session_id);
-        if(aio_ret_msg.SerializeToString(&s)) {
-            Log("Serialization successful");
-            g_session_mapping_um[session_id]->msg_type = Messages::Type::RA_MSG2;
-        }
-        else {
-            Log("Serialization failed", log::error);
-            s = "";
-        }
-        return s;
+    } else {
+        msg->set_status(MSG_SGX_FAILED);
     }
 
-    return "";
+    string s;
+    Messages::AllInOneMessage aio_ret_msg;
+    aio_ret_msg.set_type(Messages::Type::RA_MSG1);
+    aio_ret_msg.set_allocated_msg1(msg);
+    aio_ret_msg.set_sessionid(session_id);
+    if(aio_ret_msg.SerializeToString(&s)) {
+        Log("Serialization successful");
+        atomic_wr_session(session_id,Messages::Type::RA_MSG2);
+    }
+    else {
+        Log("Serialization failed", log::error);
+        s = "";
+    }
+
+    return s;
 }
 
 
@@ -289,16 +286,16 @@ string MessageHandler::handleMSG2(sgx_ra_context_t session_id, Messages::Message
     //} while (SGX_ERROR_BUSY == ret && ++timeout < busy_retry_time);
     //SafeFree(p_msg2);
 
+    Messages::MessageMSG3 *msg3 = new Messages::MessageMSG3();
+    msg3->set_type(Messages::Type::RA_MSG3);
+    msg3->set_size(msg3_size);
+    msg3->set_status(MSG_SUCCESS);
+
     if (SGX_SUCCESS != (sgx_status_t)ret) {
         Log("Error, call sgx_ra_proc_msg2 fail, error code: %lx", ret);
+        msg3->set_status(MSG_SGX_FAILED);
     } else {
         Log("Call sgx_ra_proc_msg2 success");
-
-        Messages::MessageMSG3 *msg3 = new Messages::MessageMSG3();
-
-        msg3->set_type(Messages::Type::RA_MSG3);
-        msg3->set_size(msg3_size);
-
         for (int i=0; i<SGX_MAC_SIZE; i++)
             msg3->add_sgxmac(p_msg3->mac[i]);
 
@@ -311,32 +308,31 @@ string MessageHandler::handleMSG2(sgx_ra_context_t session_id, Messages::Message
             msg3->add_secproperty(p_msg3->ps_sec_prop.sgx_ps_sec_prop_desc[i]);
         }
 
-
         for (int i=0; i<1116; i++) {
             msg3->add_quote(p_msg3->quote[i]);
         }
 
         //SafeFree(p_msg3);
 
-        string s;
-        Messages::AllInOneMessage aio_ret_msg;
-        aio_ret_msg.set_type(Messages::Type::RA_MSG3);
-        aio_ret_msg.set_allocated_msg3(msg3);
-        aio_ret_msg.set_sessionid(session_id);
-        if(aio_ret_msg.SerializeToString(&s)) {
-            Log("Serialization successful");
-            g_session_mapping_um[session_id]->msg_type = Messages::Type::RA_ATT_RESULT;
-        }
-        else {
-            Log("Serialization failed", log::error);
-            s = "";
-        }
-        return s;
+    }
+
+    string s;
+    Messages::AllInOneMessage aio_ret_msg;
+    aio_ret_msg.set_type(Messages::Type::RA_MSG3);
+    aio_ret_msg.set_allocated_msg3(msg3);
+    aio_ret_msg.set_sessionid(session_id);
+    if(aio_ret_msg.SerializeToString(&s)) {
+        Log("Serialization successful");
+        atomic_wr_session(session_id,Messages::Type::RA_ATT_RESULT);
+    }
+    else {
+        Log("Serialization failed", log::error);
+        s = "";
     }
 
     //SafeFree(p_msg3);
 
-    return "";
+    return s;
 }
 
 
@@ -428,14 +424,20 @@ string MessageHandler::handleAttestationResult(sgx_ra_context_t session_id, Mess
                                 sizeof(sgx_mac_t));
 
 
+    Messages::InitialMessage *attMsg = new Messages::InitialMessage();
+    attMsg->set_type(Messages::Type::RA_APP_ATT_OK);
+    attMsg->set_size(0);
+    attMsg->set_status(MSG_SUCCESS);
+
     if ((SGX_SUCCESS != ret) || (SGX_SUCCESS != status)) {
         Log("Error: INTEGRITY FAILED - attestation result message MK based cmac failed. ret:%lx",ret);
         Log("Error: INTEGRITY FAILED - attestation result message MK based cmac failed. status:%lx",status);
-        return "";
+        attMsg->set_status(MSG_SGX_FAILED);
     }
 
     if (0 != p_att_result_msg_full->status[0] || 0 != p_att_result_msg_full->status[1]) {
         Log("Error, attestation mac result message MK based cmac failed", log::error);
+        attMsg->set_status(MSG_SGX_FAILED);
     } else {
         ret = verify_secret_data(this->enclave->getID(),
                                  &status,
@@ -457,41 +459,36 @@ string MessageHandler::handleAttestationResult(sgx_ra_context_t session_id, Mess
 
         if (SGX_SUCCESS != ret) {
             Log("Error, attestation result message secret using SK based AESGCM failed1 %d", ret, log::error);
-
             print_error_message(ret);
+            attMsg->set_status(MSG_SGX_FAILED);
         } 
         else if (SGX_SUCCESS != status) {
             Log("Error, attestation result message secret using SK based AESGCM failed2 %d", status, log::error);
-
             print_error_message(status);
+            attMsg->set_status(MSG_SGX_FAILED);
         } 
         else {
             Log("Send attestation okay");
-
-            Messages::InitialMessage *msg = new Messages::InitialMessage();
-            msg->set_type(Messages::Type::RA_APP_ATT_OK);
-            msg->set_size(0);
-
-            string s;
-            Messages::AllInOneMessage aio_ret_msg;
-            aio_ret_msg.set_type(Messages::Type::RA_APP_ATT_OK);
-            aio_ret_msg.set_allocated_initmsg(msg);
-            aio_ret_msg.set_sessionid(session_id);
-            if(aio_ret_msg.SerializeToString(&s)) {
-                Log("Serialization successful");
-                g_session_mapping_um[session_id]->msg_type = Messages::Type::PHONE_REG;
-            }
-            else {
-                Log("Serialization failed", log::error);
-                s = "";
-            }
-            return s;
         }
+    }
+
+    string s;
+    Messages::AllInOneMessage aio_ret_msg;
+    aio_ret_msg.set_type(Messages::Type::RA_APP_ATT_OK);
+    aio_ret_msg.set_allocated_initmsg(attMsg);
+    aio_ret_msg.set_sessionid(session_id);
+    if(aio_ret_msg.SerializeToString(&s)) {
+        Log("Serialization successful");
+        atomic_wr_session(session_id,Messages::Type::PHONE_REG);
+    }
+    else {
+        Log("Serialization failed", log::error);
+        s = "";
     }
 
     //SafeFree(p_att_result_msg_full);
 
-    return "";
+    return s;
 }
 
 handler_status_t MessageHandler::sendSMS(uint8_t *p_phone, int phone_size, string sms) {
@@ -538,7 +535,6 @@ handler_status_t MessageHandler::sendSMS(uint8_t *p_phone, int phone_size, strin
 }
 
 string MessageHandler::handleRegisterMSG(sgx_ra_context_t session_id, Messages::RegisterMessage msg) {
-    string result;
     uint8_t *p_cipher = new uint8_t[PHONE_SIZE];
     uint8_t *p_mac = new uint8_t[CIPHER_MAC_SIZE];
     uint8_t *p_decrypted_phone = new uint8_t[PHONE_SIZE];
@@ -565,17 +561,17 @@ string MessageHandler::handleRegisterMSG(sgx_ra_context_t session_id, Messages::
                         p_mac,
                         p_decrypted_phone);
     
-    Messages::PinCodeToMessage *pincodebackmsg = new Messages::PinCodeToMessage();
-    pincodebackmsg->set_type(Messages::Type::PIN_CODE_TO);
-    pincodebackmsg->set_status(200);
+    Messages::PinCodeToMessage *pincodetomsg = new Messages::PinCodeToMessage();
+    pincodetomsg->set_type(Messages::Type::PIN_CODE_TO);
+    pincodetomsg->set_status(MSG_SUCCESS);
 
     if(SGX_SUCCESS != ret) {
         Log("Decrypt phone number failed! Error code:%lx", ret, log::error);
-        pincodebackmsg->set_status(ret);
+        pincodetomsg->set_status(ret);
     }
     else if(SGX_SUCCESS != status) {
         Log("Decrypt phone number failed(Inner failed)! Error code:%lx", status, log::error);
-        pincodebackmsg->set_status(ret);
+        pincodetomsg->set_status(ret);
     }
     else {
         string pincode = RandomNum(PIN_CODE_SIZE);
@@ -592,28 +588,28 @@ string MessageHandler::handleRegisterMSG(sgx_ra_context_t session_id, Messages::
             memcpy(&(g_session_mapping_um[session_id]->pin_code),pincode.c_str(),PIN_CODE_SIZE);
         }
         else {
-            pincodebackmsg->set_status(handler_ret);
+            msg->set_status(handler_ret);
         }
         */
     }
 
+    string s;
     Messages::AllInOneMessage aio_ret_msg;
     aio_ret_msg.set_type(Messages::Type::PIN_CODE_TO);
-    aio_ret_msg.set_allocated_pincodetomsg(pincodebackmsg);
+    aio_ret_msg.set_allocated_pincodetomsg(pincodetomsg);
     aio_ret_msg.set_sessionid(session_id);
-    if(aio_ret_msg.SerializeToString(&result)) {
+    if(aio_ret_msg.SerializeToString(&s)) {
         Log("Serialization successful");
-        g_session_mapping_um[session_id]->msg_type = Messages::Type::PIN_CODE_BACK;
+        atomic_wr_session(session_id,Messages::Type::PIN_CODE_BACK);
     }
     else {
         Log("Serialization failed", log::error);
     }
 
-    return result;
+    return s;
 }
 
 string MessageHandler::handlePinCodeBack(sgx_ra_context_t session_id, Messages::PinCodeBackMessage msg) {
-    string result;
     uint8_t *p_cipher = g_session_mapping_um[session_id]->cipher_phone;
     uint8_t *p_mac = g_session_mapping_um[session_id]->cipher_phone_mac;
     uint8_t *p_pincode = g_session_mapping_um[session_id]->pin_code;
@@ -624,10 +620,16 @@ string MessageHandler::handlePinCodeBack(sgx_ra_context_t session_id, Messages::
     sgx_status_t ret = SGX_SUCCESS;
     sgx_status_t status;
 
+    Messages::ResponseMessage *resmsg = new Messages::ResponseMessage();
+    resmsg->set_type(Messages::Type::PHONE_REG_END);
+    resmsg->set_status(MSG_SUCCESS);
+
+    // check if pin code is the same
     for(int i=0;i<PIN_CODE_SIZE;i++) {
         if(p_pincode[i] != msg.pincode(i)) {
             Log("Pin code mismatch!",log::error);
-            return result;
+            resmsg->set_status(MSG_SGX_FAILED);
+            goto cleanup;
         }
     }
 
@@ -650,6 +652,7 @@ string MessageHandler::handlePinCodeBack(sgx_ra_context_t session_id, Messages::
 
 
     if(!putSealedPhone(session_id, p_user_id, p_sealed_phone, sealed_data_len)){
+        resmsg->set_status(MSG_SGX_FAILED);
         goto cleanup;
     }
     
@@ -657,38 +660,42 @@ string MessageHandler::handlePinCodeBack(sgx_ra_context_t session_id, Messages::
     if (SGX_SUCCESS != ret) {
         Log("Error, attestation result message secret using SK based AESGCM failed1 %d", ret, log::error);
         print_error_message(ret);
+        resmsg->set_status(MSG_SGX_FAILED);
     } 
     else if (SGX_SUCCESS != status) {
         Log("Error, attestation result message secret using SK based AESGCM failed2 %d", status, log::error);
         print_error_message(status);
+        resmsg->set_status(MSG_SGX_FAILED);
     } 
     else {
         Log("Send attestation okay");
         string userID = ByteArrayToString(p_user_id, USER_ID_SIZE);
         Log("user id:%s",userID);
-        Messages::ResponseMessage *msg = new Messages::ResponseMessage();
-        msg->set_type(Messages::Type::PHONE_REG_RES);
         for(int i=0; i<USER_ID_SIZE; i++) {
-            msg->add_userid(p_user_id[i]);
+            resmsg->add_userid(p_user_id[i]);
         }
-        msg->set_size(USER_ID_SIZE);
-        Messages::AllInOneMessage aio_ret_msg;
-        aio_ret_msg.set_type(Messages::Type::PHONE_REG_RES);
-        aio_ret_msg.set_allocated_resmsg(msg);
-        aio_ret_msg.set_sessionid(session_id);
-        if(aio_ret_msg.SerializeToString(&result)) {
-            Log("Serialization successful");
-            g_session_mapping_um[session_id]->msg_type = Messages::Type::SMS_SEND;
-        }
-        else {
-            Log("Serialization failed", log::error);
-            goto cleanup;
-        }
+        resmsg->set_size(USER_ID_SIZE);
     }
+
 
 cleanup:
 
-    return result;
+    string s;
+    Messages::AllInOneMessage aio_ret_msg;
+    aio_ret_msg.set_type(Messages::Type::PHONE_REG_END);
+    aio_ret_msg.set_allocated_resmsg(resmsg);
+    aio_ret_msg.set_sessionid(session_id);
+    if(aio_ret_msg.SerializeToString(&s)) {
+        Log("Serialization successful");
+        atomic_wr_session(session_id,Messages::Type::SESSION_CLOSE);
+    }
+    else {
+        Log("Serialization failed", log::error);
+    }
+
+    this->enclave->closeSession(session_id);
+
+    return s;
 }
 
 bool MessageHandler::putSealedPhone(sgx_ra_context_t session_id, uint8_t *userID, uint8_t *p_sealed_phone, uint32_t sealed_phone_len) {
@@ -762,6 +769,7 @@ string MessageHandler::handleSMS(sgx_ra_context_t session_id, Messages::SMSMessa
 
     Messages::SMSResponseMessage *smsresMsg = new Messages::SMSResponseMessage();
     smsresMsg->set_type(Messages::Type::SMS_RES);
+    smsresMsg->set_status(MSG_SUCCESS);
 
     if(getPhoneByUserID(session_id, p_user_id, p_unsealed_phone)) {
         /*
@@ -772,16 +780,14 @@ string MessageHandler::handleSMS(sgx_ra_context_t session_id, Messages::SMSMessa
         printf("\n");
         */
 
-        smsresMsg->set_statuscode(200);
-
         handler_status_t handle_ret = sendSMS(p_unsealed_phone,PHONE_SIZE,ByteArrayToStringNoFill(sms_data,sms_size));
         if(MSG_SUCCESS != handle_ret) {
-            smsresMsg->set_statuscode(handle_ret);
+            smsresMsg->set_status(handle_ret);
             Log("Send short message failed!", log::error);
         }
 
     } else {
-        smsresMsg->set_statuscode(400);
+        smsresMsg->set_status(MSG_SGX_FAILED);
     }
 
 
@@ -796,6 +802,8 @@ string MessageHandler::handleSMS(sgx_ra_context_t session_id, Messages::SMSMessa
         Log("Serialization failed", log::error);
         result = "";
     }
+
+    this->enclave->closeSession(session_id);
 
     return result;
 }
@@ -863,21 +871,30 @@ sgx_ra_context_t MessageHandler::getAddSession(Messages::AllInOneMessage aio_msg
 
         if(SGX_SUCCESS != *p_sgx_status) return 0;
 
-        g_session_mapping_um[session_id] = new SessionData();
+        if(g_session_mapping_um.count(session_id) == 0) {
+            g_session_mapping_um[session_id] = new SessionData();
+        }
 
         Log("Create new session successfully! Session id:%d",session_id);
 
     } else {
         session_id = aio_msg.sessionid();
 
+        pthread_rwlock_rdlock(&g_session_mapping_um[session_id]->rwlock);
         if(g_session_mapping_um[session_id]->msg_type != aio_msg.type()) {
-
             *p_handler_status = MSG_TYPE_NOT_MATCH;
             Log("Message type mismatch!",log::error);
         }
+        pthread_rwlock_unlock(&g_session_mapping_um[session_id]->rwlock);
     }
 
     return session_id;
+}
+
+void MessageHandler::atomic_wr_session(sgx_ra_context_t session_id, Messages::Type type) {
+    pthread_rwlock_wrlock(&g_session_mapping_um[session_id]->rwlock);
+    g_session_mapping_um[session_id]->msg_type = type;
+    pthread_rwlock_unlock(&g_session_mapping_um[session_id]->rwlock);
 }
 
 

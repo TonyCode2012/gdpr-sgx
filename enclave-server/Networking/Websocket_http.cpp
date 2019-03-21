@@ -105,7 +105,7 @@ void Session_http::setCallbackHandler(CallbackHandler cb) {
 
 //------------------------------------------------------------------------------
 
-Listener::Listener(
+Server_http::Server_http(
     boost::asio::io_context& ioc,
     tcp::endpoint endpoint)
     : acceptor_(ioc)
@@ -144,24 +144,24 @@ Listener::Listener(
 }
 
 // Start accepting incoming connections
-void Listener::run()
+void Server_http::run()
 {
     if(! acceptor_.is_open())
         return;
     do_accept();
 }
 
-void Listener::do_accept()
+void Server_http::do_accept()
 {
     acceptor_.async_accept(
         socket_,
         std::bind(
-            &Listener::on_accept,
+            &Server_http::on_accept,
             shared_from_this(),
             std::placeholders::_1));
 }
 
-void Listener::on_accept(boost::system::error_code ec)
+void Server_http::on_accept(boost::system::error_code ec)
 {
     if(ec)
     {
@@ -178,7 +178,7 @@ void Listener::on_accept(boost::system::error_code ec)
     do_accept();
 }
 
-void Listener::connectCallbackHandler(CallbackHandler cb) {
+void Server_http::connectCallbackHandler(CallbackHandler cb) {
     this->callback_handler = cb;
 }
 
@@ -204,7 +204,7 @@ int main(int argc, char* argv[])
     boost::asio::io_context ioc{threads};
 
     // Create and launch a listening port
-    std::make_shared<listener>(ioc, tcp::endpoint{address, port})->run();
+    std::make_shared<Server_http>(ioc, tcp::endpoint{address, port})->run();
 
     // Run the I/O service on the requested number of threads
     std::vector<std::thread> v;

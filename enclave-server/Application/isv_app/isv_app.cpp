@@ -21,7 +21,6 @@ int Main(int argc, char* argv[]) {
 
     MessageHandler msg;
     //msg.init(keymode);
-    msg.init();
     msg.start();
 
 

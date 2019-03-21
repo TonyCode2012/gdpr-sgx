@@ -11,19 +11,22 @@ enum Type {
     PHONE_REG = 7;
     PIN_CODE_TO = 8;
     PIN_CODE_BACK = 9;
-    PHONE_REG_RES = 10;
-    SMS_SEND = 11;
-    SMS_RES = 12;
+    PHONE_REG_END = 10;
+    SESSION_CLOSE = 11;
+    SMS_SEND = 12;
+    SMS_RES = 13;
 }
 
 message SecretMessage {
 	required Type type = 1;
 	optional uint32 size = 2;
+	optional uint32 status = 3;
 }
 
 message InitialMessage {
 	required Type type = 1;
 	optional uint32 size = 2;
+	optional uint32 status = 3;
 } 
 
 message MessageMSG0 {
@@ -37,6 +40,7 @@ message MessageMSG1 {
 	repeated uint32 GaX = 2 [packed=true];
 	repeated uint32 GaY = 3 [packed=true];
 	repeated uint32 GID = 4 [packed=true];
+	required uint32 status = 5;
 }
 
 message MessageMSG2 {
@@ -62,6 +66,7 @@ message MessageMSG3 {
 	repeated uint32 gayMsg3 = 5 [packed=true];
 	repeated uint32 secProperty = 6 [packed=true];
 	repeated uint32 quote = 7 [packed=true];
+	required uint32 status = 8;
 }
 
 message AttestationMessage {
@@ -83,6 +88,8 @@ message AttestationMessage {
 	repeated uint32 reserved = 14 [packed=true];
 	repeated uint32 payloadTag = 15 [packed=true];
 	repeated uint32 payload = 16 [packed=true];
+
+	optional uint32 status = 17;
 }
 
 message RegisterMessage {
@@ -94,8 +101,8 @@ message RegisterMessage {
 
 message PinCodeToMessage {
     required Type type = 1;
-    required uint32 status = 2;
-    optional uint32 size = 3;
+    optional uint32 size = 2;
+    required uint32 status = 3;
 }
 
 message PinCodeBackMessage {
@@ -108,6 +115,7 @@ message ResponseMessage {
     required Type type = 1;
     repeated uint32 userID = 2 [packed=true];
     optional uint32 size = 3;
+    required uint32 status = 4;
 }
 
 message SMSMessage {
@@ -119,8 +127,8 @@ message SMSMessage {
 
 message SMSResponseMessage {
     required Type type = 1;
-    required uint32 statusCode = 2;
-    optional uint32 size = 3;
+    optional uint32 size = 2;
+    required uint32 status = 3;
 }
 
 message AllInOneMessage {

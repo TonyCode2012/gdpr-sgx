@@ -17,7 +17,7 @@ import {
   RA_APP_ATT_OK,
   PHONE_REG,
   PIN_CODE_BACK,
-  PHONE_REG_RES,
+  PHONE_REG_END,
   SMS_SEND
 } from "../../metadata/messageTypes";
 
@@ -73,7 +73,7 @@ const registry = {
     fieldName: "pincodebackMsg",
     getPayload: pinCodeBackMsg
   },
-  [PHONE_REG_RES]: {
+  [PHONE_REG_END]: {
     defName: "ResponseMessage",
     fieldName: "resMsg",
     getPayload: resMsg

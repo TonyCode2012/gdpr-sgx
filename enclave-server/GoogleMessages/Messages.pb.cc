@@ -74,9 +74,10 @@ void protobuf_AssignDesc_Messages_2eproto() {
       "Messages.proto");
   GOOGLE_CHECK(file != NULL);
   SecretMessage_descriptor_ = file->message_type(0);
-  static const int SecretMessage_offsets_[2] = {
+  static const int SecretMessage_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SecretMessage, type_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SecretMessage, size_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SecretMessage, status_),
   };
   SecretMessage_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -90,9 +91,10 @@ void protobuf_AssignDesc_Messages_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(SecretMessage));
   InitialMessage_descriptor_ = file->message_type(1);
-  static const int InitialMessage_offsets_[2] = {
+  static const int InitialMessage_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(InitialMessage, type_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(InitialMessage, size_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(InitialMessage, status_),
   };
   InitialMessage_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -123,11 +125,12 @@ void protobuf_AssignDesc_Messages_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(MessageMSG0));
   MessageMSG1_descriptor_ = file->message_type(3);
-  static const int MessageMSG1_offsets_[4] = {
+  static const int MessageMSG1_offsets_[5] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MessageMSG1, type_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MessageMSG1, gax_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MessageMSG1, gay_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MessageMSG1, gid_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MessageMSG1, status_),
   };
   MessageMSG1_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -167,7 +170,7 @@ void protobuf_AssignDesc_Messages_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(MessageMSG2));
   MessageMSG3_descriptor_ = file->message_type(5);
-  static const int MessageMSG3_offsets_[7] = {
+  static const int MessageMSG3_offsets_[8] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MessageMSG3, type_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MessageMSG3, size_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MessageMSG3, sgxmac_),
@@ -175,6 +178,7 @@ void protobuf_AssignDesc_Messages_2eproto() {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MessageMSG3, gaymsg3_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MessageMSG3, secproperty_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MessageMSG3, quote_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MessageMSG3, status_),
   };
   MessageMSG3_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -238,8 +242,8 @@ void protobuf_AssignDesc_Messages_2eproto() {
   PinCodeToMessage_descriptor_ = file->message_type(8);
   static const int PinCodeToMessage_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PinCodeToMessage, type_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PinCodeToMessage, status_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PinCodeToMessage, size_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PinCodeToMessage, status_),
   };
   PinCodeToMessage_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -270,10 +274,11 @@ void protobuf_AssignDesc_Messages_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(PinCodeBackMessage));
   ResponseMessage_descriptor_ = file->message_type(10);
-  static const int ResponseMessage_offsets_[3] = {
+  static const int ResponseMessage_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ResponseMessage, type_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ResponseMessage, userid_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ResponseMessage, size_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ResponseMessage, status_),
   };
   ResponseMessage_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -307,8 +312,8 @@ void protobuf_AssignDesc_Messages_2eproto() {
   SMSResponseMessage_descriptor_ = file->message_type(12);
   static const int SMSResponseMessage_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SMSResponseMessage, type_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SMSResponseMessage, statuscode_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SMSResponseMessage, size_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SMSResponseMessage, status_),
   };
   SMSResponseMessage_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -433,71 +438,73 @@ void protobuf_AddDesc_Messages_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-    "\n\016Messages.proto\022\010Messages\";\n\rSecretMess"
+    "\n\016Messages.proto\022\010Messages\"K\n\rSecretMess"
     "age\022\034\n\004type\030\001 \002(\0162\016.Messages.Type\022\014\n\004siz"
-    "e\030\002 \001(\r\"<\n\016InitialMessage\022\034\n\004type\030\001 \002(\0162"
-    "\016.Messages.Type\022\014\n\004size\030\002 \001(\r\"I\n\013Message"
-    "MSG0\022\034\n\004type\030\001 \002(\0162\016.Messages.Type\022\014\n\004ep"
-    "id\030\002 \002(\r\022\016\n\006status\030\003 \001(\r\"^\n\013MessageMSG1\022"
-    "\034\n\004type\030\001 \002(\0162\016.Messages.Type\022\017\n\003GaX\030\002 \003"
-    "(\rB\002\020\001\022\017\n\003GaY\030\003 \003(\rB\002\020\001\022\017\n\003GID\030\004 \003(\rB\002\020\001"
-    "\"\213\002\n\013MessageMSG2\022\034\n\004type\030\001 \002(\0162\016.Message"
-    "s.Type\022\014\n\004size\030\002 \001(\r\022\027\n\013publicKeyGx\030\003 \003("
-    "\rB\002\020\001\022\027\n\013publicKeyGy\030\004 \003(\rB\002\020\001\022\021\n\tquoteT"
-    "ype\030\005 \001(\r\022\020\n\004spid\030\006 \003(\rB\002\020\001\022\021\n\tcmacKdfId"
-    "\030\007 \001(\r\022\026\n\nsignatureX\030\010 \003(\rB\002\020\001\022\026\n\nsignat"
-    "ureY\030\t \003(\rB\002\020\001\022\020\n\004smac\030\n \003(\rB\002\020\001\022\021\n\tsize"
-    "Sigrl\030\013 \001(\r\022\021\n\005sigrl\030\014 \003(\rB\002\020\001\"\243\001\n\013Messa"
-    "geMSG3\022\034\n\004type\030\001 \002(\0162\016.Messages.Type\022\014\n\004"
-    "size\030\002 \001(\r\022\022\n\006sgxMac\030\003 \003(\rB\002\020\001\022\023\n\007gaxMsg"
-    "3\030\004 \003(\rB\002\020\001\022\023\n\007gayMsg3\030\005 \003(\rB\002\020\001\022\027\n\013secP"
-    "roperty\030\006 \003(\rB\002\020\001\022\021\n\005quote\030\007 \003(\rB\002\020\001\"\254\003\n"
-    "\022AttestationMessage\022\034\n\004type\030\001 \002(\0162\016.Mess"
-    "ages.Type\022\014\n\004size\030\002 \002(\r\022\027\n\017epidGroupStat"
-    "us\030\003 \001(\r\022\033\n\023tcbEvaluationStatus\030\004 \001(\r\022\033\n"
-    "\023pseEvaluationStatus\030\005 \001(\r\022#\n\027latestEqui"
-    "valentTcbPsvn\030\006 \003(\rB\002\020\001\022\033\n\017latestPseIsvs"
-    "vn\030\007 \003(\rB\002\020\001\022\031\n\rlatestPsdaSvn\030\010 \003(\rB\002\020\001\022"
-    "\037\n\023performanceRekeyGid\030\t \003(\rB\002\020\001\022\026\n\necSi"
-    "gn256X\030\n \003(\rB\002\020\001\022\026\n\necSign256Y\030\013 \003(\rB\002\020\001"
-    "\022\022\n\006macSmk\030\014 \003(\rB\002\020\001\022\022\n\nresultSize\030\r \001(\r"
-    "\022\024\n\010reserved\030\016 \003(\rB\002\020\001\022\026\n\npayloadTag\030\017 \003"
-    "(\rB\002\020\001\022\023\n\007payload\030\020 \003(\rB\002\020\001\"g\n\017RegisterM"
-    "essage\022\034\n\004type\030\001 \002(\0162\016.Messages.Type\022\027\n\013"
-    "cipherPhone\030\002 \003(\rB\002\020\001\022\017\n\003mac\030\004 \003(\rB\002\020\001\022\014"
-    "\n\004size\030\003 \001(\r\"N\n\020PinCodeToMessage\022\034\n\004type"
-    "\030\001 \002(\0162\016.Messages.Type\022\016\n\006status\030\002 \002(\r\022\014"
-    "\n\004size\030\003 \001(\r\"U\n\022PinCodeBackMessage\022\034\n\004ty"
-    "pe\030\001 \002(\0162\016.Messages.Type\022\023\n\007pinCode\030\002 \003("
-    "\rB\002\020\001\022\014\n\004size\030\003 \001(\r\"Q\n\017ResponseMessage\022\034"
-    "\n\004type\030\001 \002(\0162\016.Messages.Type\022\022\n\006userID\030\002"
-    " \003(\rB\002\020\001\022\014\n\004size\030\003 \001(\r\"]\n\nSMSMessage\022\034\n\004"
+    "e\030\002 \001(\r\022\016\n\006status\030\003 \001(\r\"L\n\016InitialMessag"
+    "e\022\034\n\004type\030\001 \002(\0162\016.Messages.Type\022\014\n\004size\030"
+    "\002 \001(\r\022\016\n\006status\030\003 \001(\r\"I\n\013MessageMSG0\022\034\n\004"
+    "type\030\001 \002(\0162\016.Messages.Type\022\014\n\004epid\030\002 \002(\r"
+    "\022\016\n\006status\030\003 \001(\r\"n\n\013MessageMSG1\022\034\n\004type\030"
+    "\001 \002(\0162\016.Messages.Type\022\017\n\003GaX\030\002 \003(\rB\002\020\001\022\017"
+    "\n\003GaY\030\003 \003(\rB\002\020\001\022\017\n\003GID\030\004 \003(\rB\002\020\001\022\016\n\006stat"
+    "us\030\005 \002(\r\"\213\002\n\013MessageMSG2\022\034\n\004type\030\001 \002(\0162\016"
+    ".Messages.Type\022\014\n\004size\030\002 \001(\r\022\027\n\013publicKe"
+    "yGx\030\003 \003(\rB\002\020\001\022\027\n\013publicKeyGy\030\004 \003(\rB\002\020\001\022\021"
+    "\n\tquoteType\030\005 \001(\r\022\020\n\004spid\030\006 \003(\rB\002\020\001\022\021\n\tc"
+    "macKdfId\030\007 \001(\r\022\026\n\nsignatureX\030\010 \003(\rB\002\020\001\022\026"
+    "\n\nsignatureY\030\t \003(\rB\002\020\001\022\020\n\004smac\030\n \003(\rB\002\020\001"
+    "\022\021\n\tsizeSigrl\030\013 \001(\r\022\021\n\005sigrl\030\014 \003(\rB\002\020\001\"\263"
+    "\001\n\013MessageMSG3\022\034\n\004type\030\001 \002(\0162\016.Messages."
+    "Type\022\014\n\004size\030\002 \001(\r\022\022\n\006sgxMac\030\003 \003(\rB\002\020\001\022\023"
+    "\n\007gaxMsg3\030\004 \003(\rB\002\020\001\022\023\n\007gayMsg3\030\005 \003(\rB\002\020\001"
+    "\022\027\n\013secProperty\030\006 \003(\rB\002\020\001\022\021\n\005quote\030\007 \003(\r"
+    "B\002\020\001\022\016\n\006status\030\010 \002(\r\"\254\003\n\022AttestationMess"
+    "age\022\034\n\004type\030\001 \002(\0162\016.Messages.Type\022\014\n\004siz"
+    "e\030\002 \002(\r\022\027\n\017epidGroupStatus\030\003 \001(\r\022\033\n\023tcbE"
+    "valuationStatus\030\004 \001(\r\022\033\n\023pseEvaluationSt"
+    "atus\030\005 \001(\r\022#\n\027latestEquivalentTcbPsvn\030\006 "
+    "\003(\rB\002\020\001\022\033\n\017latestPseIsvsvn\030\007 \003(\rB\002\020\001\022\031\n\r"
+    "latestPsdaSvn\030\010 \003(\rB\002\020\001\022\037\n\023performanceRe"
+    "keyGid\030\t \003(\rB\002\020\001\022\026\n\necSign256X\030\n \003(\rB\002\020\001"
+    "\022\026\n\necSign256Y\030\013 \003(\rB\002\020\001\022\022\n\006macSmk\030\014 \003(\r"
+    "B\002\020\001\022\022\n\nresultSize\030\r \001(\r\022\024\n\010reserved\030\016 \003"
+    "(\rB\002\020\001\022\026\n\npayloadTag\030\017 \003(\rB\002\020\001\022\023\n\007payloa"
+    "d\030\020 \003(\rB\002\020\001\"g\n\017RegisterMessage\022\034\n\004type\030\001"
+    " \002(\0162\016.Messages.Type\022\027\n\013cipherPhone\030\002 \003("
+    "\rB\002\020\001\022\017\n\003mac\030\004 \003(\rB\002\020\001\022\014\n\004size\030\003 \001(\r\"N\n\020"
+    "PinCodeToMessage\022\034\n\004type\030\001 \002(\0162\016.Message"
+    "s.Type\022\014\n\004size\030\002 \001(\r\022\016\n\006status\030\003 \002(\r\"U\n\022"
+    "PinCodeBackMessage\022\034\n\004type\030\001 \002(\0162\016.Messa"
+    "ges.Type\022\023\n\007pinCode\030\002 \003(\rB\002\020\001\022\014\n\004size\030\003 "
+    "\001(\r\"a\n\017ResponseMessage\022\034\n\004type\030\001 \002(\0162\016.M"
+    "essages.Type\022\022\n\006userID\030\002 \003(\rB\002\020\001\022\014\n\004size"
+    "\030\003 \001(\r\022\016\n\006status\030\004 \002(\r\"]\n\nSMSMessage\022\034\n\004"
     "type\030\001 \002(\0162\016.Messages.Type\022\022\n\006userID\030\002 \003"
-    "(\rB\002\020\001\022\017\n\003sms\030\003 \003(\rB\002\020\001\022\014\n\004size\030\004 \001(\r\"T\n"
+    "(\rB\002\020\001\022\017\n\003sms\030\003 \003(\rB\002\020\001\022\014\n\004size\030\004 \001(\r\"P\n"
     "\022SMSResponseMessage\022\034\n\004type\030\001 \002(\0162\016.Mess"
-    "ages.Type\022\022\n\nstatusCode\030\002 \002(\r\022\014\n\004size\030\003 "
-    "\001(\r\"\363\004\n\017AllInOneMessage\022\034\n\004type\030\001 \002(\0162\016."
-    "Messages.Type\022*\n\tsecretMsg\030\002 \001(\0132\027.Messa"
-    "ges.SecretMessage\022)\n\007initMsg\030\003 \001(\0132\030.Mes"
-    "sages.InitialMessage\022#\n\004msg0\030\004 \001(\0132\025.Mes"
-    "sages.MessageMSG0\022#\n\004msg1\030\005 \001(\0132\025.Messag"
-    "es.MessageMSG1\022#\n\004msg2\030\006 \001(\0132\025.Messages."
-    "MessageMSG2\022#\n\004msg3\030\007 \001(\0132\025.Messages.Mes"
-    "sageMSG3\022/\n\tattestMsg\030\010 \001(\0132\034.Messages.A"
-    "ttestationMessage\022)\n\006regMsg\030\t \001(\0132\031.Mess"
-    "ages.RegisterMessage\0220\n\014pincodetoMsg\030\n \001"
-    "(\0132\032.Messages.PinCodeToMessage\0224\n\016pincod"
-    "ebackMsg\030\013 \001(\0132\034.Messages.PinCodeBackMes"
-    "sage\022)\n\006resMsg\030\014 \001(\0132\031.Messages.Response"
-    "Message\022$\n\006smsMsg\030\r \001(\0132\024.Messages.SMSMe"
-    "ssage\022/\n\tsmsresMsg\030\016 \001(\0132\034.Messages.SMSR"
-    "esponseMessage\022\021\n\tsessionID\030\017 \002(\r*\326\001\n\004Ty"
-    "pe\022\013\n\007RA_MSG0\020\000\022\013\n\007RA_MSG1\020\001\022\013\n\007RA_MSG2\020"
-    "\002\022\013\n\007RA_MSG3\020\003\022\021\n\rRA_ATT_RESULT\020\004\022\023\n\017RA_"
-    "VERIFICATION\020\005\022\021\n\rRA_APP_ATT_OK\020\006\022\r\n\tPHO"
-    "NE_REG\020\007\022\017\n\013PIN_CODE_TO\020\010\022\021\n\rPIN_CODE_BA"
-    "CK\020\t\022\021\n\rPHONE_REG_RES\020\n\022\014\n\010SMS_SEND\020\013\022\013\n"
-    "\007SMS_RES\020\014", 2570);
+    "ages.Type\022\014\n\004size\030\002 \001(\r\022\016\n\006status\030\003 \002(\r\""
+    "\363\004\n\017AllInOneMessage\022\034\n\004type\030\001 \002(\0162\016.Mess"
+    "ages.Type\022*\n\tsecretMsg\030\002 \001(\0132\027.Messages."
+    "SecretMessage\022)\n\007initMsg\030\003 \001(\0132\030.Message"
+    "s.InitialMessage\022#\n\004msg0\030\004 \001(\0132\025.Message"
+    "s.MessageMSG0\022#\n\004msg1\030\005 \001(\0132\025.Messages.M"
+    "essageMSG1\022#\n\004msg2\030\006 \001(\0132\025.Messages.Mess"
+    "ageMSG2\022#\n\004msg3\030\007 \001(\0132\025.Messages.Message"
+    "MSG3\022/\n\tattestMsg\030\010 \001(\0132\034.Messages.Attes"
+    "tationMessage\022)\n\006regMsg\030\t \001(\0132\031.Messages"
+    ".RegisterMessage\0220\n\014pincodetoMsg\030\n \001(\0132\032"
+    ".Messages.PinCodeToMessage\0224\n\016pincodebac"
+    "kMsg\030\013 \001(\0132\034.Messages.PinCodeBackMessage"
+    "\022)\n\006resMsg\030\014 \001(\0132\031.Messages.ResponseMess"
+    "age\022$\n\006smsMsg\030\r \001(\0132\024.Messages.SMSMessag"
+    "e\022/\n\tsmsresMsg\030\016 \001(\0132\034.Messages.SMSRespo"
+    "nseMessage\022\021\n\tsessionID\030\017 \002(\r*\351\001\n\004Type\022\013"
+    "\n\007RA_MSG0\020\000\022\013\n\007RA_MSG1\020\001\022\013\n\007RA_MSG2\020\002\022\013\n"
+    "\007RA_MSG3\020\003\022\021\n\rRA_ATT_RESULT\020\004\022\023\n\017RA_VERI"
+    "FICATION\020\005\022\021\n\rRA_APP_ATT_OK\020\006\022\r\n\tPHONE_R"
+    "EG\020\007\022\017\n\013PIN_CODE_TO\020\010\022\021\n\rPIN_CODE_BACK\020\t"
+    "\022\021\n\rPHONE_REG_END\020\n\022\021\n\rSESSION_CLOSE\020\013\022\014"
+    "\n\010SMS_SEND\020\014\022\013\n\007SMS_RES\020\r", 2665);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "Messages.proto", &protobuf_RegisterTypes);
   SecretMessage::default_instance_ = new SecretMessage();
@@ -556,6 +563,7 @@ bool Type_IsValid(int value) {
     case 10:
     case 11:
     case 12:
+    case 13:
       return true;
     default:
       return false;
@@ -568,6 +576,7 @@ bool Type_IsValid(int value) {
 #ifndef _MSC_VER
 const int SecretMessage::kTypeFieldNumber;
 const int SecretMessage::kSizeFieldNumber;
+const int SecretMessage::kStatusFieldNumber;
 #endif  // !_MSC_VER
 
 SecretMessage::SecretMessage()
@@ -590,6 +599,7 @@ void SecretMessage::SharedCtor() {
   _cached_size_ = 0;
   type_ = 0;
   size_ = 0u;
+  status_ = 0u;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -635,7 +645,7 @@ void SecretMessage::Clear() {
     ::memset(&first, 0, n);                                \
   } while (0)
 
-  ZR_(type_, size_);
+  ZR_(type_, status_);
 
 #undef OFFSET_OF_FIELD_
 #undef ZR_
@@ -684,6 +694,21 @@ bool SecretMessage::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
+        if (input->ExpectTag(24)) goto parse_status;
+        break;
+      }
+
+      // optional uint32 status = 3;
+      case 3: {
+        if (tag == 24) {
+         parse_status:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &status_)));
+          set_has_status();
+        } else {
+          goto handle_unusual;
+        }
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -724,6 +749,11 @@ void SecretMessage::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteUInt32(2, this->size(), output);
   }
 
+  // optional uint32 status = 3;
+  if (has_status()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(3, this->status(), output);
+  }
+
   if (!unknown_fields().empty()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -743,6 +773,11 @@ void SecretMessage::SerializeWithCachedSizes(
   // optional uint32 size = 2;
   if (has_size()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(2, this->size(), target);
+  }
+
+  // optional uint32 status = 3;
+  if (has_status()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(3, this->status(), target);
   }
 
   if (!unknown_fields().empty()) {
@@ -768,6 +803,13 @@ int SecretMessage::ByteSize() const {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::UInt32Size(
           this->size());
+    }
+
+    // optional uint32 status = 3;
+    if (has_status()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->status());
     }
 
   }
@@ -803,6 +845,9 @@ void SecretMessage::MergeFrom(const SecretMessage& from) {
     if (from.has_size()) {
       set_size(from.size());
     }
+    if (from.has_status()) {
+      set_status(from.status());
+    }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
 }
@@ -829,6 +874,7 @@ void SecretMessage::Swap(SecretMessage* other) {
   if (other != this) {
     std::swap(type_, other->type_);
     std::swap(size_, other->size_);
+    std::swap(status_, other->status_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);
@@ -849,6 +895,7 @@ void SecretMessage::Swap(SecretMessage* other) {
 #ifndef _MSC_VER
 const int InitialMessage::kTypeFieldNumber;
 const int InitialMessage::kSizeFieldNumber;
+const int InitialMessage::kStatusFieldNumber;
 #endif  // !_MSC_VER
 
 InitialMessage::InitialMessage()
@@ -871,6 +918,7 @@ void InitialMessage::SharedCtor() {
   _cached_size_ = 0;
   type_ = 0;
   size_ = 0u;
+  status_ = 0u;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -916,7 +964,7 @@ void InitialMessage::Clear() {
     ::memset(&first, 0, n);                                \
   } while (0)
 
-  ZR_(type_, size_);
+  ZR_(type_, status_);
 
 #undef OFFSET_OF_FIELD_
 #undef ZR_
@@ -965,6 +1013,21 @@ bool InitialMessage::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
+        if (input->ExpectTag(24)) goto parse_status;
+        break;
+      }
+
+      // optional uint32 status = 3;
+      case 3: {
+        if (tag == 24) {
+         parse_status:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &status_)));
+          set_has_status();
+        } else {
+          goto handle_unusual;
+        }
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -1005,6 +1068,11 @@ void InitialMessage::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteUInt32(2, this->size(), output);
   }
 
+  // optional uint32 status = 3;
+  if (has_status()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(3, this->status(), output);
+  }
+
   if (!unknown_fields().empty()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -1024,6 +1092,11 @@ void InitialMessage::SerializeWithCachedSizes(
   // optional uint32 size = 2;
   if (has_size()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(2, this->size(), target);
+  }
+
+  // optional uint32 status = 3;
+  if (has_status()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(3, this->status(), target);
   }
 
   if (!unknown_fields().empty()) {
@@ -1049,6 +1122,13 @@ int InitialMessage::ByteSize() const {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::UInt32Size(
           this->size());
+    }
+
+    // optional uint32 status = 3;
+    if (has_status()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->status());
     }
 
   }
@@ -1084,6 +1164,9 @@ void InitialMessage::MergeFrom(const InitialMessage& from) {
     if (from.has_size()) {
       set_size(from.size());
     }
+    if (from.has_status()) {
+      set_status(from.status());
+    }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
 }
@@ -1110,6 +1193,7 @@ void InitialMessage::Swap(InitialMessage* other) {
   if (other != this) {
     std::swap(type_, other->type_);
     std::swap(size_, other->size_);
+    std::swap(status_, other->status_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);
@@ -1451,6 +1535,7 @@ const int MessageMSG1::kTypeFieldNumber;
 const int MessageMSG1::kGaXFieldNumber;
 const int MessageMSG1::kGaYFieldNumber;
 const int MessageMSG1::kGIDFieldNumber;
+const int MessageMSG1::kStatusFieldNumber;
 #endif  // !_MSC_VER
 
 MessageMSG1::MessageMSG1()
@@ -1472,6 +1557,7 @@ MessageMSG1::MessageMSG1(const MessageMSG1& from)
 void MessageMSG1::SharedCtor() {
   _cached_size_ = 0;
   type_ = 0;
+  status_ = 0u;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -1507,7 +1593,21 @@ MessageMSG1* MessageMSG1::New() const {
 }
 
 void MessageMSG1::Clear() {
-  type_ = 0;
+#define OFFSET_OF_FIELD_(f) (reinterpret_cast<char*>(      \
+  &reinterpret_cast<MessageMSG1*>(16)->f) - \
+   reinterpret_cast<char*>(16))
+
+#define ZR_(first, last) do {                              \
+    size_t f = OFFSET_OF_FIELD_(first);                    \
+    size_t n = OFFSET_OF_FIELD_(last) - f + sizeof(last);  \
+    ::memset(&first, 0, n);                                \
+  } while (0)
+
+  ZR_(type_, status_);
+
+#undef OFFSET_OF_FIELD_
+#undef ZR_
+
   gax_.Clear();
   gay_.Clear();
   gid_.Clear();
@@ -1594,6 +1694,21 @@ bool MessageMSG1::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
+        if (input->ExpectTag(40)) goto parse_status;
+        break;
+      }
+
+      // required uint32 status = 5;
+      case 5: {
+        if (tag == 40) {
+         parse_status:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &status_)));
+          set_has_status();
+        } else {
+          goto handle_unusual;
+        }
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -1659,6 +1774,11 @@ void MessageMSG1::SerializeWithCachedSizes(
       this->gid(i), output);
   }
 
+  // required uint32 status = 5;
+  if (has_status()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(5, this->status(), output);
+  }
+
   if (!unknown_fields().empty()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -1717,6 +1837,11 @@ void MessageMSG1::SerializeWithCachedSizes(
       WriteUInt32NoTagToArray(this->gid(i), target);
   }
 
+  // required uint32 status = 5;
+  if (has_status()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(5, this->status(), target);
+  }
+
   if (!unknown_fields().empty()) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         unknown_fields(), target);
@@ -1733,6 +1858,13 @@ int MessageMSG1::ByteSize() const {
     if (has_type()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::EnumSize(this->type());
+    }
+
+    // required uint32 status = 5;
+    if (has_status()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->status());
     }
 
   }
@@ -1819,6 +1951,9 @@ void MessageMSG1::MergeFrom(const MessageMSG1& from) {
     if (from.has_type()) {
       set_type(from.type());
     }
+    if (from.has_status()) {
+      set_status(from.status());
+    }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
 }
@@ -1836,7 +1971,7 @@ void MessageMSG1::CopyFrom(const MessageMSG1& from) {
 }
 
 bool MessageMSG1::IsInitialized() const {
-  if ((_has_bits_[0] & 0x00000001) != 0x00000001) return false;
+  if ((_has_bits_[0] & 0x00000011) != 0x00000011) return false;
 
   return true;
 }
@@ -1847,6 +1982,7 @@ void MessageMSG1::Swap(MessageMSG1* other) {
     gax_.Swap(&other->gax_);
     gay_.Swap(&other->gay_);
     gid_.Swap(&other->gid_);
+    std::swap(status_, other->status_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);
@@ -2714,6 +2850,7 @@ const int MessageMSG3::kGaxMsg3FieldNumber;
 const int MessageMSG3::kGayMsg3FieldNumber;
 const int MessageMSG3::kSecPropertyFieldNumber;
 const int MessageMSG3::kQuoteFieldNumber;
+const int MessageMSG3::kStatusFieldNumber;
 #endif  // !_MSC_VER
 
 MessageMSG3::MessageMSG3()
@@ -2736,6 +2873,7 @@ void MessageMSG3::SharedCtor() {
   _cached_size_ = 0;
   type_ = 0;
   size_ = 0u;
+  status_ = 0u;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -2781,7 +2919,10 @@ void MessageMSG3::Clear() {
     ::memset(&first, 0, n);                                \
   } while (0)
 
-  ZR_(type_, size_);
+  if (_has_bits_[0 / 32] & 131) {
+    ZR_(type_, size_);
+    status_ = 0u;
+  }
 
 #undef OFFSET_OF_FIELD_
 #undef ZR_
@@ -2925,6 +3066,21 @@ bool MessageMSG3::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
+        if (input->ExpectTag(64)) goto parse_status;
+        break;
+      }
+
+      // required uint32 status = 8;
+      case 8: {
+        if (tag == 64) {
+         parse_status:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &status_)));
+          set_has_status();
+        } else {
+          goto handle_unusual;
+        }
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -3013,6 +3169,11 @@ void MessageMSG3::SerializeWithCachedSizes(
   for (int i = 0; i < this->quote_size(); i++) {
     ::google::protobuf::internal::WireFormatLite::WriteUInt32NoTag(
       this->quote(i), output);
+  }
+
+  // required uint32 status = 8;
+  if (has_status()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(8, this->status(), output);
   }
 
   if (!unknown_fields().empty()) {
@@ -3106,6 +3267,11 @@ void MessageMSG3::SerializeWithCachedSizes(
       WriteUInt32NoTagToArray(this->quote(i), target);
   }
 
+  // required uint32 status = 8;
+  if (has_status()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(8, this->status(), target);
+  }
+
   if (!unknown_fields().empty()) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         unknown_fields(), target);
@@ -3129,6 +3295,13 @@ int MessageMSG3::ByteSize() const {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::UInt32Size(
           this->size());
+    }
+
+    // required uint32 status = 8;
+    if (has_status()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->status());
     }
 
   }
@@ -3254,6 +3427,9 @@ void MessageMSG3::MergeFrom(const MessageMSG3& from) {
     if (from.has_size()) {
       set_size(from.size());
     }
+    if (from.has_status()) {
+      set_status(from.status());
+    }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
 }
@@ -3271,7 +3447,7 @@ void MessageMSG3::CopyFrom(const MessageMSG3& from) {
 }
 
 bool MessageMSG3::IsInitialized() const {
-  if ((_has_bits_[0] & 0x00000001) != 0x00000001) return false;
+  if ((_has_bits_[0] & 0x00000081) != 0x00000081) return false;
 
   return true;
 }
@@ -3285,6 +3461,7 @@ void MessageMSG3::Swap(MessageMSG3* other) {
     gaymsg3_.Swap(&other->gaymsg3_);
     secproperty_.Swap(&other->secproperty_);
     quote_.Swap(&other->quote_);
+    std::swap(status_, other->status_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);
@@ -4782,8 +4959,8 @@ void RegisterMessage::Swap(RegisterMessage* other) {
 
 #ifndef _MSC_VER
 const int PinCodeToMessage::kTypeFieldNumber;
-const int PinCodeToMessage::kStatusFieldNumber;
 const int PinCodeToMessage::kSizeFieldNumber;
+const int PinCodeToMessage::kStatusFieldNumber;
 #endif  // !_MSC_VER
 
 PinCodeToMessage::PinCodeToMessage()
@@ -4805,8 +4982,8 @@ PinCodeToMessage::PinCodeToMessage(const PinCodeToMessage& from)
 void PinCodeToMessage::SharedCtor() {
   _cached_size_ = 0;
   type_ = 0;
-  status_ = 0u;
   size_ = 0u;
+  status_ = 0u;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -4852,7 +5029,7 @@ void PinCodeToMessage::Clear() {
     ::memset(&first, 0, n);                                \
   } while (0)
 
-  ZR_(type_, size_);
+  ZR_(type_, status_);
 
 #undef OFFSET_OF_FIELD_
 #undef ZR_
@@ -4886,33 +5063,33 @@ bool PinCodeToMessage::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(16)) goto parse_status;
+        if (input->ExpectTag(16)) goto parse_size;
         break;
       }
 
-      // required uint32 status = 2;
+      // optional uint32 size = 2;
       case 2: {
         if (tag == 16) {
-         parse_status:
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
-                 input, &status_)));
-          set_has_status();
-        } else {
-          goto handle_unusual;
-        }
-        if (input->ExpectTag(24)) goto parse_size;
-        break;
-      }
-
-      // optional uint32 size = 3;
-      case 3: {
-        if (tag == 24) {
          parse_size:
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
                  input, &size_)));
           set_has_size();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(24)) goto parse_status;
+        break;
+      }
+
+      // required uint32 status = 3;
+      case 3: {
+        if (tag == 24) {
+         parse_status:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &status_)));
+          set_has_status();
         } else {
           goto handle_unusual;
         }
@@ -4951,14 +5128,14 @@ void PinCodeToMessage::SerializeWithCachedSizes(
       1, this->type(), output);
   }
 
-  // required uint32 status = 2;
-  if (has_status()) {
-    ::google::protobuf::internal::WireFormatLite::WriteUInt32(2, this->status(), output);
+  // optional uint32 size = 2;
+  if (has_size()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(2, this->size(), output);
   }
 
-  // optional uint32 size = 3;
-  if (has_size()) {
-    ::google::protobuf::internal::WireFormatLite::WriteUInt32(3, this->size(), output);
+  // required uint32 status = 3;
+  if (has_status()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(3, this->status(), output);
   }
 
   if (!unknown_fields().empty()) {
@@ -4977,14 +5154,14 @@ void PinCodeToMessage::SerializeWithCachedSizes(
       1, this->type(), target);
   }
 
-  // required uint32 status = 2;
-  if (has_status()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(2, this->status(), target);
+  // optional uint32 size = 2;
+  if (has_size()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(2, this->size(), target);
   }
 
-  // optional uint32 size = 3;
-  if (has_size()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(3, this->size(), target);
+  // required uint32 status = 3;
+  if (has_status()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(3, this->status(), target);
   }
 
   if (!unknown_fields().empty()) {
@@ -5005,18 +5182,18 @@ int PinCodeToMessage::ByteSize() const {
         ::google::protobuf::internal::WireFormatLite::EnumSize(this->type());
     }
 
-    // required uint32 status = 2;
-    if (has_status()) {
-      total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::UInt32Size(
-          this->status());
-    }
-
-    // optional uint32 size = 3;
+    // optional uint32 size = 2;
     if (has_size()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::UInt32Size(
           this->size());
+    }
+
+    // required uint32 status = 3;
+    if (has_status()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->status());
     }
 
   }
@@ -5049,11 +5226,11 @@ void PinCodeToMessage::MergeFrom(const PinCodeToMessage& from) {
     if (from.has_type()) {
       set_type(from.type());
     }
-    if (from.has_status()) {
-      set_status(from.status());
-    }
     if (from.has_size()) {
       set_size(from.size());
+    }
+    if (from.has_status()) {
+      set_status(from.status());
     }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
@@ -5072,7 +5249,7 @@ void PinCodeToMessage::CopyFrom(const PinCodeToMessage& from) {
 }
 
 bool PinCodeToMessage::IsInitialized() const {
-  if ((_has_bits_[0] & 0x00000003) != 0x00000003) return false;
+  if ((_has_bits_[0] & 0x00000005) != 0x00000005) return false;
 
   return true;
 }
@@ -5080,8 +5257,8 @@ bool PinCodeToMessage::IsInitialized() const {
 void PinCodeToMessage::Swap(PinCodeToMessage* other) {
   if (other != this) {
     std::swap(type_, other->type_);
-    std::swap(status_, other->status_);
     std::swap(size_, other->size_);
+    std::swap(status_, other->status_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);
@@ -5447,6 +5624,7 @@ void PinCodeBackMessage::Swap(PinCodeBackMessage* other) {
 const int ResponseMessage::kTypeFieldNumber;
 const int ResponseMessage::kUserIDFieldNumber;
 const int ResponseMessage::kSizeFieldNumber;
+const int ResponseMessage::kStatusFieldNumber;
 #endif  // !_MSC_VER
 
 ResponseMessage::ResponseMessage()
@@ -5469,6 +5647,7 @@ void ResponseMessage::SharedCtor() {
   _cached_size_ = 0;
   type_ = 0;
   size_ = 0u;
+  status_ = 0u;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -5514,7 +5693,7 @@ void ResponseMessage::Clear() {
     ::memset(&first, 0, n);                                \
   } while (0)
 
-  ZR_(type_, size_);
+  ZR_(type_, status_);
 
 #undef OFFSET_OF_FIELD_
 #undef ZR_
@@ -5582,6 +5761,21 @@ bool ResponseMessage::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
+        if (input->ExpectTag(32)) goto parse_status;
+        break;
+      }
+
+      // required uint32 status = 4;
+      case 4: {
+        if (tag == 32) {
+         parse_status:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &status_)));
+          set_has_status();
+        } else {
+          goto handle_unusual;
+        }
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -5632,6 +5826,11 @@ void ResponseMessage::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteUInt32(3, this->size(), output);
   }
 
+  // required uint32 status = 4;
+  if (has_status()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(4, this->status(), output);
+  }
+
   if (!unknown_fields().empty()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -5667,6 +5866,11 @@ void ResponseMessage::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(3, this->size(), target);
   }
 
+  // required uint32 status = 4;
+  if (has_status()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(4, this->status(), target);
+  }
+
   if (!unknown_fields().empty()) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         unknown_fields(), target);
@@ -5690,6 +5894,13 @@ int ResponseMessage::ByteSize() const {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::UInt32Size(
           this->size());
+    }
+
+    // required uint32 status = 4;
+    if (has_status()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->status());
     }
 
   }
@@ -5743,6 +5954,9 @@ void ResponseMessage::MergeFrom(const ResponseMessage& from) {
     if (from.has_size()) {
       set_size(from.size());
     }
+    if (from.has_status()) {
+      set_status(from.status());
+    }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
 }
@@ -5760,7 +5974,7 @@ void ResponseMessage::CopyFrom(const ResponseMessage& from) {
 }
 
 bool ResponseMessage::IsInitialized() const {
-  if ((_has_bits_[0] & 0x00000001) != 0x00000001) return false;
+  if ((_has_bits_[0] & 0x00000009) != 0x00000009) return false;
 
   return true;
 }
@@ -5770,6 +5984,7 @@ void ResponseMessage::Swap(ResponseMessage* other) {
     std::swap(type_, other->type_);
     userid_.Swap(&other->userid_);
     std::swap(size_, other->size_);
+    std::swap(status_, other->status_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);
@@ -6196,8 +6411,8 @@ void SMSMessage::Swap(SMSMessage* other) {
 
 #ifndef _MSC_VER
 const int SMSResponseMessage::kTypeFieldNumber;
-const int SMSResponseMessage::kStatusCodeFieldNumber;
 const int SMSResponseMessage::kSizeFieldNumber;
+const int SMSResponseMessage::kStatusFieldNumber;
 #endif  // !_MSC_VER
 
 SMSResponseMessage::SMSResponseMessage()
@@ -6219,8 +6434,8 @@ SMSResponseMessage::SMSResponseMessage(const SMSResponseMessage& from)
 void SMSResponseMessage::SharedCtor() {
   _cached_size_ = 0;
   type_ = 0;
-  statuscode_ = 0u;
   size_ = 0u;
+  status_ = 0u;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -6266,7 +6481,7 @@ void SMSResponseMessage::Clear() {
     ::memset(&first, 0, n);                                \
   } while (0)
 
-  ZR_(type_, size_);
+  ZR_(type_, status_);
 
 #undef OFFSET_OF_FIELD_
 #undef ZR_
@@ -6300,33 +6515,33 @@ bool SMSResponseMessage::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(16)) goto parse_statusCode;
+        if (input->ExpectTag(16)) goto parse_size;
         break;
       }
 
-      // required uint32 statusCode = 2;
+      // optional uint32 size = 2;
       case 2: {
         if (tag == 16) {
-         parse_statusCode:
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
-                 input, &statuscode_)));
-          set_has_statuscode();
-        } else {
-          goto handle_unusual;
-        }
-        if (input->ExpectTag(24)) goto parse_size;
-        break;
-      }
-
-      // optional uint32 size = 3;
-      case 3: {
-        if (tag == 24) {
          parse_size:
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
                  input, &size_)));
           set_has_size();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(24)) goto parse_status;
+        break;
+      }
+
+      // required uint32 status = 3;
+      case 3: {
+        if (tag == 24) {
+         parse_status:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &status_)));
+          set_has_status();
         } else {
           goto handle_unusual;
         }
@@ -6365,14 +6580,14 @@ void SMSResponseMessage::SerializeWithCachedSizes(
       1, this->type(), output);
   }
 
-  // required uint32 statusCode = 2;
-  if (has_statuscode()) {
-    ::google::protobuf::internal::WireFormatLite::WriteUInt32(2, this->statuscode(), output);
+  // optional uint32 size = 2;
+  if (has_size()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(2, this->size(), output);
   }
 
-  // optional uint32 size = 3;
-  if (has_size()) {
-    ::google::protobuf::internal::WireFormatLite::WriteUInt32(3, this->size(), output);
+  // required uint32 status = 3;
+  if (has_status()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(3, this->status(), output);
   }
 
   if (!unknown_fields().empty()) {
@@ -6391,14 +6606,14 @@ void SMSResponseMessage::SerializeWithCachedSizes(
       1, this->type(), target);
   }
 
-  // required uint32 statusCode = 2;
-  if (has_statuscode()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(2, this->statuscode(), target);
+  // optional uint32 size = 2;
+  if (has_size()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(2, this->size(), target);
   }
 
-  // optional uint32 size = 3;
-  if (has_size()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(3, this->size(), target);
+  // required uint32 status = 3;
+  if (has_status()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(3, this->status(), target);
   }
 
   if (!unknown_fields().empty()) {
@@ -6419,18 +6634,18 @@ int SMSResponseMessage::ByteSize() const {
         ::google::protobuf::internal::WireFormatLite::EnumSize(this->type());
     }
 
-    // required uint32 statusCode = 2;
-    if (has_statuscode()) {
-      total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::UInt32Size(
-          this->statuscode());
-    }
-
-    // optional uint32 size = 3;
+    // optional uint32 size = 2;
     if (has_size()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::UInt32Size(
           this->size());
+    }
+
+    // required uint32 status = 3;
+    if (has_status()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->status());
     }
 
   }
@@ -6463,11 +6678,11 @@ void SMSResponseMessage::MergeFrom(const SMSResponseMessage& from) {
     if (from.has_type()) {
       set_type(from.type());
     }
-    if (from.has_statuscode()) {
-      set_statuscode(from.statuscode());
-    }
     if (from.has_size()) {
       set_size(from.size());
+    }
+    if (from.has_status()) {
+      set_status(from.status());
     }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
@@ -6486,7 +6701,7 @@ void SMSResponseMessage::CopyFrom(const SMSResponseMessage& from) {
 }
 
 bool SMSResponseMessage::IsInitialized() const {
-  if ((_has_bits_[0] & 0x00000003) != 0x00000003) return false;
+  if ((_has_bits_[0] & 0x00000005) != 0x00000005) return false;
 
   return true;
 }
@@ -6494,8 +6709,8 @@ bool SMSResponseMessage::IsInitialized() const {
 void SMSResponseMessage::Swap(SMSResponseMessage* other) {
   if (other != this) {
     std::swap(type_, other->type_);
-    std::swap(statuscode_, other->statuscode_);
     std::swap(size_, other->size_);
+    std::swap(status_, other->status_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);
