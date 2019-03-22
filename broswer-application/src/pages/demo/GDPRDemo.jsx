@@ -147,10 +147,10 @@ class GDPRDemo extends React.Component {
 
     switch (type) {
       case RA_MSG0:
-        this.session_id = message.sessionID;
-        msgToSent = this.assemble(RA_MSG0);
         status = message.msg0.status;
         if (status === 200) {
+          this.session_id = message.sessionID;
+          msgToSent = this.assemble(RA_MSG0);
           this.setState({
             alertType: "success"
           });
@@ -199,9 +199,9 @@ class GDPRDemo extends React.Component {
         break;
 
       case RA_APP_ATT_OK:
-        const { phone } = this.state;
         status = message.initMsg.status;
         if (status === 200) {
+          const { phone } = this.state;
           msgToSent = this.assemble(PHONE_REG, phone);
           this.setState({
             alertType: "success"
@@ -231,9 +231,9 @@ class GDPRDemo extends React.Component {
         break;
 
       case PHONE_REG_END:
-        const { userID } = message.resMsg;
         status = message.resMsg.status;
         if (status === 200) {
+          const { userID } = message.resMsg;
           this.setState({
             alert: `Register Succeed. User ID is ${buf2hexString(userID)}`,
             alertType: "success"
