@@ -80,13 +80,13 @@ uint32_t MessageHandler::getExtendedEPID_GID(uint32_t *extended_epid_group_id) {
 
 string MessageHandler::generateMSG0(sgx_ra_context_t session_id) {
     Log("Call MSG0 generate");
-    string s;
 
     uint32_t extended_epid_group_id;
     int ret = this->getExtendedEPID_GID(&extended_epid_group_id);
 
     Messages::MessageMSG0 *msg = new Messages::MessageMSG0();
     msg->set_type(Messages::Type::RA_MSG0);
+    msg->set_status(MSG_SUCCESS);
 
     if (ret == SGX_SUCCESS) {
         msg->set_epid(extended_epid_group_id);
@@ -94,6 +94,8 @@ string MessageHandler::generateMSG0(sgx_ra_context_t session_id) {
         msg->set_status(TYPE_TERMINATE);
         msg->set_epid(0);
     }
+
+    string s;
     Messages::AllInOneMessage aio_ret_msg;
     aio_ret_msg.set_type(Messages::Type::RA_MSG0);
     aio_ret_msg.set_allocated_msg0(msg);
@@ -436,6 +438,7 @@ string MessageHandler::handleAttestationResult(sgx_ra_context_t session_id, Mess
         Log("Error: INTEGRITY FAILED - attestation result message MK based cmac failed. ret:%lx",ret);
         Log("Error: INTEGRITY FAILED - attestation result message MK based cmac failed. status:%lx",status);
         attMsg->set_status(MSG_SGX_FAILED);
+        goto cleanup;
     }
 
     if (0 != p_att_result_msg_full->status[0] || 0 != p_att_result_msg_full->status[1]) {
@@ -475,6 +478,9 @@ string MessageHandler::handleAttestationResult(sgx_ra_context_t session_id, Mess
         }
     }
 
+
+cleanup:
+
     string s;
     Messages::AllInOneMessage aio_ret_msg;
     aio_ret_msg.set_type(Messages::Type::RA_APP_ATT_OK);
@@ -495,7 +501,6 @@ string MessageHandler::handleAttestationResult(sgx_ra_context_t session_id, Mess
 }
 
 handler_status_t MessageHandler::sendSMS(uint8_t *p_phone, int phone_size, string sms) {
-
     handler_status_t status = MSG_SUCCESS;
 
     char *filepath = new char[FILENAME_MAX];
@@ -755,7 +760,6 @@ bool MessageHandler::getPhoneByUserID(sgx_ra_context_t session_id, uint8_t *user
 }
 
 string MessageHandler::handleSMS(sgx_ra_context_t session_id, Messages::SMSMessage msg) {
-    string result;
     uint8_t *p_user_id = new uint8_t[USER_ID_SIZE];
     uint8_t *p_unsealed_phone = new uint8_t[PHONE_SIZE];
     uint32_t sms_size = msg.size();
@@ -794,21 +798,22 @@ string MessageHandler::handleSMS(sgx_ra_context_t session_id, Messages::SMSMessa
     }
 
 
+    string s;
     Messages::AllInOneMessage aio_ret_msg;
     aio_ret_msg.set_type(Messages::Type::SMS_RES);
     aio_ret_msg.set_allocated_smsresmsg(smsresMsg);
     aio_ret_msg.set_sessionid(session_id);
-    if(aio_ret_msg.SerializeToString(&result)) {
+    if(aio_ret_msg.SerializeToString(&s)) {
         Log("Serialization successful");
     }
     else {
         Log("Serialization failed", log::error);
-        result = "";
+        s = "";
     }
 
     this->enclave->closeSession(session_id);
 
-    return result;
+    return s;
 }
 
 string MessageHandler::handleMSG0(sgx_ra_context_t session_id, Messages::MessageMSG0 msg) {
@@ -929,6 +934,7 @@ vector<string> MessageHandler::handleMessages(unsigned char* bytes, int len) {
         return res;
     }
 
+    // handle messages
     switch (aio_msg.type()) {
     case Messages::Type::RA_VERIFICATION: {	//Verification request
         Log("========== Generate Msg0 ==========");
