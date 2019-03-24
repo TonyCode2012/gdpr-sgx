@@ -593,10 +593,13 @@ string MessageHandler::handleRegisterMSG(sgx_ra_context_t session_id, Messages::
         /*
         handler_status_t handler_ret = sendSMS(p_decrypted_phone, PHONE_SIZE, pincode);
         if(MSG_SUCCESS == handler_ret) {
-            memcpy(&(g_session_mapping_um[session_id]->pin_code),pincode.c_str(),PIN_CODE_SIZE);
+            memcpy(g_session_mapping_um[session_id]->pin_code,pincode.c_str(),PIN_CODE_SIZE);
+            for(int i=0;i<PIN_CODE_SIZE;i++) {
+                g_session_mapping_um[session_id]->pin_code[i] -= '0';
+            }
         }
         else {
-            msg->set_status(handler_ret);
+            pincodetomsg->set_status(handler_ret);
         }
         */
     }
