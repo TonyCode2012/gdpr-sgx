@@ -244,6 +244,7 @@ class GDPRDemo extends React.Component {
             alertType: "warning"
           });
         }
+        WEB_SOCKET.close();
         break;
 
       case SMS_RES:
